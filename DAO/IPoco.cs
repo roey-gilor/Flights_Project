@@ -6,5 +6,6 @@ namespace DAO
 {
     interface IPoco
     {
+         
     }
 }
