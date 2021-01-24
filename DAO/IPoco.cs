@@ -4,7 +4,7 @@ using System.Text;
 
 namespace DAO
 {
-    interface IPoco
+    public interface IPoco
     {
          
     }

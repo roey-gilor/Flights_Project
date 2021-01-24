@@ -4,7 +4,7 @@ using System.Text;
 
 namespace DAO
 {
-    class Country : IPoco
+    public class Country : IPoco
     {
         public long Id { get; set; }
         public string Name { get; set; }

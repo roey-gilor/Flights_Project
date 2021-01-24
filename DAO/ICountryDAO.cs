@@ -4,7 +4,7 @@ using System.Text;
 
 namespace DAO
 {
-    interface ICountryDAO:IBasicDB<Country>
+    public interface ICountryDAO:IBasicDB<Country>
     {
         
     }

@@ -63,7 +63,7 @@ namespace DAO
             }
             return countries;
         }
-        void IBasicDB<Country>.Add(Country t)
+        public void Add(Country t)
         {
             RunSpNonExecute(Properties.Resources.Connection_String, "sp_add_country", new NpgsqlParameter[]
             {
@@ -71,7 +71,7 @@ namespace DAO
             });
         }
 
-        Country IBasicDB<Country>.Get(int id)
+        public Country Get(int id)
         {
             return GetCountries(Properties.Resources.Connection_String, "sp_Get_Country_By_Id", new NpgsqlParameter[]
             {
@@ -79,12 +79,12 @@ namespace DAO
             })[0];
         }
 
-        IList<Country> IBasicDB<Country>.GetAll()
+        public IList<Country> GetAll()
         {
             return GetCountries(Properties.Resources.Connection_String, "sp_Get_All_Countries", new NpgsqlParameter[] { });
         }
 
-        void IBasicDB<Country>.Remove(Country t)
+        public void Remove(Country t)
         {
             RunSpNonExecute(Properties.Resources.Connection_String, "sp_Remove_Country", new NpgsqlParameter[]
             {
@@ -92,7 +92,7 @@ namespace DAO
             });
         }
 
-        void IBasicDB<Country>.Update(Country t)
+        public void Update(Country t)
         {
             RunSpNonExecute(Properties.Resources.Connection_String, "sp_Update_Country", new NpgsqlParameter[]
             {

@@ -4,7 +4,7 @@ using System.Text;
 
 namespace DAO
 {
-    interface IBasicDB<T> where T : IPoco
+    public interface IBasicDB<T> where T : IPoco
     {
         public T Get(int id);
         public IList<T> GetAll();
