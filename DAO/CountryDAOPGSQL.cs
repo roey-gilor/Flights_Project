@@ -15,13 +15,34 @@ namespace DAO
         }
         private void RunSpNonExecute (string conn_string, string sp_name, NpgsqlParameter[] parameters)
         {
+            string comand = $"CALL {sp_name} (";
+            for (int i = 0; i < parameters.Length; i++)
+            {
+                if (parameters[i].Value.GetType() == typeof(int) || parameters[i].Value.GetType() == typeof(long))
+                {
+                    if (i != parameters.Length - 1)
+                        comand += $" {parameters[i].Value},";
+                    else
+                        comand += $" {parameters[i].Value}";
+                }
+                else
+                    if (parameters[i].Value.GetType() == typeof(string) || parameters[i].Value.GetType() == typeof(DateTime))
+                {
+                    if (i != parameters.Length - 1)
+                        comand += $" '{parameters[i].Value}',";
+                    else
+                        comand += $" '{parameters[i].Value}'";
+                }
+            }
+            comand += $")";
+
             try
             {
                 using (var conn = new NpgsqlConnection(conn_string))
                 {
                     conn.Open();
                     NpgsqlCommand command = new NpgsqlCommand(sp_name, conn);
-                    command.CommandType = System.Data.CommandType.StoredProcedure;
+                    command.CommandText = comand;
                     command.Parameters.AddRange(parameters);
                     command.ExecuteNonQuery();
                 }
@@ -67,15 +88,15 @@ namespace DAO
         {
             RunSpNonExecute(Properties.Resources.Connection_String, "sp_add_country", new NpgsqlParameter[]
             {
-                new NpgsqlParameter("name" ,t.Name)
+                new NpgsqlParameter("_name" ,t.Name)
             });
         }
 
         public Country Get(int id)
         {
-            return GetCountries(Properties.Resources.Connection_String, "sp_Get_Country_By_Id", new NpgsqlParameter[]
+            return GetCountries(Properties.Resources.Connection_String, "sp_get_country_by_id", new NpgsqlParameter[]
             {
-                new NpgsqlParameter("id" ,id)
+                new NpgsqlParameter("_id" ,id)
             })[0];
         }
 
@@ -86,18 +107,18 @@ namespace DAO
 
         public void Remove(Country t)
         {
-            RunSpNonExecute(Properties.Resources.Connection_String, "sp_Remove_Country", new NpgsqlParameter[]
+            RunSpNonExecute(Properties.Resources.Connection_String, "sp_remove_country", new NpgsqlParameter[]
             {
-                new NpgsqlParameter("id" ,t.Id)
+                new NpgsqlParameter("_id" ,t.Id)
             });
         }
 
         public void Update(Country t)
         {
-            RunSpNonExecute(Properties.Resources.Connection_String, "sp_Update_Country", new NpgsqlParameter[]
+            RunSpNonExecute(Properties.Resources.Connection_String, "sp_update_country", new NpgsqlParameter[]
             {
-                new NpgsqlParameter("id" ,t.Id),
-                new NpgsqlParameter("Name", t.Name)
+                new NpgsqlParameter("_id" ,t.Id),
+                new NpgsqlParameter("_name", t.Name)
             });
         }
     }

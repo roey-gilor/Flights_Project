@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Newtonsoft.Json;
 
 namespace DAO
 {
@@ -38,6 +39,10 @@ namespace DAO
         public static bool operator !=(Country c1, Country c2)
         {
             return !(c1 == c2);
+        }
+        public override string ToString()
+        {
+            return $"{JsonConvert.SerializeObject(this)}";
         }
     }
 }
