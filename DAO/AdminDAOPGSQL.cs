@@ -1,15 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using log4net;
 using Npgsql;
-using Npgsql.EntityFrameworkCore.PostgreSQL;
 
 namespace DAO
 {
-    public class CountryDAOPGSQL : ICountryDAO
+    public class AdminDAOPGSQL : IAdminDAO
     {
-        public CountryDAOPGSQL()
+        public AdminDAOPGSQL()
         {
 
         }
@@ -37,7 +35,7 @@ namespace DAO
             comand += $")";
             return comand;
         }
-        private void RunSpNonExecute (string conn_string, string sp_name, NpgsqlParameter[] parameters)
+        private void RunSpNonExecute(string conn_string, string sp_name, NpgsqlParameter[] parameters)
         {
             string comand = GetCommand(sp_name, parameters);
 
@@ -57,9 +55,9 @@ namespace DAO
                 Console.WriteLine("cant run sp." + ex.Message);
             }
         }
-        private List<Country> GetCountries(string conn_string, string sp_name, NpgsqlParameter[] parameters)
+        private List<Administrator> GetAdministrators(string conn_string, string sp_name, NpgsqlParameter[] parameters)
         {
-            List<Country> countries = new List<Country>();
+            List<Administrator> administrators = new List<Administrator>();
             try
             {
                 using (var conn = new NpgsqlConnection(conn_string))
@@ -74,12 +72,15 @@ namespace DAO
                     var reader = command.ExecuteReader();
                     while (reader.Read())
                     {
-                        Country country = new Country
+                        Administrator administrator = new Administrator
                         {
                             Id = (long)reader["id"],
-                            Name = reader["name"].ToString()
+                            First_Name = reader["first_name"].ToString(),
+                            Last_Name = reader["last_name"].ToString(),
+                            Level = (int)reader["level"],
+                            User_Id = (long)reader["user_id"]
                         };
-                        countries.Add(country);
+                        administrators.Add(administrator);
                     }
                 }
             }
@@ -87,43 +88,49 @@ namespace DAO
             {
                 Console.WriteLine("cant run sp." + ex.Message);
             }
-            return countries;
+            return administrators;
         }
-        public void Add(Country t)
+        public void Add(Administrator t)
         {
-            RunSpNonExecute(Properties.Resources.Connection_String, "sp_add_country", new NpgsqlParameter[]
+            RunSpNonExecute(Properties.Resources.Connection_String, "sp_add_admin", new NpgsqlParameter[]
             {
-                new NpgsqlParameter("_name" ,t.Name)
+                new NpgsqlParameter("_first_name", t.First_Name),
+                new NpgsqlParameter("_last_name", t.Last_Name),
+                new NpgsqlParameter("_level", t.Level),
+                new NpgsqlParameter("_user_id", t.User_Id)
             });
         }
 
-        public Country Get(int id)
+        public Administrator Get(int id)
         {
-            return GetCountries(Properties.Resources.Connection_String, "sp_get_country_by_id", new NpgsqlParameter[]
+            return GetAdministrators(Properties.Resources.Connection_String, "sp_get_admin_by_id", new NpgsqlParameter[]
             {
                 new NpgsqlParameter("_id" ,id)
             })[0];
         }
 
-        public IList<Country> GetAll()
+        public IList<Administrator> GetAll()
         {
-            return GetCountries(Properties.Resources.Connection_String, "sp_Get_All_Countries", new NpgsqlParameter[] { });
+            return GetAdministrators(Properties.Resources.Connection_String, "sp_get_all_admins", new NpgsqlParameter[] { });
         }
 
-        public void Remove(Country t)
+        public void Remove(Administrator t)
         {
-            RunSpNonExecute(Properties.Resources.Connection_String, "sp_remove_country", new NpgsqlParameter[]
+            RunSpNonExecute(Properties.Resources.Connection_String, "sp_remove_admin", new NpgsqlParameter[]
             {
                 new NpgsqlParameter("_id" ,t.Id)
             });
         }
 
-        public void Update(Country t)
+        public void Update(Administrator t)
         {
-            RunSpNonExecute(Properties.Resources.Connection_String, "sp_update_country", new NpgsqlParameter[]
+            RunSpNonExecute(Properties.Resources.Connection_String, "sp_update_admin", new NpgsqlParameter[]
             {
                 new NpgsqlParameter("_id" ,t.Id),
-                new NpgsqlParameter("_name", t.Name)
+                new NpgsqlParameter("_first_name", t.First_Name),
+                new NpgsqlParameter("_last_name", t.Last_Name),
+                new NpgsqlParameter("_level", t.Level),
+                new NpgsqlParameter("_user_id", t.User_Id)
             });
         }
     }
