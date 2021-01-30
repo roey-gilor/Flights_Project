@@ -8,7 +8,7 @@ namespace DAO
     public class AdminDAOPGSQL : IAdminDAO
     {
         public AdminDAOPGSQL()
-        {
+        { 
 
         }
         private string GetCommand(string sp_name, NpgsqlParameter[] parameters)
