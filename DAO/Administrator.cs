@@ -12,19 +12,22 @@ namespace DAO
         public string Last_Name { get; set; }
         public int Level { get; set; }
         public long User_Id { get; set; }
+        public User User { get; set; }
         public Administrator()
         {
 
         }
 
-        public Administrator(long id, string first_Name, string last_Name, int level, long user_Id)
+        public Administrator(long id, string first_Name, string last_Name, int level, long user_Id, User user)
         {
             Id = id;
             First_Name = first_Name;
             Last_Name = last_Name;
             Level = level;
             User_Id = user_Id;
+            User = user;
         }
+
         public override int GetHashCode()
         {
             return (int)this.Id;
