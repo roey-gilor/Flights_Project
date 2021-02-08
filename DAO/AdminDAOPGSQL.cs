@@ -11,6 +11,7 @@ namespace DAO
         { 
 
         }
+        UserDAOPGSQL userDAOPGSQL = new UserDAOPGSQL();
         private string GetCommand(string sp_name, NpgsqlParameter[] parameters)
         {
             string comand = $"CALL {sp_name} (";
@@ -78,7 +79,8 @@ namespace DAO
                             First_Name = reader["first_name"].ToString(),
                             Last_Name = reader["last_name"].ToString(),
                             Level = (int)reader["level"],
-                            User_Id = (long)reader["user_id"]
+                            User_Id = (long)reader["user_id"],
+                            User = userDAOPGSQL.Get((long)reader["user_id"])
                         };
                         administrators.Add(administrator);
                     }
@@ -101,7 +103,7 @@ namespace DAO
             });
         }
 
-        public Administrator Get(int id)
+        public Administrator Get(long id)
         {
             return GetAdministrators(Properties.Resources.Connection_String, "sp_get_admin_by_id", new NpgsqlParameter[]
             {

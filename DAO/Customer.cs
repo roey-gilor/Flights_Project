@@ -14,12 +14,13 @@ namespace DAO
         public string Phone_No { get; set; }
         public string Credit_Card_No { get; set; }
         public long User_Id { get; set; }
+        public User User { get; set; }
         public Customer()
         {
 
         }
 
-        public Customer(long id, string first_Name, string last_Name, string address, string phone_No, string credit_Card_No, long user_Id)
+        public Customer(long id, string first_Name, string last_Name, string address, string phone_No, string credit_Card_No, long user_Id, User user)
         {
             Id = id;
             First_Name = first_Name;
@@ -28,7 +29,9 @@ namespace DAO
             Phone_No = phone_No;
             Credit_Card_No = credit_Card_No;
             User_Id = user_Id;
+            User = user;
         }
+
         public override int GetHashCode()
         {
             return (int)this.Id;

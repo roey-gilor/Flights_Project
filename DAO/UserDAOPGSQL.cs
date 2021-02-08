@@ -101,7 +101,7 @@ namespace DAO
             });
         }
 
-        public User Get(int id)
+        public User Get(long id)
         {
             return GetUsers(Properties.Resources.Connection_String, "sp_get_user_by_id", new NpgsqlParameter[]
             {

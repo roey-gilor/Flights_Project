@@ -97,7 +97,7 @@ namespace DAO
             });
         }
 
-        public Country Get(int id)
+        public Country Get(long id)
         {
             return GetCountries(Properties.Resources.Connection_String, "sp_get_country_by_id", new NpgsqlParameter[]
             {

@@ -97,7 +97,7 @@ namespace DAO
             });
         }
 
-        public Ticket Get(int id)
+        public Ticket Get(long id)
         {
             return GetTickets(Properties.Resources.Connection_String, "sp_get_ticket_by_id", new NpgsqlParameter[]
             {

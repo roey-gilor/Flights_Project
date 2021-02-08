@@ -11,6 +11,7 @@ namespace DAO
         {
 
         }
+        UserDAOPGSQL userDAOPGSQL = new UserDAOPGSQL();
         private string GetCommand(string sp_name, NpgsqlParameter[] parameters)
         {
             string comand = $"CALL {sp_name} (";
@@ -80,7 +81,8 @@ namespace DAO
                             Address = reader["address"].ToString(),
                             Phone_No = reader["phone_no"].ToString(),
                             Credit_Card_No = reader["credit_card_no"].ToString(),
-                            User_Id = (long)reader["user_id"]
+                            User_Id = (long)reader["user_id"],
+                            User = userDAOPGSQL.Get((long)reader["user_id"])
                         };
                         customers.Add(customer);
                     }
@@ -105,7 +107,7 @@ namespace DAO
             });
         }
 
-        public Customer Get(int id)
+        public Customer Get(long id)
         {
             return GetCustomers(Properties.Resources.Connection_String, "sp_get_customer_by_id", new NpgsqlParameter[]
             {

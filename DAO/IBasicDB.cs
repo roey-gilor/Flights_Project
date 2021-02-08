@@ -6,7 +6,7 @@ namespace DAO
 {
     public interface IBasicDB<T> where T : IPoco
     {
-        public T Get(int id);
+        public T Get(long id);
         public IList<T> GetAll();
         public void Add(T t);
         public void Remove(T t);
