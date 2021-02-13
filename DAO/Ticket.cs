@@ -10,17 +10,22 @@ namespace DAO
         public long Id { get; set; }
         public long Flight_Id { get; set; }
         public long Customer_Id { get; set; }
+        public Flight Flight { get; set; }
+        public Customer Customer { get; set; }
         public Ticket()
         {
 
         }
 
-        public Ticket(long id, long flight_Id, long customer_Id)
+        public Ticket(long id, long flight_Id, long customer_Id, Flight flight, Customer customer)
         {
             Id = id;
             Flight_Id = flight_Id;
             Customer_Id = customer_Id;
+            Flight = flight;
+            Customer = customer;
         }
+
         public override int GetHashCode()
         {
             return (int)this.Id;

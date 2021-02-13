@@ -11,6 +11,8 @@ namespace DAO
         {
 
         }
+        CustomerDAOPGSQL customerDAOPGSQL = new CustomerDAOPGSQL();
+        FlightDAOPGSQL flightDAOPGSQL = new FlightDAOPGSQL();
         private string GetCommand(string sp_name, NpgsqlParameter[] parameters)
         {
             string comand = $"CALL {sp_name} (";
@@ -76,7 +78,9 @@ namespace DAO
                         {
                             Id = (long)reader["id"],
                             Flight_Id = (long)reader["flight_id"],
-                            Customer_Id = (long)reader["customer_id"]
+                            Customer_Id = (long)reader["customer_id"],
+                            Customer = customerDAOPGSQL.Get((long)reader["customer_id"]),
+                            Flight = flightDAOPGSQL.Get((long)reader["customer_id"])
                         };
                         tickets.Add(ticket);
                     }
