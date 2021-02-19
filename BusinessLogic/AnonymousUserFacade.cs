@@ -5,7 +5,7 @@ using DAO;
 
 namespace BusinessLogic
 {
-    class AnonymousUserFacade : FacadeBase, IAnonymousUserFacade
+    public class AnonymousUserFacade : FacadeBase, IAnonymousUserFacade
     {
         public IList<AirlineCompany> GetAllAirlineCompanies()
         {

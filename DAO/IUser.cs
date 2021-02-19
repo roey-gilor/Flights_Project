@@ -4,7 +4,7 @@ using System.Text;
 
 namespace DAO
 {
-    interface IUser
+    public interface IUser
     {
     }
 }

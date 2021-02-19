@@ -5,7 +5,7 @@ using DAO;
 
 namespace BusinessLogic
 {
-    interface IAnonymousUserFacade
+    public interface IAnonymousUserFacade
     {
         IList<Flight> GetAllFlights();
         IList<AirlineCompany> GetAllAirlineCompanies();
