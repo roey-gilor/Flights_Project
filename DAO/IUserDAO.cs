@@ -4,7 +4,7 @@ using System.Text;
 
 namespace DAO
 {
-    interface IUserDAO : IBasicDB<User>
+    public interface IUserDAO : IBasicDB<User>
     {
     }
 }
