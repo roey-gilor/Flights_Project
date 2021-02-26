@@ -5,41 +5,44 @@ using System.Text;
 
 namespace BusinessLogic
 {
-    class LoggedInAirlineFacade : AnonymousUserFacade, ILoggedInAirlineFacade
+    public class LoggedInAirlineFacade : AnonymousUserFacade, ILoggedInAirlineFacade
     {
         public void CancelFlight(LoginToken<AirlineCompany> token, Flight flight)
         {
-            throw new NotImplementedException();
+            _flightDAO.Remove(flight);
         }
 
         public void ChangeMyPassword(LoginToken<AirlineCompany> token, string oldPassword, string newPassword)
         {
-            throw new NotImplementedException();
+            token.User.User.Password = newPassword;
+            _userDAO.Update(token.User.User);
         }
 
         public void CreateFlight(LoginToken<AirlineCompany> token, Flight flight)
         {
-            throw new NotImplementedException();
+            flight.Airline_Company = token.User;
+            flight.Airline_Company_Id = token.User.Id;
+            _flightDAO.Add(flight);
         }
 
-        public IList<Ticket> GetAllFlights(LoginToken<AirlineCompany> token)
+        public IList<Flight> GetAllFlights(LoginToken<AirlineCompany> token)
         {
-            throw new NotImplementedException();
+            return _flightDAO.GetAll();
         }
 
         public IList<Ticket> GetAllTickets(LoginToken<AirlineCompany> token)
         {
-            throw new NotImplementedException();
+            return _ticketDAO.GetAll();
         }
 
         public void MofidyAirlineDetails(LoginToken<AirlineCompany> token, AirlineCompany airline)
         {
-            throw new NotImplementedException();
+            _airlineDAO.Update(airline);
         }
 
         public void UpdateFlight(LoginToken<AirlineCompany> token, Flight flight)
         {
-            throw new NotImplementedException();
+            _flightDAO.Update(flight);
         }
     }
 }

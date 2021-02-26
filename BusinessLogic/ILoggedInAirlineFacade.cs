@@ -8,7 +8,7 @@ namespace BusinessLogic
     public interface ILoggedInAirlineFacade
     {
         IList<Ticket> GetAllTickets(LoginToken<AirlineCompany> token);
-        IList<Ticket> GetAllFlights(LoginToken<AirlineCompany> token);
+        IList<Flight> GetAllFlights(LoginToken<AirlineCompany> token);
         void CancelFlight(LoginToken<AirlineCompany> token, Flight flight);
         void CreateFlight(LoginToken<AirlineCompany> token, Flight flight);
         void UpdateFlight(LoginToken<AirlineCompany> token, Flight flight);
