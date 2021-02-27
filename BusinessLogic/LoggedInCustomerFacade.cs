@@ -26,7 +26,7 @@ namespace BusinessLogic
                 if (ticket.Flight_Id == flight.Id)
                 {
                     if (ticket.Customer_Id == token.User.Id)
-                        throw new CustomerAlreadyBoughtTicket();
+                        throw new CustomerAlreadyBoughtTicketException();
                 }
             }
             if (flight.Remaining_Tickets > 0)

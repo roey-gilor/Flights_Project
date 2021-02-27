@@ -27,12 +27,26 @@ namespace BusinessLogic
 
         public IList<Flight> GetAllFlights(LoginToken<AirlineCompany> token)
         {
-            return _flightDAO.GetAll();
+            List<Flight> flights = new List<Flight>();
+            foreach (Flight flight in _flightDAO.GetAll())
+            {
+                if (flight.Airline_Company == token.User)
+                    flights.Add(flight);
+            }
+            return flights;
         }
 
         public IList<Ticket> GetAllTickets(LoginToken<AirlineCompany> token)
         {
-            return _ticketDAO.GetAll();
+            List<Ticket> tickets = new List<Ticket>();
+            IList<Flight> flights = GetAllFlights(token);
+            IList<Ticket> tickets_list = _ticketDAO.GetAll();
+            foreach (Ticket ticket in tickets_list)
+            {
+                if (flights.Contains(ticket.Flight))
+                    tickets.Add(ticket);
+            }
+            return tickets;
         }
 
         public void MofidyAirlineDetails(LoginToken<AirlineCompany> token, AirlineCompany airline)

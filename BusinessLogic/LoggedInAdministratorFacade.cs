@@ -17,7 +17,7 @@ namespace BusinessLogic
                     throw new AdministratorDoesntHaveSanctionException();
             }
             else
-                throw new WasntActivatedByAdminstratorException();
+                throw new WasntActivatedByAdministratorException();
         }
 
         public void CreateCountry(LoginToken<Administrator> token, Country country)
@@ -30,7 +30,7 @@ namespace BusinessLogic
                     throw new AdministratorDoesntHaveSanctionException();
             }
             else
-                throw new WasntActivatedByAdminstratorException();
+                throw new WasntActivatedByAdministratorException();
         }
 
         public void CreateNewAirline(LoginToken<Administrator> token, AirlineCompany airline)
@@ -43,7 +43,7 @@ namespace BusinessLogic
                     throw new AdministratorDoesntHaveSanctionException();
             }
             else
-                throw new WasntActivatedByAdminstratorException();
+                throw new WasntActivatedByAdministratorException();
         }
 
         public void CreateNewCustomer(LoginToken<Administrator> token, Customer customer)
@@ -56,7 +56,7 @@ namespace BusinessLogic
                     throw new AdministratorDoesntHaveSanctionException();
             }
             else
-                throw new WasntActivatedByAdminstratorException();
+                throw new WasntActivatedByAdministratorException();
         }
 
         public IList<Customer> GetAllCustomers(LoginToken<Administrator> token)
@@ -64,7 +64,7 @@ namespace BusinessLogic
             if (token != null)
                 return _customerDAO.GetAll();
             else
-                throw new WasntActivatedByAdminstratorException();
+                throw new WasntActivatedByAdministratorException();
         }
 
         public void RemoveAdmin(LoginToken<Administrator> token, Administrator admin)
@@ -77,7 +77,7 @@ namespace BusinessLogic
                     throw new AdministratorDoesntHaveSanctionException();
             }
             else
-                throw new WasntActivatedByAdminstratorException();
+                throw new WasntActivatedByAdministratorException();
         }
 
         public void RemoveAirline(LoginToken<Administrator> token, AirlineCompany airline)
@@ -90,7 +90,7 @@ namespace BusinessLogic
                     throw new AdministratorDoesntHaveSanctionException();
             }
             else
-                throw new WasntActivatedByAdminstratorException();
+                throw new WasntActivatedByAdministratorException();
         }
 
         public void RemoveCountry(LoginToken<Administrator> token, Country country)
@@ -103,7 +103,7 @@ namespace BusinessLogic
                     throw new AdministratorDoesntHaveSanctionException();
             }
             else
-                throw new WasntActivatedByAdminstratorException();
+                throw new WasntActivatedByAdministratorException();
         }
 
         public void RemoveCustomer(LoginToken<Administrator> token, Customer customer)
@@ -116,7 +116,7 @@ namespace BusinessLogic
                     throw new AdministratorDoesntHaveSanctionException();
             }
             else
-                throw new WasntActivatedByAdminstratorException();
+                throw new WasntActivatedByAdministratorException();
         }
 
         public void UpdateAdmin(LoginToken<Administrator> token, Administrator admin)
@@ -129,7 +129,7 @@ namespace BusinessLogic
                     throw new AdministratorDoesntHaveSanctionException();
             }
             else
-                throw new WasntActivatedByAdminstratorException();
+                throw new WasntActivatedByAdministratorException();
         }
 
         public void UpdateAirlineDetails(LoginToken<Administrator> token, AirlineCompany airline)
@@ -137,7 +137,7 @@ namespace BusinessLogic
             if (token != null)
                 _airlineDAO.Update(airline);
             else
-                throw new WasntActivatedByAdminstratorException();
+                throw new WasntActivatedByAdministratorException();
         }
 
         public void UpdateCountry(LoginToken<Administrator> token, Country country)
@@ -150,7 +150,7 @@ namespace BusinessLogic
                     throw new AdministratorDoesntHaveSanctionException();
             }
             else
-                throw new WasntActivatedByAdminstratorException();
+                throw new WasntActivatedByAdministratorException();
         }
 
         public void UpdateCustomerDetails(LoginToken<Administrator> token, Customer customer)
@@ -158,7 +158,7 @@ namespace BusinessLogic
             if (token != null)
                 _customerDAO.Update(customer);
             else
-                throw new WasntActivatedByAdminstratorException();
+                throw new WasntActivatedByAdministratorException();
         }
     }
 }
