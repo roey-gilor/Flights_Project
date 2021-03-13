@@ -10,5 +10,6 @@ namespace BusinessLogic
         IList<Flight> GetAllMyFlights(LoginToken<Customer> token);
         Ticket PurchaseTicket(LoginToken<Customer> token, Flight flight);
         void CancelTicket(LoginToken<Customer> token, Ticket ticket);
+        void ChangeMyPassword(LoginToken<Customer> token, string oldPassword, string newPassword);
     }
 }
