@@ -6,5 +6,6 @@ namespace DAO
 {
     public interface IUserDAO : IBasicDB<User>
     {
+        User GetUserByUserName(string userName);
     }
 }

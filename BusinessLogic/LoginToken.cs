@@ -5,7 +5,7 @@ using System.Text;
 
 namespace BusinessLogic
 {
-    public class LoginToken<T> where T: IUser
+    public class LoginToken<T>: ILoginToken where T: IUser
     {
         public T User { get; set; }
     }

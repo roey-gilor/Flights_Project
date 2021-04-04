@@ -133,5 +133,13 @@ namespace DAO
                 new NpgsqlParameter("_user_role", t.User_Role)
             });
         }
+
+        public User GetUserByUserName(string userName)
+        {
+            return GetUsers(Properties.Resources.Connection_String, "sp_get_user_by_username", new NpgsqlParameter[]
+                {
+                   new NpgsqlParameter("_user_name", userName)
+                })[0];
+        }
     }
 }
