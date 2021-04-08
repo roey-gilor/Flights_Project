@@ -1,0 +1,7 @@
+{
+  "Website": {
+    "ConnectionString": "Host=localhost;Username=postgres;Password=admin;Database=flights management",
+    "AppName": "Postgresql",
+    "Version": 2.5
+  }
+}

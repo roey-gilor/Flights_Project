@@ -12,13 +12,14 @@ namespace BusinessLogic
         IAdminDAO _adminDAO;
         IUserDAO _userDAO;
 
-        public bool TryLogin(out ILoginToken loginToken, string userName, string password)
+        public bool TryLogin(out FacadeBase facade, out ILoginToken loginToken, string userName, string password)
         {
             if (userName == "admin")
             {
                 if (password == "9999")
                 {
                     loginToken = new LoginToken<Administrator>();
+                    facade = new LoggedInAdministratorFacade();
                     return true;
                 }
                 else
@@ -29,12 +30,34 @@ namespace BusinessLogic
             {
                 if (user.Password == password)
                 {
-                    loginToken = new LoginToken<Administrator>();
+                    switch (user.User_Role)
+                    {
+                        case 1:
+                            {
+                                loginToken = new LoginToken<Administrator>();
+                                facade = new LoggedInAdministratorFacade();
+                                break;
+                            }
+                        case 2:
+                            {
+                                loginToken = new LoginToken<AirlineCompany>();
+                                facade = new LoggedInAirlineFacade();
+                                break;
+                            }
+                        default:
+                            {
+                                loginToken = new LoginToken<Customer>();
+                                facade = new LoggedInCustomerFacade();
+                                break;
+                            }
+                    }
                     return true;
                 }
+                else
+                    throw new WrongCredentialsException("One or more of the details are wrong");
             }
-            loginToken = null;
-            return true;
+            else
+                throw new WrongCredentialsException("One or more of the details are wrong");
         }
     }
 }

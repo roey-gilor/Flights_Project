@@ -103,7 +103,7 @@ namespace DAO
 
         public User Get(long id)
         {
-            return GetUsers(Properties.Resources.Connection_String, "sp_get_user_by_id", new NpgsqlParameter[]
+            return GetUsers(AppConfig.Instance.ConnectionString, "sp_get_user_by_id", new NpgsqlParameter[]
             {
                 new NpgsqlParameter("_id" ,id)
             })[0];
