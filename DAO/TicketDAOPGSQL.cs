@@ -94,7 +94,7 @@ namespace DAO
         }
         public void Add(Ticket t)
         {
-            RunSpNonExecute(Properties.Resources.Connection_String, "sp_add_ticket", new NpgsqlParameter[]
+            RunSpNonExecute(AppConfig.Instance.ConnectionString, "sp_add_ticket", new NpgsqlParameter[]
             {
                 new NpgsqlParameter("_flight_id" ,t.Flight_Id),
                 new NpgsqlParameter("_customer_id" ,t.Customer_Id)
@@ -103,7 +103,7 @@ namespace DAO
 
         public Ticket Get(long id)
         {
-            return GetTickets(Properties.Resources.Connection_String, "sp_get_ticket_by_id", new NpgsqlParameter[]
+            return GetTickets(AppConfig.Instance.ConnectionString, "sp_get_ticket_by_id", new NpgsqlParameter[]
             {
                 new NpgsqlParameter("_id" ,id)
             })[0];
@@ -111,12 +111,12 @@ namespace DAO
 
         public IList<Ticket> GetAll()
         {
-            return GetTickets(Properties.Resources.Connection_String, "sp_get_all_tickets", new NpgsqlParameter[] { });
+            return GetTickets(AppConfig.Instance.ConnectionString, "sp_get_all_tickets", new NpgsqlParameter[] { });
         }
 
         public void Remove(Ticket t)
         {
-            RunSpNonExecute(Properties.Resources.Connection_String, "sp_remove_ticket", new NpgsqlParameter[]
+            RunSpNonExecute(AppConfig.Instance.ConnectionString, "sp_remove_ticket", new NpgsqlParameter[]
             {
                 new NpgsqlParameter("_id" ,t.Id)
             });
@@ -124,7 +124,7 @@ namespace DAO
 
         public void Update(Ticket t)
         {
-            RunSpNonExecute(Properties.Resources.Connection_String, "sp_update_ticket", new NpgsqlParameter[]
+            RunSpNonExecute(AppConfig.Instance.ConnectionString, "sp_update_ticket", new NpgsqlParameter[]
             {
                 new NpgsqlParameter("_id" ,t.Id),
                 new NpgsqlParameter("_flight_id", t.Flight_Id),

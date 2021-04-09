@@ -96,7 +96,7 @@ namespace DAO
         }
         public void Add(Flight t)
         {
-            RunSpNonExecute(Properties.Resources.Connection_String, "sp_add_flight", new NpgsqlParameter[]
+            RunSpNonExecute(AppConfig.Instance.ConnectionString, "sp_add_flight", new NpgsqlParameter[]
             {
                 new NpgsqlParameter("_airline_company_id" ,t.Airline_Company_Id),
                 new NpgsqlParameter("_origin_country_id" ,t.Origin_Country_Id),
@@ -109,7 +109,7 @@ namespace DAO
 
         public Flight Get(long id)
         {
-            return GetFlights(Properties.Resources.Connection_String, "sp_get_flight_by_id", new NpgsqlParameter[]
+            return GetFlights(AppConfig.Instance.ConnectionString, "sp_get_flight_by_id", new NpgsqlParameter[]
             {
                 new NpgsqlParameter("_id", id)
             })[0];
@@ -117,7 +117,7 @@ namespace DAO
 
         public IList<Flight> GetAll()
         {
-            return GetFlights(Properties.Resources.Connection_String, "sp_get_all_flights", new NpgsqlParameter[] { });
+            return GetFlights(AppConfig.Instance.ConnectionString, "sp_get_all_flights", new NpgsqlParameter[] { });
         }
 
         public Dictionary<Flight, int> GetAllFlightsVacancy()
@@ -125,7 +125,7 @@ namespace DAO
             Dictionary<Flight, int> flights_vacancy = new Dictionary<Flight, int>();
             try
             {
-                using (var conn = new NpgsqlConnection(Properties.Resources.Connection_String))
+                using (var conn = new NpgsqlConnection(AppConfig.Instance.ConnectionString))
                 {
                     conn.Open();
 
@@ -160,7 +160,7 @@ namespace DAO
 
         public IList<Flight> GetFlightsByCustomer(Customer customer)
         {
-            return GetFlights(Properties.Resources.Connection_String, "sp_get_flight_by_customer", new NpgsqlParameter[]
+            return GetFlights(AppConfig.Instance.ConnectionString, "sp_get_flight_by_customer", new NpgsqlParameter[]
             {
                 new NpgsqlParameter("_customer_id", customer.Id)
             });
@@ -168,7 +168,7 @@ namespace DAO
 
         public IList<Flight> GetFlightsByDepatrureDate(DateTime departureDate)
         {
-            return GetFlights(Properties.Resources.Connection_String, "sp_get_flights_by_departure_date", new NpgsqlParameter[]
+            return GetFlights(AppConfig.Instance.ConnectionString, "sp_get_flights_by_departure_date", new NpgsqlParameter[]
             {
                 new NpgsqlParameter("_departure_time", departureDate)
             });
@@ -176,7 +176,7 @@ namespace DAO
 
         public IList<Flight> GetFlightsByOriginCountry(int countryCode)
         {
-            return GetFlights(Properties.Resources.Connection_String, "sp_get_flights_by_origin_country", new NpgsqlParameter[]
+            return GetFlights(AppConfig.Instance.ConnectionString, "sp_get_flights_by_origin_country", new NpgsqlParameter[]
             {
                 new NpgsqlParameter("_country_code", countryCode)
             });
@@ -184,7 +184,7 @@ namespace DAO
 
         public IList<Flight> GetFlightsByDestinationCountry(int countryCode)
         {
-            return GetFlights(Properties.Resources.Connection_String, "sp_get_flights_by_destination_country", new NpgsqlParameter[]
+            return GetFlights(AppConfig.Instance.ConnectionString, "sp_get_flights_by_destination_country", new NpgsqlParameter[]
             {
                 new NpgsqlParameter("_country_code", countryCode)
             });
@@ -192,7 +192,7 @@ namespace DAO
 
         public IList<Flight> GetFlightsByLandingDate(DateTime landingDate)
         {
-            return GetFlights(Properties.Resources.Connection_String, "sp_get_flights_by_landing_date", new NpgsqlParameter[]
+            return GetFlights(AppConfig.Instance.ConnectionString, "sp_get_flights_by_landing_date", new NpgsqlParameter[]
             {
                 new NpgsqlParameter("_landing_time", landingDate)
             });
@@ -200,7 +200,7 @@ namespace DAO
 
         public void Remove(Flight t)
         {
-            RunSpNonExecute(Properties.Resources.Connection_String, "sp_remove_flight", new NpgsqlParameter[]
+            RunSpNonExecute(AppConfig.Instance.ConnectionString, "sp_remove_flight", new NpgsqlParameter[]
             {
                 new NpgsqlParameter("_id" ,t.Id)
             });
@@ -208,7 +208,7 @@ namespace DAO
 
         public void Update(Flight t)
         {
-            RunSpNonExecute(Properties.Resources.Connection_String, "sp_update_flight", new NpgsqlParameter[]
+            RunSpNonExecute(AppConfig.Instance.ConnectionString, "sp_update_flight", new NpgsqlParameter[]
             {
                 new NpgsqlParameter("_id" ,t.Id),
                 new NpgsqlParameter("_airline_company_id" ,t.Airline_Company_Id),

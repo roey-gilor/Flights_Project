@@ -96,7 +96,7 @@ namespace DAO
         }
         public void Add(Customer t)
         {
-            RunSpNonExecute(Properties.Resources.Connection_String, "sp_add_customer", new NpgsqlParameter[]
+            RunSpNonExecute(AppConfig.Instance.ConnectionString, "sp_add_customer", new NpgsqlParameter[]
             {
                 new NpgsqlParameter("_first_name" ,t.First_Name),
                 new NpgsqlParameter("_last_name" ,t.Last_Name),
@@ -109,7 +109,7 @@ namespace DAO
 
         public Customer Get(long id)
         {
-            return GetCustomers(Properties.Resources.Connection_String, "sp_get_customer_by_id", new NpgsqlParameter[]
+            return GetCustomers(AppConfig.Instance.ConnectionString, "sp_get_customer_by_id", new NpgsqlParameter[]
             {
                 new NpgsqlParameter("_id" ,id)
             })[0];
@@ -117,12 +117,12 @@ namespace DAO
 
         public IList<Customer> GetAll()
         {
-            return GetCustomers(Properties.Resources.Connection_String, "sp_Get_All_Customers", new NpgsqlParameter[] { });
+            return GetCustomers(AppConfig.Instance.ConnectionString, "sp_Get_All_Customers", new NpgsqlParameter[] { });
         }
 
         public Customer GetCustomerByUserame(string name)
         {
-            return GetCustomers(Properties.Resources.Connection_String, "sp_get_customer_by_user_name", new NpgsqlParameter[]
+            return GetCustomers(AppConfig.Instance.ConnectionString, "sp_get_customer_by_user_name", new NpgsqlParameter[]
             {
                 new NpgsqlParameter("_user_name" ,name)
             })[0];
@@ -130,7 +130,7 @@ namespace DAO
 
         public void Remove(Customer t)
         {
-            RunSpNonExecute(Properties.Resources.Connection_String, "sp_remove_customer", new NpgsqlParameter[]
+            RunSpNonExecute(AppConfig.Instance.ConnectionString, "sp_remove_customer", new NpgsqlParameter[]
             {
                 new NpgsqlParameter("_id" ,t.Id)
             });
@@ -138,7 +138,7 @@ namespace DAO
 
         public void Update(Customer t)
         {
-            RunSpNonExecute(Properties.Resources.Connection_String, "sp_update_customer", new NpgsqlParameter[]
+            RunSpNonExecute(AppConfig.Instance.ConnectionString, "sp_update_customer", new NpgsqlParameter[]
             {
                 new NpgsqlParameter("_id" ,t.Id),
                 new NpgsqlParameter("_first_name" ,t.First_Name),

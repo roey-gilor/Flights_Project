@@ -93,7 +93,7 @@ namespace DAO
         }
         public void Add(AirlineCompany t)
         {
-            RunSpNonExecute(Properties.Resources.Connection_String, "sp_add_airline", new NpgsqlParameter[]
+            RunSpNonExecute(AppConfig.Instance.ConnectionString, "sp_add_airline", new NpgsqlParameter[]
             {
                 new NpgsqlParameter("_name" ,t.Name),
                 new NpgsqlParameter("_country_id",t.Country_Id),
@@ -103,7 +103,7 @@ namespace DAO
 
         public AirlineCompany Get(long id)
         {
-            return GetAirlineCompanies(Properties.Resources.Connection_String, "sp_get_airline_by_id", new NpgsqlParameter[]
+            return GetAirlineCompanies(AppConfig.Instance.ConnectionString, "sp_get_airline_by_id", new NpgsqlParameter[]
             {
                 new NpgsqlParameter("_id" ,id)
             })[0];
@@ -111,7 +111,7 @@ namespace DAO
 
         public AirlineCompany GetAirlineByUserame(string name)
         {
-            return GetAirlineCompanies(Properties.Resources.Connection_String, "sp_get_airline_by_user_name", new NpgsqlParameter[]
+            return GetAirlineCompanies(AppConfig.Instance.ConnectionString, "sp_get_airline_by_user_name", new NpgsqlParameter[]
             {
                 new NpgsqlParameter("_user_name" ,name)
             })[0];
@@ -119,12 +119,12 @@ namespace DAO
 
         public IList<AirlineCompany> GetAll()
         {
-            return GetAirlineCompanies(Properties.Resources.Connection_String, "sp_get_all_airlines", new NpgsqlParameter[] { });
+            return GetAirlineCompanies(AppConfig.Instance.ConnectionString, "sp_get_all_airlines", new NpgsqlParameter[] { });
         }
 
         public IList<AirlineCompany> GetAllAirlinesByCountry(int countryId)
         {
-            return GetAirlineCompanies(Properties.Resources.Connection_String, "sp_get_airline_by_country", new NpgsqlParameter[]
+            return GetAirlineCompanies(AppConfig.Instance.ConnectionString, "sp_get_airline_by_country", new NpgsqlParameter[]
             {
                 new NpgsqlParameter("_country_id" ,countryId)
             });
@@ -132,7 +132,7 @@ namespace DAO
 
         public void Remove(AirlineCompany t)
         {
-            RunSpNonExecute(Properties.Resources.Connection_String, "sp_remove_airline", new NpgsqlParameter[]
+            RunSpNonExecute(AppConfig.Instance.ConnectionString, "sp_remove_airline", new NpgsqlParameter[]
             {
                 new NpgsqlParameter("_id" ,t.Id)
             });
@@ -140,7 +140,7 @@ namespace DAO
 
         public void Update(AirlineCompany t)
         {
-            RunSpNonExecute(Properties.Resources.Connection_String, "sp_update_airline", new NpgsqlParameter[]
+            RunSpNonExecute(AppConfig.Instance.ConnectionString, "sp_update_airline", new NpgsqlParameter[]
             {
                 new NpgsqlParameter("_id" ,t.Id),
                 new NpgsqlParameter("_name" ,t.Name),

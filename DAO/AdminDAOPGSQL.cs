@@ -94,7 +94,7 @@ namespace DAO
         }
         public void Add(Administrator t)
         {
-            RunSpNonExecute(Properties.Resources.Connection_String, "sp_add_admin", new NpgsqlParameter[]
+            RunSpNonExecute(AppConfig.Instance.ConnectionString, "sp_add_admin", new NpgsqlParameter[]
             {
                 new NpgsqlParameter("_first_name", t.First_Name),
                 new NpgsqlParameter("_last_name", t.Last_Name),
@@ -105,7 +105,7 @@ namespace DAO
 
         public Administrator Get(long id)
         {
-            return GetAdministrators(Properties.Resources.Connection_String, "sp_get_admin_by_id", new NpgsqlParameter[]
+            return GetAdministrators(AppConfig.Instance.ConnectionString, "sp_get_admin_by_id", new NpgsqlParameter[]
             {
                 new NpgsqlParameter("_id" ,id)
             })[0];
@@ -113,12 +113,12 @@ namespace DAO
 
         public IList<Administrator> GetAll()
         {
-            return GetAdministrators(Properties.Resources.Connection_String, "sp_get_all_admins", new NpgsqlParameter[] { });
+            return GetAdministrators(AppConfig.Instance.ConnectionString, "sp_get_all_admins", new NpgsqlParameter[] { });
         }
 
         public void Remove(Administrator t)
         {
-            RunSpNonExecute(Properties.Resources.Connection_String, "sp_remove_admin", new NpgsqlParameter[]
+            RunSpNonExecute(AppConfig.Instance.ConnectionString, "sp_remove_admin", new NpgsqlParameter[]
             {
                 new NpgsqlParameter("_id" ,t.Id)
             });
@@ -126,7 +126,7 @@ namespace DAO
 
         public void Update(Administrator t)
         {
-            RunSpNonExecute(Properties.Resources.Connection_String, "sp_update_admin", new NpgsqlParameter[]
+            RunSpNonExecute(AppConfig.Instance.ConnectionString, "sp_update_admin", new NpgsqlParameter[]
             {
                 new NpgsqlParameter("_id" ,t.Id),
                 new NpgsqlParameter("_first_name", t.First_Name),

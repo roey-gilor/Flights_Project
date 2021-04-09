@@ -92,7 +92,7 @@ namespace DAO
         }
         public void Add(User t)
         {
-            RunSpNonExecute(Properties.Resources.Connection_String, "sp_add_user", new NpgsqlParameter[]
+            RunSpNonExecute(AppConfig.Instance.ConnectionString, "sp_add_user", new NpgsqlParameter[]
             {
                 new NpgsqlParameter("_user_name" ,t.User_Name),
                 new NpgsqlParameter("_password", t.Password),
@@ -111,12 +111,12 @@ namespace DAO
 
         public IList<User> GetAll()
         {
-            return GetUsers(Properties.Resources.Connection_String, "sp_get_all_users", new NpgsqlParameter[] { });
+            return GetUsers(AppConfig.Instance.ConnectionString, "sp_get_all_users", new NpgsqlParameter[] { });
         }
 
         public void Remove(User t)
         {
-            RunSpNonExecute(Properties.Resources.Connection_String, "sp_remove_user", new NpgsqlParameter[]
+            RunSpNonExecute(AppConfig.Instance.ConnectionString, "sp_remove_user", new NpgsqlParameter[]
             {
                 new NpgsqlParameter("_id" ,t.Id)
             });
@@ -124,7 +124,7 @@ namespace DAO
 
         public void Update(User t)
         {
-            RunSpNonExecute(Properties.Resources.Connection_String, "sp_update_user", new NpgsqlParameter[]
+            RunSpNonExecute(AppConfig.Instance.ConnectionString, "sp_update_user", new NpgsqlParameter[]
             {
                 new NpgsqlParameter("_id" ,t.Id),
                 new NpgsqlParameter("_user_name" ,t.User_Name),
@@ -136,7 +136,7 @@ namespace DAO
 
         public User GetUserByUserName(string userName)
         {
-            return GetUsers(Properties.Resources.Connection_String, "sp_get_user_by_username", new NpgsqlParameter[]
+            return GetUsers(AppConfig.Instance.ConnectionString, "sp_get_user_by_username", new NpgsqlParameter[]
                 {
                    new NpgsqlParameter("_user_name", userName)
                 })[0];

@@ -91,7 +91,7 @@ namespace DAO
         }
         public void Add(Country t)
         {
-            RunSpNonExecute(Properties.Resources.Connection_String, "sp_add_country", new NpgsqlParameter[]
+            RunSpNonExecute(AppConfig.Instance.ConnectionString, "sp_add_country", new NpgsqlParameter[]
             {
                 new NpgsqlParameter("_name" ,t.Name)
             });
@@ -99,7 +99,7 @@ namespace DAO
 
         public Country Get(long id)
         {
-            return GetCountries(Properties.Resources.Connection_String, "sp_get_country_by_id", new NpgsqlParameter[]
+            return GetCountries(AppConfig.Instance.ConnectionString, "sp_get_country_by_id", new NpgsqlParameter[]
             {
                 new NpgsqlParameter("_id" ,id)
             })[0];
@@ -107,12 +107,12 @@ namespace DAO
 
         public IList<Country> GetAll()
         {
-            return GetCountries(Properties.Resources.Connection_String, "sp_Get_All_Countries", new NpgsqlParameter[] { });
+            return GetCountries(AppConfig.Instance.ConnectionString, "sp_Get_All_Countries", new NpgsqlParameter[] { });
         }
 
         public void Remove(Country t)
         {
-            RunSpNonExecute(Properties.Resources.Connection_String, "sp_remove_country", new NpgsqlParameter[]
+            RunSpNonExecute(AppConfig.Instance.ConnectionString, "sp_remove_country", new NpgsqlParameter[]
             {
                 new NpgsqlParameter("_id" ,t.Id)
             });
@@ -120,7 +120,7 @@ namespace DAO
 
         public void Update(Country t)
         {
-            RunSpNonExecute(Properties.Resources.Connection_String, "sp_update_country", new NpgsqlParameter[]
+            RunSpNonExecute(AppConfig.Instance.ConnectionString, "sp_update_country", new NpgsqlParameter[]
             {
                 new NpgsqlParameter("_id" ,t.Id),
                 new NpgsqlParameter("_name", t.Name)
