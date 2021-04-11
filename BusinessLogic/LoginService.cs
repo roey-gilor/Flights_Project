@@ -5,7 +5,7 @@ using System.Text;
 
 namespace BusinessLogic
 {
-    class LoginService : ILoginService
+    public class LoginService : ILoginService
     {
         IAirlineDAO _airlineDAO;
         ICustomerDAO _customerDAO;
