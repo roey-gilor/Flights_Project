@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using DAO;
 
 namespace BusinessLogic
 {
@@ -28,7 +29,19 @@ namespace BusinessLogic
         }
         private FlightCenterSystem()
         {
-            Thread thread;
+            //AutoResetEvent auto = new AutoResetEvent(false);
+            //Thread thread = new Thread(() =>
+            //{
+            //    while (true)
+            //    {
+            //        if (DateTime.Now.TimeOfDay == AppConfig.Instance.WakingUpTime.TimeOfDay)
+            //        {
+
+            //        }
+            //    }
+            //});
+            //thread.IsBackground = true;
+            //thread.Start();
             
         }
         public FacadeBase GetFacade(out ILoginToken loginToken, string username, string password)
@@ -43,23 +56,6 @@ namespace BusinessLogic
             {
                 throw;
             }
-        }
-        private TimeSpan DelayTime()
-        {
-            var DailyTime = "16:00:00";
-            var timeParts = DailyTime.Split(new char[1] { ':' });
-            var dateNow = DateTime.Now;
-            var date = new DateTime(dateNow.Year, dateNow.Month, dateNow.Day,
-            int.Parse(timeParts[0]), int.Parse(timeParts[1]), int.Parse(timeParts[2]));
-            TimeSpan ts;
-            if (date == dateNow)
-                ts = date - dateNow;
-            else
-            {
-                date.AddDays(1);
-                ts = date - dateNow;
-            }
-            return ts;
-        }
+        }        
     }
 }

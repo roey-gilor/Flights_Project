@@ -12,10 +12,11 @@ namespace DAO
         private string m_file_name;
         private JObject m_configRoot;
 
-        internal static readonly AppConfig Instance = new AppConfig();
-        public string ConnectionString { get; set; }
-        public string AppName { get; set; }
-        public float Version { get; set; }
+        public static readonly AppConfig Instance = new AppConfig();
+        public string ConnectionString { get; private set; }
+        public string AppName { get; private set; }
+        public float Version { get; private set; }
+        public DateTime WakingUpTime { get; private set; }
         private AppConfig()
         {
             Init();
@@ -38,6 +39,7 @@ namespace DAO
             ConnectionString = m_configRoot["ConnectionString"].Value<string>();
             AppName = m_configRoot["AppName"].Value<string>();
             Version = m_configRoot["Version"].Value<float>();
+            WakingUpTime = m_configRoot["WakingUpTime"].Value<DateTime>();
         }
     }
 }
