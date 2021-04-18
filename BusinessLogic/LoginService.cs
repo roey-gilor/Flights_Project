@@ -7,6 +7,7 @@ namespace BusinessLogic
 {
     public class LoginService : ILoginService
     {
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         IAirlineDAO _airlineDAO;
         ICustomerDAO _customerDAO;
         IAdminDAO _adminDAO;

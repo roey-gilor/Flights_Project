@@ -7,6 +7,7 @@ namespace BusinessLogic
 {
     public class LoggedInAdministratorFacade : AnonymousUserFacade, ILoggedInAdministratorFacade
     {
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         public void CreateAdmin(LoginToken<Administrator> token, Administrator admin)
         {
             if (token != null)

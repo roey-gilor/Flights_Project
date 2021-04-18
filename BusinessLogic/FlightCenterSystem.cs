@@ -9,6 +9,7 @@ namespace BusinessLogic
 {
     public class FlightCenterSystem
     {
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         private static FlightCenterSystem m_Instance;
         static object key = new object();
         static LoginService loginService = new LoginService();

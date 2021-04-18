@@ -7,6 +7,7 @@ namespace BusinessLogic
 {
     public class LoggedInCustomerFacade : AnonymousUserFacade, ILoggedInCustomerFacade
     {
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         public void CancelTicket(LoginToken<Customer> token, Ticket ticket)
         {
             if (token != null)

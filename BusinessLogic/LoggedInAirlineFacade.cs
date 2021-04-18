@@ -7,6 +7,7 @@ namespace BusinessLogic
 {
     public class LoggedInAirlineFacade : AnonymousUserFacade, ILoggedInAirlineFacade
     {
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         public void CancelFlight(LoginToken<AirlineCompany> token, Flight flight)
         {
             if (token != null)

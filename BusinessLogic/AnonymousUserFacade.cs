@@ -7,6 +7,7 @@ namespace BusinessLogic
 {
     public class AnonymousUserFacade : FacadeBase, IAnonymousUserFacade
     {
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         public IList<AirlineCompany> GetAllAirlineCompanies()
         {
             return _airlineDAO.GetAll();

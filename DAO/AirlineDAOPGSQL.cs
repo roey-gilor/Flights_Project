@@ -7,6 +7,7 @@ namespace DAO
 {
     public class AirlineDAOPGSQL : IAirlineDAO
     {
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         UserDAOPGSQL user = new UserDAOPGSQL();
         public AirlineDAOPGSQL()
         {
