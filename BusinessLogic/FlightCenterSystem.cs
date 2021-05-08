@@ -17,15 +17,24 @@ namespace BusinessLogic
         {
             get
             {
-                if (m_Instance == null)
+                try
                 {
-                    lock (key)
+                    if (m_Instance == null)
                     {
-                        if (m_Instance == null)
-                            m_Instance = new FlightCenterSystem();
+                        lock (key)
+                        {
+                            if (m_Instance == null)
+                                m_Instance = new FlightCenterSystem();
+                        }
                     }
+                    log.Info("Someone has connected to the system");
+                    return m_Instance;
                 }
-                return m_Instance;
+                catch (Exception ex)
+                {
+                    log.Fatal($"Could not connect in to the system: {ex.Message}");
+                    throw new Exception($"Could not connect in to the system: {ex.Message}");
+                }
             }
         }
         private FlightCenterSystem()
@@ -36,22 +45,30 @@ namespace BusinessLogic
                 TicketDAOPGSQL ticketDAOPGSQL = new TicketDAOPGSQL();
                 while (true)
                 {
-                    if (DateTime.Now.TimeOfDay == AppConfig.Instance.WakingUpTime.TimeOfDay)
+                    try
                     {
-                        DateTime date = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day,
-                            DateTime.Now.Hour - 3, DateTime.Now.Minute, DateTime.Now.Second);
-                        IList<Flight> flights = flightDAOPGSQL.GetOldFlights(date);
-                        foreach (Flight flight in flights)
+                        if (DateTime.Now.TimeOfDay == AppConfig.Instance.WakingUpTime.TimeOfDay)
                         {
-                            IList<Ticket> tickets = ticketDAOPGSQL.GetTicketsByFlight(flight);
-                            foreach (Ticket ticket in tickets)
+                            DateTime date = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day,
+                                DateTime.Now.Hour - 3, DateTime.Now.Minute, DateTime.Now.Second);
+                            IList<Flight> flights = flightDAOPGSQL.GetOldFlights(date);
+                            foreach (Flight flight in flights)
                             {
-                                ticketDAOPGSQL.Add_To_Tickets_History(ticket);
-                                ticketDAOPGSQL.Remove(ticket);
+                                IList<Ticket> tickets = ticketDAOPGSQL.GetTicketsByFlight(flight);
+                                foreach (Ticket ticket in tickets)
+                                {
+                                    ticketDAOPGSQL.Add_To_Tickets_History(ticket);
+                                    ticketDAOPGSQL.Remove(ticket);
+                                }
+                                flightDAOPGSQL.Add_to_flights_history(flight);
+                                flightDAOPGSQL.Remove(flight);
                             }
-                            flightDAOPGSQL.Add_to_flights_history(flight);
-                            flightDAOPGSQL.Remove(flight);
+                            log.Info($"Old flights and ticket were transformed to archive at {DateTime.Now.Date}");
                         }
+                    }
+                    catch (Exception ex)
+                    {
+                        log.Error($"Could not transform old tickets and flights to the archive: {ex.Message}");
                     }
                 }
             });
@@ -66,9 +83,9 @@ namespace BusinessLogic
                 bool res = loginService.TryLogin(out facade, out loginToken, username, password);
                 return facade;
             }
-            catch (WrongCredentialsException ex)
+            catch (Exception ex) 
             {
-                throw new WrongCredentialsException("One or more of the details are wrong");
+                throw new Exception($"{ex.Message}");
             }
         }        
     }

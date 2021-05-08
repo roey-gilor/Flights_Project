@@ -21,10 +21,14 @@ namespace BusinessLogic
                 {
                     loginToken = new LoginToken<Administrator>();
                     facade = new LoggedInAdministratorFacade();
+                    log.Info("Super Administrator has logged in to the system");
                     return true;
                 }
                 else
-                    throw new WrongCredentialsException("One or more of the details are wrong");
+                {
+                    log.Error("One or more of the super admin details are wrong");
+                    throw new WrongCredentialsException("One or more of the super admin details are wrong");
+                }
             }
             User user = _userDAO.GetUserByUserName(userName);
             if (user != null)
@@ -52,13 +56,20 @@ namespace BusinessLogic
                                 break;
                             }
                     }
+                    log.Info($"User {userName} has logged in to the system");
                     return true;
                 }
                 else
-                    throw new WrongCredentialsException("One or more of the details are wrong");
+                {
+                    log.Error($"One or more of the user {userName} details are wrong");
+                    throw new WrongCredentialsException($"One or more of the user {userName} details are wrong");
+                }
             }
             else
-                throw new WrongCredentialsException("One or more of the details are wrong");
+            {
+                log.Error("An unknown user tried to Enter the system");
+                throw new WasntActivatedByUserException("An unknown user tried to Enter the system");
+            }
         }
     }
 }

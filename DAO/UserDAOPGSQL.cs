@@ -38,10 +38,9 @@ namespace DAO
         }
         private void RunSpNonExecute(string conn_string, string sp_name, NpgsqlParameter[] parameters)
         {
-            string comand = GetCommand(sp_name, parameters);
-
             try
             {
+                string comand = GetCommand(sp_name, parameters);
                 using (var conn = new NpgsqlConnection(conn_string))
                 {
                     conn.Open();
@@ -53,7 +52,7 @@ namespace DAO
             }
             catch (Exception ex)
             {
-                Console.WriteLine("cant run sp." + ex.Message);
+                log.Error($"Could not run {sp_name} procedure: {ex.Message}");
             }
         }
         private List<User> GetUsers(string conn_string, string sp_name, NpgsqlParameter[] parameters)
@@ -87,7 +86,7 @@ namespace DAO
             }
             catch (Exception ex)
             {
-                Console.WriteLine("cant run sp." + ex.Message);
+                log.Error($"Could not run {sp_name} procedure: {ex.Message}");
             }
             return users;
         }

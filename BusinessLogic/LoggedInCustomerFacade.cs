@@ -15,9 +15,13 @@ namespace BusinessLogic
                 _ticketDAO.Remove(ticket);
                 ticket.Flight.Remaining_Tickets++;
                 _flightDAO.Update(ticket.Flight);
+                log.Info($"Customer {token.User.Id} {token.User.First_Name} {token.User.Last_Name} bought a ticket");
             }
             else
-                throw new WasntActivatedByCustomerException();
+            {
+                log.Error("An unknown user tried to buy a ticket");
+                throw new WasntActivatedByCustomerException("An unknown user tried to buy a ticket");
+            }
         }
 
         public void ChangeMyPassword(LoginToken<Customer> token, string oldPassword, string newPassword)
@@ -25,20 +29,33 @@ namespace BusinessLogic
             if (token != null)
             {
                 if (token.User.User.Password != oldPassword)
-                    throw new WrongCredentialsException();
+                {
+                    log.Error($"Discrepancies between {token.User.Id} {token.User.First_Name} {token.User.Last_Name} old password to the password that saved in the system");
+                    throw new WrongCredentialsException($"Discrepancies between {token.User.Id} {token.User.First_Name} {token.User.Last_Name} old password to the password that saved in the system");
+                }
                 token.User.User.Password = newPassword;
                 _userDAO.Update(token.User.User);
+                log.Info($"Customer {token.User.Id} {token.User.First_Name} {token.User.Last_Name} changed password");
             }
             else
-                throw new WasntActivatedByCustomerException();
+            {
+                log.Error("An unknown user tried to change password");
+                throw new WasntActivatedByCustomerException("An unknown user tried to change password");
+            }
         }
 
         public IList<Flight> GetAllMyFlights(LoginToken<Customer> token)
         {
             if (token != null)
+            {
+                log.Info($"Customer {token.User.Id} {token.User.First_Name} {token.User.Last_Name} Got his flights");
                 return _flightDAO.GetFlightsByCustomer(token.User);
+            }
             else
-                throw new WasntActivatedByCustomerException();
+            {
+                log.Error("An unknown user tried to Get all system flights");
+                throw new WasntActivatedByCustomerException("An unknown user tried to Get all system flights");
+            }
         }
 
         public Ticket PurchaseTicket(LoginToken<Customer> token, Flight flight)
@@ -50,7 +67,10 @@ namespace BusinessLogic
                     if (ticket.Flight_Id == flight.Id)
                     {
                         if (ticket.Customer_Id == token.User.Id)
-                            throw new CustomerAlreadyBoughtTicketException();
+                        {
+                            log.Error($"Customer {token.User.Id} {token.User.First_Name} {token.User.Last_Name} tried to buy a ticket to the flight twice");
+                            throw new CustomerAlreadyBoughtTicketException($"Customer {token.User.Id} {token.User.First_Name} {token.User.Last_Name} tried to buy a ticket to the flight twice");
+                        }
                     }
                 }
 
@@ -60,13 +80,20 @@ namespace BusinessLogic
                     _ticketDAO.Add(ticket);
                     flight.Remaining_Tickets--;
                     _flightDAO.Update(flight);
+                    log.Info($"Customer {token.User.Id} {token.User.First_Name} {token.User.Last_Name} bought a ticket");
                     return ticket;
                 }
                 else
-                    throw new OutOfTicketsExecption();
+                {
+                    log.Error($"There are not any left tickets for flight {flight.Id}");
+                    throw new OutOfTicketsExecption($"There are not any left tickets for flight {flight.Id}");
+                }
             }
             else
-                throw new WasntActivatedByCustomerException();
+            {
+                log.Error("An unknown user tried to buy a ticket");
+                throw new WasntActivatedByCustomerException("An unknown user tried to buy a ticket");
+            }
         }
     }
 }
