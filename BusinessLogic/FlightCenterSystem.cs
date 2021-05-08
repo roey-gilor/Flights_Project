@@ -40,7 +40,8 @@ namespace BusinessLogic
                     {
                         DateTime date = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day,
                             DateTime.Now.Hour - 3, DateTime.Now.Minute, DateTime.Now.Second);
-                        foreach (Flight flight in flightDAOPGSQL.GetOldFlights(date))
+                        IList<Flight> flights = flightDAOPGSQL.GetOldFlights(date);
+                        foreach (Flight flight in flights)
                         {
                             foreach (Ticket ticket in ticketDAOPGSQL.GetTicketsByFlight(flight))
                             {
