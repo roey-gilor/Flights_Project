@@ -43,7 +43,8 @@ namespace BusinessLogic
                         IList<Flight> flights = flightDAOPGSQL.GetOldFlights(date);
                         foreach (Flight flight in flights)
                         {
-                            foreach (Ticket ticket in ticketDAOPGSQL.GetTicketsByFlight(flight))
+                            IList<Ticket> tickets = ticketDAOPGSQL.GetTicketsByFlight(flight);
+                            foreach (Ticket ticket in tickets)
                             {
                                 ticketDAOPGSQL.Add_To_Tickets_History(ticket);
                                 ticketDAOPGSQL.Remove(ticket);
