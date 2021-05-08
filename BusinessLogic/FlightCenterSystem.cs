@@ -30,20 +30,31 @@ namespace BusinessLogic
         }
         private FlightCenterSystem()
         {
-            //AutoResetEvent auto = new AutoResetEvent(false);
-            //Thread thread = new Thread(() =>
-            //{
-            //    while (true)
-            //    {
-            //        if (DateTime.Now.TimeOfDay == AppConfig.Instance.WakingUpTime.TimeOfDay)
-            //        {
+            Thread thread = new Thread(() =>
+            {
+                FlightDAOPGSQL flightDAOPGSQL = new FlightDAOPGSQL();
+                TicketDAOPGSQL ticketDAOPGSQL = new TicketDAOPGSQL();
+                while (true)
+                {
+                    if (DateTime.Now.TimeOfDay == AppConfig.Instance.WakingUpTime.TimeOfDay)
+                    {
+                        DateTime date = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day,
+                            DateTime.Now.Hour - 3, DateTime.Now.Minute, DateTime.Now.Second);
+                        foreach (Flight flight in flightDAOPGSQL.GetOldFlights(date))
+                        {
+                            foreach (Ticket ticket in ticketDAOPGSQL.GetTicketsByFlight(flight))
+                            {
+                                ticketDAOPGSQL.Add_To_Tickets_History(ticket);
+                                ticketDAOPGSQL.Remove(ticket);
+                            }
+                            flightDAOPGSQL.Add_to_flights_history(flight);
+                            flightDAOPGSQL.Remove(flight);
+                        }
+                    }
+                }
+            });
+            thread.Start();
 
-            //        }
-            //    }
-            //});
-            //thread.IsBackground = true;
-            //thread.Start();
-            
         }
         public FacadeBase GetFacade(out ILoginToken loginToken, string username, string password)
         {
@@ -55,7 +66,7 @@ namespace BusinessLogic
             }
             catch (WrongCredentialsException ex)
             {
-                throw;
+                throw new WrongCredentialsException("One or more of the details are wrong");
             }
         }        
     }

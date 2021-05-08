@@ -132,5 +132,23 @@ namespace DAO
                 new NpgsqlParameter("_customer_id" ,t.Customer_Id)
             });
         }
+
+        public void Add_To_Tickets_History(Ticket ticket)
+        {
+            RunSpNonExecute(AppConfig.Instance.ConnectionString, "sp_add_ticket_into_tickets_history", new NpgsqlParameter[]
+           {
+               new NpgsqlParameter("_ticket_id", ticket.Id),
+               new NpgsqlParameter("_flight_id" ,ticket.Flight_Id),
+               new NpgsqlParameter("_customer_id" ,ticket.Customer_Id)
+           });
+        }
+
+        public IList<Ticket> GetTicketsByFlight(Flight flight)
+        {
+            return GetTickets(AppConfig.Instance.ConnectionString, "sp_get_tickets_by_flight", new NpgsqlParameter[]
+            {
+                new NpgsqlParameter("_flight_id" ,flight.Id)
+            });
+        }
     }
 }

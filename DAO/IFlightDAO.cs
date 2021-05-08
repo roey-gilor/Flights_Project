@@ -12,5 +12,7 @@ namespace DAO
         IList<Flight> GetFlightsByDepatrureDate(DateTime departureDate);
         IList<Flight> GetFlightsByLandingDate(DateTime landingDate);
         IList<Flight> GetFlightsByCustomer(Customer customer);
+        IList<Flight> GetOldFlights(DateTime landingDate);
+        void Add_to_flights_history(Flight flight);
     }
 }

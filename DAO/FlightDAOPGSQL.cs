@@ -220,5 +220,27 @@ namespace DAO
                 new NpgsqlParameter("_remaining_tickets" ,t.Remaining_Tickets),
             });
         }
+
+        public IList<Flight> GetOldFlights(DateTime landingDate)
+        {
+            return GetFlights(AppConfig.Instance.ConnectionString, "sp_get_flights_before_datetime", new NpgsqlParameter[]
+            {
+                new NpgsqlParameter("_landing_time", landingDate)
+            });
+        }
+
+        public void Add_to_flights_history(Flight flight)
+        {
+            RunSpNonExecute(AppConfig.Instance.ConnectionString, "sp_add_flight_into_flights_history", new NpgsqlParameter[]
+            {
+                new NpgsqlParameter("_flight_id",flight.Id),
+                new NpgsqlParameter("_airline_company_id" ,flight.Airline_Company_Id),
+                new NpgsqlParameter("_origin_country_id" ,flight.Origin_Country_Id),
+                new NpgsqlParameter("_destination_country_id" ,flight.Destination_Country_Id),
+                new NpgsqlParameter("_departure_time" ,flight.Departure_Time),
+                new NpgsqlParameter("_landing_time" ,flight.Landing_Time),
+                new NpgsqlParameter("_remaining_tickets" ,flight.Remaining_Tickets),
+            });
+        }
     }
 }
