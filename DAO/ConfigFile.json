@@ -1,6 +1,6 @@
 {
   "Website": {
-    "ConnectionString": "Host=localhost;Username=postgres;Password=admin;Database=flights management",
+    "ConnectionString": "Host=localhost;Username=postgres;Password=admin;Database=flight_copy",
     "AppName": "Postgresql",
     "Version": 2.5,
     "WakingUpTime": "23:30:00"
