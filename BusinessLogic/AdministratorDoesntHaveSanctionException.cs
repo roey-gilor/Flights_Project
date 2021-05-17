@@ -4,7 +4,7 @@ using System.Runtime.Serialization;
 namespace BusinessLogic
 {
     [Serializable]
-    internal class AdministratorDoesntHaveSanctionException : Exception
+    public class AdministratorDoesntHaveSanctionException : Exception
     {
         public AdministratorDoesntHaveSanctionException()
         {

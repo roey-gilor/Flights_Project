@@ -82,9 +82,9 @@ namespace BusinessLogic
                 bool res = loginService.TryLogin(out loginToken, username, password);
                 return res;
             }
-            catch (Exception ex) 
+            catch (WrongCredentialsException ex) 
             {
-                throw new Exception($"{ex.Message}");
+                throw new WrongCredentialsException($"{ex.Message}");
             }
         }
         public FacadeBase GetFacade<T>(LoginToken<T> token) where T : IUser

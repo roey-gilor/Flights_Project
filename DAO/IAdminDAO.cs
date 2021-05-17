@@ -6,5 +6,6 @@ namespace DAO
 {
     public interface IAdminDAO : IBasicDB<Administrator>
     {
+        Administrator GetAdminByUserId(long id);
     }
 }

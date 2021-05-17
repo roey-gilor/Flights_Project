@@ -135,5 +135,13 @@ namespace DAO
                 new NpgsqlParameter("_user_id", t.User_Id)
             });
         }
+
+        public Administrator GetAdminByUserId(long id)
+        {
+            return GetAdministrators(AppConfig.Instance.ConnectionString, "sp_get_admin_by_user_id", new NpgsqlParameter[]
+            {
+                new NpgsqlParameter("_userid" ,id)
+            })[0];
+        }
     }
 }

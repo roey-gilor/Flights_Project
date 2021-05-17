@@ -170,6 +170,22 @@ $$;
 ALTER FUNCTION public.sp_get_admin_by_id(_id bigint) OWNER TO postgres;
 
 --
+-- Name: sp_get_admin_by_user_id(bigint); Type: FUNCTION; Schema: public; Owner: postgres
+--
+
+CREATE FUNCTION public.sp_get_admin_by_user_id(_userid bigint) RETURNS TABLE(id bigint, first_name text, last_name text, level integer, user_id bigint)
+    LANGUAGE plpgsql
+    AS $$
+   begin
+	   return query
+	   select * from administrators where administrators.user_id=_userId;
+   end;
+$$;
+
+
+ALTER FUNCTION public.sp_get_admin_by_user_id(_userid bigint) OWNER TO postgres;
+
+--
 -- Name: sp_get_airline_by_country(bigint); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -200,6 +216,22 @@ $$;
 
 
 ALTER FUNCTION public.sp_get_airline_by_id(_id bigint) OWNER TO postgres;
+
+--
+-- Name: sp_get_airline_by_user_id(bigint); Type: FUNCTION; Schema: public; Owner: postgres
+--
+
+CREATE FUNCTION public.sp_get_airline_by_user_id(_userid bigint) RETURNS TABLE(id bigint, name text, country_id bigint, user_id bigint)
+    LANGUAGE plpgsql
+    AS $$
+     begin
+	     return query
+	     select * from airline_companies where airline_companies.user_id=_userId;
+     end;
+$$;
+
+
+ALTER FUNCTION public.sp_get_airline_by_user_id(_userid bigint) OWNER TO postgres;
 
 --
 -- Name: sp_get_airline_by_user_name(text); Type: FUNCTION; Schema: public; Owner: postgres
@@ -376,6 +408,22 @@ $$;
 
 
 ALTER FUNCTION public.sp_get_customer_by_id(_id bigint) OWNER TO postgres;
+
+--
+-- Name: sp_get_customer_by_user_id(bigint); Type: FUNCTION; Schema: public; Owner: postgres
+--
+
+CREATE FUNCTION public.sp_get_customer_by_user_id(_userid bigint) RETURNS TABLE(id bigint, first_name text, last_name text, address text, phone_no text, credit_card_no text, user_id bigint)
+    LANGUAGE plpgsql
+    AS $$
+    begin 
+	    return query
+	    select * from customers where customers.user_id=_id;
+    end;
+$$;
+
+
+ALTER FUNCTION public.sp_get_customer_by_user_id(_userid bigint) OWNER TO postgres;
 
 --
 -- Name: sp_get_customer_by_user_name(text); Type: FUNCTION; Schema: public; Owner: postgres

@@ -4,7 +4,7 @@ using System.Runtime.Serialization;
 namespace BusinessLogic
 {
     [Serializable]
-    internal class CustomerAlreadyBoughtTicketException : Exception
+    public class CustomerAlreadyBoughtTicketException : Exception
     {
         public CustomerAlreadyBoughtTicketException()
         {

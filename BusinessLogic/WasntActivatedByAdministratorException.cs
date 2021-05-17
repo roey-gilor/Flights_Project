@@ -4,7 +4,7 @@ using System.Runtime.Serialization;
 namespace BusinessLogic
 {
     [Serializable]
-    internal class WasntActivatedByAdministratorException : Exception
+    public class WasntActivatedByAdministratorException : Exception
     {
         public WasntActivatedByAdministratorException()
         {

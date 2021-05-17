@@ -87,6 +87,7 @@ namespace DAO
             catch (Exception ex)
             {
                 log.Error($"Could not run {sp_name} procedure: {ex.Message}");
+                throw new Exception($"{ex.Message}");
             }
             return users;
         }

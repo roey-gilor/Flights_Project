@@ -4,7 +4,7 @@ using System.Runtime.Serialization;
 namespace BusinessLogic
 {
     [Serializable]
-    internal class WasntActivatedByAirlineException : Exception
+    public class WasntActivatedByAirlineException : Exception
     {
         public WasntActivatedByAirlineException()
         {

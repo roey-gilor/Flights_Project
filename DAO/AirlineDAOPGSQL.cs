@@ -148,5 +148,13 @@ namespace DAO
                 new NpgsqlParameter("_user_id",t.User_Id)
             });
         }
+
+        public AirlineCompany GetAirlineByUserId(long id)
+        {
+            return GetAirlineCompanies(AppConfig.Instance.ConnectionString, "sp_get_airline_by_user_id", new NpgsqlParameter[]
+            {
+                new NpgsqlParameter("_userId" ,id)
+            })[0];
+        }
     }
 }

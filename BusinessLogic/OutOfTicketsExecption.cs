@@ -4,7 +4,7 @@ using System.Runtime.Serialization;
 namespace BusinessLogic
 {
     [Serializable]
-    internal class OutOfTicketsExecption : Exception
+    public class OutOfTicketsExecption : Exception
     {
         public OutOfTicketsExecption()
         {

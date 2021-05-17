@@ -22,7 +22,35 @@ namespace FlightProjectTest
             FlightCenterSystem.Instance.Login(out ILoginToken token, "admin", "9999");
             LoginToken<Administrator> loginToken = (LoginToken<Administrator>)token;
             LoggedInAdministratorFacade facade = (LoggedInAdministratorFacade)FlightCenterSystem.Instance.GetFacade(loginToken);
+            Assert.AreEqual(loginToken.User.Id, 0);
 
+        }
+        [TestMethod]
+        [ExpectedException(typeof(WrongCredentialsException))]
+        public void WrongdLoginMainAdmin_Test()
+        {
+            FlightCenterSystem.Instance.Login(out ILoginToken token, "admin", "9998");
+            LoginToken<Administrator> loginToken = (LoginToken<Administrator>)token;
+        }
+        [TestMethod]
+        public void TryLoginAdmin_Test()
+        {
+            FlightCenterSystem.Instance.Login(out ILoginToken token, "danny121121", "fdsaa23");
+            LoginToken<Administrator> loginToken = (LoginToken<Administrator>)token;
+            Assert.AreEqual(loginToken.User.Id, 3);
+        }
+        [TestMethod]
+        [ExpectedException(typeof(WrongCredentialsException))]
+        public void WrongLoginAdmin_Test()
+        {
+            FlightCenterSystem.Instance.Login(out ILoginToken token, "danny121121", "265");
+            LoginToken<Administrator> loginToken = (LoginToken<Administrator>)token;
+        }
+        [TestMethod]
+        [ExpectedException(typeof(WrongCredentialsException))]
+        public void UserNullException()
+        {
+            FlightCenterSystem.Instance.Login(out ILoginToken token, "danny1211021", "fdsaa23");
         }
     }
 }
