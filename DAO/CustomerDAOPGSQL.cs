@@ -154,7 +154,7 @@ namespace DAO
         {
             return GetCustomers(AppConfig.Instance.ConnectionString, "sp_get_customer_by_user_id", new NpgsqlParameter[]
             {
-                new NpgsqlParameter("_userId" ,id)
+                new NpgsqlParameter("_userid" ,id)
             })[0];
         }
     }

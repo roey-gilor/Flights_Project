@@ -418,7 +418,7 @@ CREATE FUNCTION public.sp_get_customer_by_user_id(_userid bigint) RETURNS TABLE(
     AS $$
     begin 
 	    return query
-	    select * from customers where customers.user_id=_id;
+	    select * from customers where customers.user_id=_userId;
     end;
 $$;
 

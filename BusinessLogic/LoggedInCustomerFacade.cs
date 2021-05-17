@@ -12,15 +12,16 @@ namespace BusinessLogic
         {
             if (token != null)
             {
+                Flight flight = _flightDAO.Get(ticket.Flight_Id);
+                flight.Remaining_Tickets++;
+                _flightDAO.Update(flight);
                 _ticketDAO.Remove(ticket);
-                ticket.Flight.Remaining_Tickets++;
-                _flightDAO.Update(ticket.Flight);
-                log.Info($"Customer {token.User.Id} {token.User.First_Name} {token.User.Last_Name} bought a ticket");
+                log.Info($"Customer {token.User.Id} {token.User.First_Name} {token.User.Last_Name} canceled ticket purchasing");
             }
             else
             {
-                log.Error("An unknown user tried to buy a ticket");
-                throw new WasntActivatedByCustomerException("An unknown user tried to buy a ticket");
+                log.Error("An unknown user tried to cancel ticket purchasing");
+                throw new WasntActivatedByCustomerException("An unknown user tried to cancel ticket purchasing");
             }
         }
 
@@ -32,6 +33,11 @@ namespace BusinessLogic
                 {
                     log.Error($"Discrepancies between {token.User.Id} {token.User.First_Name} {token.User.Last_Name} old password to the password that saved in the system");
                     throw new WrongCredentialsException($"Discrepancies between {token.User.Id} {token.User.First_Name} {token.User.Last_Name} old password to the password that saved in the system");
+                }
+                if (token.User.User.Password == newPassword)
+                {
+                    log.Error($"User {token.User.Id} tried to make his new password like the old one");
+                    throw new WrongCredentialsException("New password can't be like the old one");
                 }
                 token.User.User.Password = newPassword;
                 _userDAO.Update(token.User.User);
@@ -86,7 +92,7 @@ namespace BusinessLogic
                 else
                 {
                     log.Error($"There are not any left tickets for flight {flight.Id}");
-                    throw new OutOfTicketsExecption($"There are not any left tickets for flight {flight.Id}");
+                    throw new OutOfTicketsException($"There are not any left tickets for flight {flight.Id}");
                 }
             }
             else
