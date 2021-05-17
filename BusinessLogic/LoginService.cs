@@ -13,15 +13,14 @@ namespace BusinessLogic
         IAdminDAO _adminDAO;
         IUserDAO _userDAO;
 
-        public bool TryLogin(out FacadeBase facade, out ILoginToken loginToken, string userName, string password)
+        public bool TryLogin(out ILoginToken loginToken, string userName, string password)
         {
             if (userName == "admin")
             {
                 if (password == "9999")
                 {
                     loginToken = new LoginToken<Administrator>();
-                    facade = new LoggedInAdministratorFacade();
-                    log.Info("Super Administrator has logged in to the system");
+                    log.Info("Super Administrator has logged in to the system");                  
                     return true;
                 }
                 else
@@ -39,20 +38,29 @@ namespace BusinessLogic
                     {
                         case 1:
                             {
-                                loginToken = new LoginToken<Administrator>();
-                                facade = new LoggedInAdministratorFacade();
+                                Administrator admin = _adminDAO.Get(user.Id);
+                                loginToken = new LoginToken<Administrator>()
+                                {
+                                    User = admin
+                                };
                                 break;
                             }
                         case 2:
                             {
-                                loginToken = new LoginToken<AirlineCompany>();
-                                facade = new LoggedInAirlineFacade();
+                                AirlineCompany airlineCompany = _airlineDAO.Get(user.Id);
+                                loginToken = new LoginToken<AirlineCompany>()
+                                {
+                                    User = airlineCompany
+                                };
                                 break;
                             }
                         default:
                             {
-                                loginToken = new LoginToken<Customer>();
-                                facade = new LoggedInCustomerFacade();
+                                Customer customer = _customerDAO.Get(user.Id);
+                                loginToken = new LoginToken<Customer>()
+                                {
+                                    User = customer
+                                };
                                 break;
                             }
                     }

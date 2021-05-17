@@ -3,7 +3,7 @@ using DAO;
 
 namespace BusinessLogic
 {
-    public class FacadeBase
+    public abstract class FacadeBase
     {
         protected IAirlineDAO _airlineDAO = new AirlineDAOPGSQL();
         protected ICountryDAO _countryDAO = new CountryDAOPGSQL();

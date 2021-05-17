@@ -6,6 +6,6 @@ namespace BusinessLogic
 {
     interface ILoginService
     {
-        bool TryLogin(out FacadeBase facade, out ILoginToken loginToken, string userName, string password);
+        bool TryLogin(out ILoginToken loginToken, string userName, string password);
     }
 }
