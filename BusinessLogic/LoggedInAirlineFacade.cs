@@ -32,10 +32,15 @@ namespace BusinessLogic
         {
             if (token != null)
             {
-                if (token.User.User.Password == oldPassword)
+                if (token.User.User.Password != oldPassword)
                 {
                     log.Error($"Discrepancies between {token.User.Name} old password to the password that saved in the system");
                     throw new WrongCredentialsException($"Discrepancies between {token.User.Name} old password to the password that saved in the system");
+                }
+                if (token.User.User.Password == newPassword)
+                {
+                    log.Error($"User {token.User.Id} tried to make his new password like the old one");
+                    throw new WrongCredentialsException("New password can't be like the old one");
                 }
                 token.User.User.Password = newPassword;
                 _userDAO.Update(token.User.User);

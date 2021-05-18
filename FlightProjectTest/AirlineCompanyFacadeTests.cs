@@ -152,6 +152,15 @@ namespace FlightProjectTest
             FlightCenterSystem.Instance.Login(out ILoginToken token, "adi213", "12345");
             LoginToken<AirlineCompany> loginToken = (LoginToken<AirlineCompany>)token;
             LoggedInAirlineFacade facade = (LoggedInAirlineFacade)FlightCenterSystem.Instance.GetFacade(loginToken);
+            facade.ChangeMyPassword(loginToken, loginToken.User.User.Password, "12345");
+        }
+        [TestMethod]
+        [ExpectedException(typeof(WrongCredentialsException))]
+        public void NewPasswordEqualsToTheOldOneException()
+        {
+            FlightCenterSystem.Instance.Login(out ILoginToken token, "adi213", "12345");
+            LoginToken<AirlineCompany> loginToken = (LoginToken<AirlineCompany>)token;
+            LoggedInAirlineFacade facade = (LoggedInAirlineFacade)FlightCenterSystem.Instance.GetFacade(loginToken);
             facade.ChangeMyPassword(loginToken, "12345", "12345");
         }
         [TestMethod]
