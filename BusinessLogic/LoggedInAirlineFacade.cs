@@ -12,6 +12,12 @@ namespace BusinessLogic
         {
             if (token != null)
             {
+                IList<Ticket> tickets = _ticketDAO.GetAll();
+                foreach (Ticket ticket in tickets)
+                {
+                    if (flight.Id == ticket.Flight_Id)
+                        _ticketDAO.Remove(ticket);
+                }
                 _flightDAO.Remove(flight);
                 log.Info($"Airline {token.User.Name} canceled flight {flight.Id}");
             }
@@ -26,7 +32,7 @@ namespace BusinessLogic
         {
             if (token != null)
             {
-                if (token.User.User.Password != oldPassword)
+                if (token.User.User.Password == oldPassword)
                 {
                     log.Error($"Discrepancies between {token.User.Name} old password to the password that saved in the system");
                     throw new WrongCredentialsException($"Discrepancies between {token.User.Name} old password to the password that saved in the system");
@@ -70,7 +76,7 @@ namespace BusinessLogic
                         flights.Add(flight);
                     }
                 }
-                log.Info($"Airline {token.User.Name} Got all flights");
+                log.Info($"Airline {token.User.Name} Got all it's flights");
                 return flights;
             }
             else

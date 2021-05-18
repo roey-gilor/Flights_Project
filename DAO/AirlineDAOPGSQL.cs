@@ -153,7 +153,7 @@ namespace DAO
         {
             return GetAirlineCompanies(AppConfig.Instance.ConnectionString, "sp_get_airline_by_user_id", new NpgsqlParameter[]
             {
-                new NpgsqlParameter("_userId" ,id)
+                new NpgsqlParameter("_userid" ,id)
             })[0];
         }
     }
