@@ -75,29 +75,17 @@ namespace BusinessLogic
             thread.Start();
 
         }
-        public bool Login(out ILoginToken loginToken, string username, string password)
+        public bool Login(out FacadeBase facade, out ILoginToken loginToken, string username, string password)
         {
             try
             {
-                bool res = loginService.TryLogin(out loginToken, username, password);
+                bool res = loginService.TryLogin(out facade ,out loginToken, username, password);
                 return res;
             }
             catch (WrongCredentialsException ex) 
             {
                 throw new WrongCredentialsException($"{ex.Message}");
             }
-        }
-        public FacadeBase GetFacade<T>(LoginToken<T> token) where T : IUser
-        {
-            if (typeof(T) == typeof(Administrator))
-                return new LoggedInAdministratorFacade();
-            else
-            {
-                if (typeof(T) == typeof(AirlineCompany))
-                    return new LoggedInAirlineFacade();
-                else
-                    return new LoggedInCustomerFacade();
-            }
-        }
+        }      
     }
 }

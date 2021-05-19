@@ -17,9 +17,9 @@ namespace FlightProjectTest
         [TestMethod]
         public void GetAllFlights_Test()
         {
-            FlightCenterSystem.Instance.Login(out ILoginToken token, "adi213", "54321");
+            FlightCenterSystem.Instance.Login(out FacadeBase facadebase, out ILoginToken token, "adi213", "54321");
             LoginToken<AirlineCompany> loginToken = (LoginToken<AirlineCompany>)token;
-            LoggedInAirlineFacade facade = (LoggedInAirlineFacade)FlightCenterSystem.Instance.GetFacade(loginToken);
+            LoggedInAirlineFacade facade = (LoggedInAirlineFacade)facadebase;
             IList<Flight> list = facade.GetAllFlights(loginToken);
             Assert.AreEqual(list.Count, 3);
         }
@@ -27,18 +27,17 @@ namespace FlightProjectTest
         [ExpectedException(typeof(WasntActivatedByAirlineException))]
         public void NullUserTriesToGetFlightsException()
         {
-
-            FlightCenterSystem.Instance.Login(out ILoginToken token, "adi213", "54321");
+            FlightCenterSystem.Instance.Login(out FacadeBase facadebase, out ILoginToken token, "adi213", "54321");
             LoginToken<AirlineCompany> loginToken = (LoginToken<AirlineCompany>)token;
-            LoggedInAirlineFacade facade = (LoggedInAirlineFacade)FlightCenterSystem.Instance.GetFacade(loginToken);
+            LoggedInAirlineFacade facade = (LoggedInAirlineFacade)facadebase;
             IList<Flight> list = facade.GetAllFlights(null);
         }
         [TestMethod]
         public void GetAllTickets_Test()
         {
-            FlightCenterSystem.Instance.Login(out ILoginToken token, "dana432", "gdfds");
+            FlightCenterSystem.Instance.Login(out FacadeBase facadebase, out ILoginToken token, "dana432", "gdfds");
             LoginToken<AirlineCompany> loginToken = (LoginToken<AirlineCompany>)token;
-            LoggedInAirlineFacade facade = (LoggedInAirlineFacade)FlightCenterSystem.Instance.GetFacade(loginToken);
+            LoggedInAirlineFacade facade = (LoggedInAirlineFacade)facadebase;
             IList<Ticket> list = facade.GetAllTickets(loginToken);
             Assert.AreEqual(list.Count, 4);
         }
@@ -46,17 +45,17 @@ namespace FlightProjectTest
         [ExpectedException(typeof(WasntActivatedByAirlineException))]
         public void NullUserTriesToGetTicketsException()
         {
-            FlightCenterSystem.Instance.Login(out ILoginToken token, "dana432", "gdfds");
+            FlightCenterSystem.Instance.Login(out FacadeBase facadebase, out ILoginToken token, "dana432", "gdfds");
             LoginToken<AirlineCompany> loginToken = (LoginToken<AirlineCompany>)token;
-            LoggedInAirlineFacade facade = (LoggedInAirlineFacade)FlightCenterSystem.Instance.GetFacade(loginToken);
+            LoggedInAirlineFacade facade = (LoggedInAirlineFacade)facadebase;
             IList<Ticket> list = facade.GetAllTickets(null);
         }
         [TestMethod]
         public void MofidyAirlineDetails_Test()
         {
-            FlightCenterSystem.Instance.Login(out ILoginToken token, "adi213", "54321");
+            FlightCenterSystem.Instance.Login(out FacadeBase facadebase, out ILoginToken token, "adi213", "54321");
             LoginToken<AirlineCompany> loginToken = (LoginToken<AirlineCompany>)token;
-            LoggedInAirlineFacade facade = (LoggedInAirlineFacade)FlightCenterSystem.Instance.GetFacade(loginToken);
+            LoggedInAirlineFacade facade = (LoggedInAirlineFacade)facadebase; 
             AirlineCompany airline = new AirlineCompany
             {
                 Id = loginToken.User.Id,
@@ -71,9 +70,9 @@ namespace FlightProjectTest
         [ExpectedException(typeof(WasntActivatedByAirlineException))]
         public void NullUserTriesToModifyDetailsException()
         {
-            FlightCenterSystem.Instance.Login(out ILoginToken token, "adi213", "54321");
+            FlightCenterSystem.Instance.Login(out FacadeBase facadebase, out ILoginToken token, "adi213", "54321");
             LoginToken<AirlineCompany> loginToken = (LoginToken<AirlineCompany>)token;
-            LoggedInAirlineFacade facade = (LoggedInAirlineFacade)FlightCenterSystem.Instance.GetFacade(loginToken);
+            LoggedInAirlineFacade facade = (LoggedInAirlineFacade)facadebase;
             AirlineCompany airline = new AirlineCompany
             {
                 Id = loginToken.User.Id,
@@ -86,9 +85,9 @@ namespace FlightProjectTest
         [TestMethod]
         public void UpdateFlight_Test()
         {
-            FlightCenterSystem.Instance.Login(out ILoginToken token, "adi213", "54321");
+            FlightCenterSystem.Instance.Login(out FacadeBase facadebase, out ILoginToken token, "adi213", "54321");
             LoginToken<AirlineCompany> loginToken = (LoginToken<AirlineCompany>)token;
-            LoggedInAirlineFacade facade = (LoggedInAirlineFacade)FlightCenterSystem.Instance.GetFacade(loginToken);
+            LoggedInAirlineFacade facade = (LoggedInAirlineFacade)facadebase;
             Flight flight = _flightDAO.Get(6);
             DateTime dateTime= new DateTime(2021, 1, 13, 8, 00, 00);
             flight.Departure_Time = dateTime;
@@ -100,9 +99,9 @@ namespace FlightProjectTest
         [ExpectedException(typeof(WasntActivatedByAirlineException))]
         public void NullUserTriesToUpdateFlightException()
         {
-            FlightCenterSystem.Instance.Login(out ILoginToken token, "adi213", "54321");
+            FlightCenterSystem.Instance.Login(out FacadeBase facadebase, out ILoginToken token, "adi213", "54321");
             LoginToken<AirlineCompany> loginToken = (LoginToken<AirlineCompany>)token;
-            LoggedInAirlineFacade facade = (LoggedInAirlineFacade)FlightCenterSystem.Instance.GetFacade(loginToken);
+            LoggedInAirlineFacade facade = (LoggedInAirlineFacade)facadebase;
             Flight flight = _flightDAO.Get(6);
             DateTime dateTime = new DateTime(2021, 1, 13, 8, 00, 00);
             flight.Departure_Time = dateTime;
@@ -111,9 +110,9 @@ namespace FlightProjectTest
         [TestMethod]
         public void CreateFlight_Test()
         {
-            FlightCenterSystem.Instance.Login(out ILoginToken token, "dana432", "gdfds");
+            FlightCenterSystem.Instance.Login(out FacadeBase facadebase, out ILoginToken token, "dana432", "gdfds");
             LoginToken<AirlineCompany> loginToken = (LoginToken<AirlineCompany>)token;
-            LoggedInAirlineFacade facade = (LoggedInAirlineFacade)FlightCenterSystem.Instance.GetFacade(loginToken);
+            LoggedInAirlineFacade facade = (LoggedInAirlineFacade)facadebase;
             Flight flight = new Flight
             {
                 Airline_Company_Id = 1,
@@ -131,17 +130,17 @@ namespace FlightProjectTest
         [ExpectedException(typeof(WasntActivatedByAirlineException))]
         public void NullUserTriesToCreateFlightException()
         {
-            FlightCenterSystem.Instance.Login(out ILoginToken token, "dana432", "gdfds");
+            FlightCenterSystem.Instance.Login(out FacadeBase facadebase, out ILoginToken token, "dana432", "gdfds");
             LoginToken<AirlineCompany> loginToken = (LoginToken<AirlineCompany>)token;
-            LoggedInAirlineFacade facade = (LoggedInAirlineFacade)FlightCenterSystem.Instance.GetFacade(loginToken);
+            LoggedInAirlineFacade facade = (LoggedInAirlineFacade)facadebase;
             facade.CreateFlight(null, new Flight());
         }
         [TestMethod]
         public void ChangeMyPassword_Test()
         {
-            FlightCenterSystem.Instance.Login(out ILoginToken token, "adi213", "54321");
+            FlightCenterSystem.Instance.Login(out FacadeBase facadebase, out ILoginToken token, "adi213", "54321");
             LoginToken<AirlineCompany> loginToken = (LoginToken<AirlineCompany>)token;
-            LoggedInAirlineFacade facade = (LoggedInAirlineFacade)FlightCenterSystem.Instance.GetFacade(loginToken);
+            LoggedInAirlineFacade facade = (LoggedInAirlineFacade)facadebase;
             facade.ChangeMyPassword(loginToken, "54321", "12345");
             Assert.AreEqual(loginToken.User.User.Password, "12345");
         }
@@ -149,35 +148,35 @@ namespace FlightProjectTest
         [ExpectedException(typeof(WrongCredentialsException))]
         public void OldPasswordDoesntMatchToTheSystem()
         {
-            FlightCenterSystem.Instance.Login(out ILoginToken token, "adi213", "12345");
+            FlightCenterSystem.Instance.Login(out FacadeBase facadebase, out ILoginToken token, "adi213", "12345");
             LoginToken<AirlineCompany> loginToken = (LoginToken<AirlineCompany>)token;
-            LoggedInAirlineFacade facade = (LoggedInAirlineFacade)FlightCenterSystem.Instance.GetFacade(loginToken);
+            LoggedInAirlineFacade facade = (LoggedInAirlineFacade)facadebase;
             facade.ChangeMyPassword(loginToken, loginToken.User.User.Password, "12345");
         }
         [TestMethod]
         [ExpectedException(typeof(WrongCredentialsException))]
         public void NewPasswordEqualsToTheOldOneException()
         {
-            FlightCenterSystem.Instance.Login(out ILoginToken token, "adi213", "12345");
+            FlightCenterSystem.Instance.Login(out FacadeBase facadebase, out ILoginToken token, "adi213", "12345");
             LoginToken<AirlineCompany> loginToken = (LoginToken<AirlineCompany>)token;
-            LoggedInAirlineFacade facade = (LoggedInAirlineFacade)FlightCenterSystem.Instance.GetFacade(loginToken);
+            LoggedInAirlineFacade facade = (LoggedInAirlineFacade)facadebase;
             facade.ChangeMyPassword(loginToken, "12345", "12345");
         }
         [TestMethod]
         [ExpectedException(typeof(WasntActivatedByAirlineException))]
         public void NullUserTriesTochangePasswordException()
         {
-            FlightCenterSystem.Instance.Login(out ILoginToken token, "adi213", "12345");
+            FlightCenterSystem.Instance.Login(out FacadeBase facadebase, out ILoginToken token, "adi213", "12345");
             LoginToken<AirlineCompany> loginToken = (LoginToken<AirlineCompany>)token;
-            LoggedInAirlineFacade facade = (LoggedInAirlineFacade)FlightCenterSystem.Instance.GetFacade(loginToken);
+            LoggedInAirlineFacade facade = (LoggedInAirlineFacade)facadebase;
             facade.ChangeMyPassword(null, "12345", "111");
         }
         [TestMethod]
         public void CancelFlight_Test()
         {
-            FlightCenterSystem.Instance.Login(out ILoginToken token, "dana432", "gdfds");
+            FlightCenterSystem.Instance.Login(out FacadeBase facadebase, out ILoginToken token, "dana432", "gdfds");
             LoginToken<AirlineCompany> loginToken = (LoginToken<AirlineCompany>)token;
-            LoggedInAirlineFacade facade = (LoggedInAirlineFacade)FlightCenterSystem.Instance.GetFacade(loginToken);
+            LoggedInAirlineFacade facade = (LoggedInAirlineFacade)facadebase;
             Flight flight = _flightDAO.Get(1);
             facade.CancelFlight(loginToken, flight);
             IList<Flight> list = _flightDAO.GetAll();
@@ -187,9 +186,9 @@ namespace FlightProjectTest
         [ExpectedException(typeof(WasntActivatedByAirlineException))]
         public void NullUserTriesCancelFlightException()
         {
-            FlightCenterSystem.Instance.Login(out ILoginToken token, "dana432", "gdfds");
+            FlightCenterSystem.Instance.Login(out FacadeBase facadebase, out ILoginToken token, "dana432", "gdfds");
             LoginToken<AirlineCompany> loginToken = (LoginToken<AirlineCompany>)token;
-            LoggedInAirlineFacade facade = (LoggedInAirlineFacade)FlightCenterSystem.Instance.GetFacade(loginToken);
+            LoggedInAirlineFacade facade = (LoggedInAirlineFacade)facadebase;
             facade.CancelFlight(null, new Flight());
         }
     }

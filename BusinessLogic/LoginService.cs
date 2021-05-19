@@ -28,12 +28,13 @@ namespace BusinessLogic
             }
         };
 
-        public bool TryLogin(out ILoginToken loginToken, string userName, string password)
+        public bool TryLogin(out FacadeBase facade, out ILoginToken loginToken, string userName, string password)
         {
             if (userName == "admin")
             {
                 if (password == "9999")
                 {
+                    facade = new LoggedInAdministratorFacade();
                     loginToken = new LoginToken<Administrator>()
                     {
                         User = mainAdmin
@@ -63,6 +64,7 @@ namespace BusinessLogic
                 {
                     case 1:
                         {
+                            facade = new LoggedInAdministratorFacade();
                             Administrator admin = _adminDAO.GetAdminByUserId(user.Id);
                             loginToken = new LoginToken<Administrator>()
                             {
@@ -72,6 +74,7 @@ namespace BusinessLogic
                         }
                     case 2:
                         {
+                            facade = new LoggedInAirlineFacade();
                             AirlineCompany airlineCompany = _airlineDAO.GetAirlineByUserId(user.Id);
                             loginToken = new LoginToken<AirlineCompany>()
                             {
@@ -79,13 +82,20 @@ namespace BusinessLogic
                             };
                             break;
                         }
-                    default:
+                    case 3:
                         {
+                            facade = new LoggedInCustomerFacade();
                             Customer customer = _customerDAO.GetCustomerByUserId(user.Id);
                             loginToken = new LoginToken<Customer>()
                             {
                                 User = customer
                             };
+                            break;
+                        }
+                    default:
+                        {
+                            facade = new AnonymousUserFacade();
+                            loginToken = null;
                             break;
                         }
                 }
