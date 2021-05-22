@@ -3,13 +3,14 @@ using log4net.Config;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Reflection;
 using BusinessLogic;
+using DAO;
 
 namespace FlightProjectTest
 {
     [TestClass]
     public class AnonymousTest
     {
-
+        
         [TestMethod]
         public void GetAllAirlineCompanies_Test()
         {
@@ -58,6 +59,36 @@ namespace FlightProjectTest
             AnonymousUserFacade anonymous = new AnonymousUserFacade();
             var list = anonymous.GetFlightsByOriginCountry(2);
             Assert.AreEqual(list.Count, 2);
+        }
+        [TestMethod]
+        public void AddNewUser_Tets()
+        {
+            IUserDAO _userDAO = new UserDAOPGSQL();
+            AnonymousUserFacade anonymous = new AnonymousUserFacade();
+            User user = new User
+            {
+                User_Name = "Moshe87",
+                Password = "rerert",
+                Email = "moshe@gmail.com",
+                User_Role = 3
+            };
+            anonymous.AddNewUser(user);
+            Assert.AreEqual(_userDAO.GetAll().Count, 8);
+        }
+        [TestMethod]
+        [ExpectedException(typeof(WrongCredentialsException))]
+        public void WrongDetailsToNewUserException()
+        {
+            IUserDAO _userDAO = new UserDAOPGSQL();
+            AnonymousUserFacade anonymous = new AnonymousUserFacade();
+            User user = new User
+            {
+                User_Name = "Moshe87",
+                Password = "rerert",
+                Email = "moshe@gmail.com",
+                User_Role = 3
+            };
+            anonymous.AddNewUser(user);
         }
     }
 }

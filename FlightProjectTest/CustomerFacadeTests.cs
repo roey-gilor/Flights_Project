@@ -14,15 +14,16 @@ namespace FlightProjectTest
     {
         static IFlightDAO _flightDAO = new FlightDAOPGSQL();
         static ITicketDAO _ticketDAO = new TicketDAOPGSQL();
+        static IUserDAO _userDAO = new UserDAOPGSQL();
         [TestMethod]
         public void GetAllMyFlights_Test()
         {
-            FlightCenterSystem.Instance.Login(out FacadeBase facadeBase, out ILoginToken token, "uri321", "vzd474");
+            FlightCenterSystem.Instance.Login(out FacadeBase facadeBase, out ILoginToken token, "uri321", "ddvrew1");
             LoginToken<Customer> loginToken = (LoginToken<Customer>)token;
             LoggedInCustomerFacade facade = (LoggedInCustomerFacade)facadeBase;
 
             IList<Flight> list= facade.GetAllMyFlights(loginToken);
-            Assert.AreEqual(list.Count, 2);
+            Assert.AreEqual(list.Count, 1);
         }
         [TestMethod]
         [ExpectedException(typeof(WasntActivatedByCustomerException))]
@@ -131,6 +132,49 @@ namespace FlightProjectTest
             LoginToken<Customer> loginToken = (LoginToken<Customer>)token;
             LoggedInCustomerFacade facade = (LoggedInCustomerFacade)facadeBase;
             facade.ChangeMyPassword(null, "ddvrew1", "111");
+        }
+        [TestMethod]
+        public void UpdateUserDetails_Test()
+        {
+            FlightCenterSystem.Instance.Login(out FacadeBase facadeBase, out ILoginToken token, "shany805", "dsaasa");
+            LoginToken<Customer> loginToken = (LoginToken<Customer>)token;
+            LoggedInCustomerFacade facade = (LoggedInCustomerFacade)facadeBase;
+            User user = new User
+            {
+                Id = loginToken.User.User.Id,
+                User_Name = "shany203",
+                Password = loginToken.User.User.Password,
+                Email = loginToken.User.User.Email,
+                User_Role = loginToken.User.User.User_Role
+            };
+            facade.UpdateUserDetails(loginToken, user);
+            Assert.AreEqual(_userDAO.Get(6).User_Name, "shany203");
+        }
+        [TestMethod]
+        [ExpectedException(typeof(WrongCredentialsException))]
+        public void WrongDetailsToUpdateUserException()
+        {
+            FlightCenterSystem.Instance.Login(out FacadeBase facadeBase, out ILoginToken token, "shany203", "dsaasa");
+            LoginToken<Customer> loginToken = (LoginToken<Customer>)token;
+            LoggedInCustomerFacade facade = (LoggedInCustomerFacade)facadeBase;
+            User user = new User
+            {
+                Id = loginToken.User.User.Id,
+                User_Name = loginToken.User.User.User_Name,
+                Password = loginToken.User.User.Password,
+                Email = "danny@gmail.com",
+                User_Role = loginToken.User.User.User_Role
+            };
+            facade.UpdateUserDetails(loginToken, user);
+        }
+        [TestMethod]
+        [ExpectedException(typeof(WasntActivatedByCustomerException))]
+        public void NullUserTriesToUpdateDetailsException()
+        {
+            FlightCenterSystem.Instance.Login(out FacadeBase facadeBase, out ILoginToken token, "shany203", "dsaasa");
+            LoginToken<Customer> loginToken = (LoginToken<Customer>)token;
+            LoggedInCustomerFacade facade = (LoggedInCustomerFacade)facadeBase;
+            facade.UpdateUserDetails(null, new User());
         }
     }
 }

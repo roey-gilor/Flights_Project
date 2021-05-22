@@ -14,6 +14,7 @@ namespace FlightProjectTest
     {
         static IAirlineDAO _airlineDAO = new AirlineDAOPGSQL();
         static IFlightDAO _flightDAO = new FlightDAOPGSQL();
+        static IUserDAO _userDAO = new UserDAOPGSQL();
         [TestMethod]
         public void GetAllFlights_Test()
         {
@@ -190,6 +191,49 @@ namespace FlightProjectTest
             LoginToken<AirlineCompany> loginToken = (LoginToken<AirlineCompany>)token;
             LoggedInAirlineFacade facade = (LoggedInAirlineFacade)facadebase;
             facade.CancelFlight(null, new Flight());
+        }
+        [TestMethod]
+        public void UpdateUserDetails_Test()
+        {
+            FlightCenterSystem.Instance.Login(out FacadeBase facadebase, out ILoginToken token, "dana131", "gdfds");
+            LoginToken<AirlineCompany> loginToken = (LoginToken<AirlineCompany>)token;
+            LoggedInAirlineFacade facade = (LoggedInAirlineFacade)facadebase;
+            User user = new User
+            {
+                Id = loginToken.User.User.Id,
+                User_Name = "dana111",
+                Password = loginToken.User.User.Password,
+                Email = loginToken.User.User.Email,
+                User_Role = loginToken.User.User.User_Role
+            };
+            facade.UpdateUserDetails(loginToken, user);
+            Assert.AreEqual(_userDAO.Get(4).User_Name, "dana111");
+        }
+        [TestMethod]
+        [ExpectedException(typeof(WrongCredentialsException))]
+        public void WrongDetailsToUpdateUserException()
+        {
+            FlightCenterSystem.Instance.Login(out FacadeBase facadebase, out ILoginToken token, "dana111", "gdfds");
+            LoginToken<AirlineCompany> loginToken = (LoginToken<AirlineCompany>)token;
+            LoggedInAirlineFacade facade = (LoggedInAirlineFacade)facadebase;
+            User user = new User
+            {
+                Id = loginToken.User.User.Id,
+                User_Name = loginToken.User.User.User_Name,
+                Password = loginToken.User.User.Password,
+                Email = "amir@gmail.com",
+                User_Role = loginToken.User.User.User_Role
+            };
+            facade.UpdateUserDetails(loginToken, user);
+        }
+        [TestMethod]
+        [ExpectedException(typeof(WasntActivatedByAirlineException))]
+        public void NullUserTriesToUpdateDetailsException()
+        {
+            FlightCenterSystem.Instance.Login(out FacadeBase facadebase, out ILoginToken token, "dana111", "gdfds");
+            LoginToken<AirlineCompany> loginToken = (LoginToken<AirlineCompany>)token;
+            LoggedInAirlineFacade facade = (LoggedInAirlineFacade)facadebase;
+            facade.UpdateUserDetails(null, new User());
         }
     }
 }

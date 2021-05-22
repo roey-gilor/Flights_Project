@@ -8,6 +8,22 @@ namespace BusinessLogic
     public class AnonymousUserFacade : FacadeBase, IAnonymousUserFacade
     {
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
+        public void AddNewUser(User user)
+        {
+            try
+            {
+                _userDAO.Add(user);
+                log.Info($"User  {user.Id} {user.User_Name} was added to the system");
+            }
+            catch (Exception ex)
+            {
+
+                log.Error($"faild to add user: {ex.Message}");
+                throw new WrongCredentialsException($"faild to add user: {ex.Message}");
+            }
+        }
+
         public IList<AirlineCompany> GetAllAirlineCompanies()
         {
             return _airlineDAO.GetAll();

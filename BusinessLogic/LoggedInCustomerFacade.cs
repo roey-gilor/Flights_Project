@@ -101,5 +101,27 @@ namespace BusinessLogic
                 throw new WasntActivatedByCustomerException("An unknown user tried to buy a ticket");
             }
         }
+
+        public void UpdateUserDetails(LoginToken<Customer> token, User user)
+        {
+            if (token != null)
+            {
+                try
+                {
+                    _userDAO.Update(user);
+                    log.Info($"User {token.User.User.Id} updated his details");
+                }
+                catch (Exception ex)
+                {
+                    log.Error($"Could not change user {token.User.User.Id} details: {ex.Message}");
+                    throw new WrongCredentialsException($"Could not change user {token.User.User.Id} details: {ex.Message}");
+                }
+            }
+            else
+            {
+                log.Error("An unknown user tried to update details");
+                throw new WasntActivatedByCustomerException("An unknown user tried to update details");
+            }
+        }
     }
 }

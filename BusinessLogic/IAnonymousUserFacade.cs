@@ -14,6 +14,7 @@ namespace BusinessLogic
         IList<Flight> GetFlightsByDestinationCountry(int countryCode);
         IList<Flight> GetFlightsByDepatrureDate(DateTime departureDate);
         IList<Flight> GetFlightsByLandingDate(DateTime landingDate);
+        void AddNewUser(User user);
 
     }
 }

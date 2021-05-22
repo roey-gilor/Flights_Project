@@ -53,6 +53,7 @@ namespace DAO
             catch (Exception ex)
             {
                 log.Error($"Could not run {sp_name} procedure: {ex.Message}");
+                throw new Exception(ex.Message);
             }
         }
         private List<User> GetUsers(string conn_string, string sp_name, NpgsqlParameter[] parameters)
@@ -93,13 +94,20 @@ namespace DAO
         }
         public void Add(User t)
         {
-            RunSpNonExecute(AppConfig.Instance.ConnectionString, "sp_add_user", new NpgsqlParameter[]
+            try
             {
+                RunSpNonExecute(AppConfig.Instance.ConnectionString, "sp_add_user", new NpgsqlParameter[]
+                {
                 new NpgsqlParameter("_user_name" ,t.User_Name),
                 new NpgsqlParameter("_password", t.Password),
                 new NpgsqlParameter("_email", t.Email),
                 new NpgsqlParameter("_user_role", t.User_Role)
-            });
+                });
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
 
         public User Get(long id)
@@ -125,22 +133,38 @@ namespace DAO
 
         public void Update(User t)
         {
-            RunSpNonExecute(AppConfig.Instance.ConnectionString, "sp_update_user", new NpgsqlParameter[]
+            try
             {
+                RunSpNonExecute(AppConfig.Instance.ConnectionString, "sp_update_user", new NpgsqlParameter[]
+                {
                 new NpgsqlParameter("_id" ,t.Id),
                 new NpgsqlParameter("_user_name" ,t.User_Name),
                 new NpgsqlParameter("_password", t.Password),
                 new NpgsqlParameter("_email", t.Email),
                 new NpgsqlParameter("_user_role", t.User_Role)
-            });
+                });
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
 
         public User GetUserByUserName(string userName)
         {
-            return GetUsers(AppConfig.Instance.ConnectionString, "sp_get_user_by_username", new NpgsqlParameter[]
-                {
+            try
+            {
+                return GetUsers(AppConfig.Instance.ConnectionString, "sp_get_user_by_username", new NpgsqlParameter[]
+                    {
                    new NpgsqlParameter("_user_name", userName)
-                })[0];
+                    })[0];
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
     }
 }

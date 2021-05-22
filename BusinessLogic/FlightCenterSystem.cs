@@ -86,6 +86,6 @@ namespace BusinessLogic
             {
                 throw new WrongCredentialsException($"{ex.Message}");
             }
-        }      
+        }  
     }
 }

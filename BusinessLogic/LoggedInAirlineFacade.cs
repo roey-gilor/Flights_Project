@@ -140,5 +140,27 @@ namespace BusinessLogic
                 throw new WasntActivatedByAirlineException("An unknown user tried to update airline company's flight details");
             }
         }
+
+        public void UpdateUserDetails(LoginToken<AirlineCompany> token, User user)
+        {
+            if (token != null)
+            {
+                try
+                {
+                    _userDAO.Update(user);
+                    log.Info($"User {token.User.User.Id} updated his details");
+                }
+                catch (Exception ex)
+                {
+                    log.Error($"Could not change user {token.User.User.Id} details: {ex.Message}");
+                    throw new WrongCredentialsException($"Could not change user {token.User.User.Id} details: {ex.Message}");
+                }
+            }
+            else
+            {
+                log.Error("An unknown user tried to update details");
+                throw new WasntActivatedByAirlineException("An unknown user tried to update details");
+            }
+        }
     }
 }
