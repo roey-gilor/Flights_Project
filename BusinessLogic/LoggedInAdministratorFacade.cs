@@ -14,13 +14,31 @@ namespace BusinessLogic
             {
                 if (token.User.Level > admin.Level && token.User.Level == 3)
                 {
+                    admin.User.User_Role = 1;
                     _adminDAO.Add(admin);
                     log.Info($"{token.User.Id} {token.User.First_Name} {token.User.Last_Name} added new administrator: {admin.First_Name} {admin.Last_Name}");
                 }
                 else
                 {
-                    log.Error($"{token.User.Id} {token.User.First_Name} {token.User.Last_Name} did not have sanction to add new administrator");
-                    throw new AdministratorDoesntHaveSanctionException($"{token.User.Id} {token.User.First_Name} {token.User.Last_Name} did not have sanction to add new administrator");
+                    if (token.User.Level == 3)
+                    {
+                        if (token.User.First_Name == "Main" && token.User.Last_Name == "admin")
+                        {
+                            admin.User.User_Role = 1;
+                            _adminDAO.Add(admin);
+                            log.Info($"Main admin added new administrator: {admin.First_Name} {admin.Last_Name}");
+                        }
+                        else
+                        {
+                            log.Error($"{token.User.Id} {token.User.First_Name} {token.User.Last_Name} did not have sanction to add new administrator");
+                            throw new AdministratorDoesntHaveSanctionException($"{token.User.Id} {token.User.First_Name} {token.User.Last_Name} did not have sanction to add new administrator");
+                        }
+                    }
+                    else
+                    {
+                        log.Error($"{token.User.Id} {token.User.First_Name} {token.User.Last_Name} did not have sanction to add new administrator");
+                        throw new AdministratorDoesntHaveSanctionException($"{token.User.Id} {token.User.First_Name} {token.User.Last_Name} did not have sanction to add new administrator");
+                    }
                 }
             }
             else
@@ -36,8 +54,15 @@ namespace BusinessLogic
             {
                 if (token.User.Level == 3)
                 {
-                    _countryDAO.Add(country);
-                    log.Info($"{token.User.Id} {token.User.First_Name} {token.User.Last_Name} added new country: {country.Name}");
+                    try
+                    {
+                        _countryDAO.Add(country);
+                        log.Info($"{token.User.Id} {token.User.First_Name} {token.User.Last_Name} added new country: {country.Name}");
+                    }
+                    catch (Exception ex)
+                    {
+                        throw new WrongCredentialsException($"Could not Add new country: {ex.Message}");
+                    }
                 }
                 else
                 {
@@ -58,8 +83,17 @@ namespace BusinessLogic
             {
                 if (token.User.Level != 1)
                 {
-                    _airlineDAO.Add(airline);
-                    log.Info($"{token.User.Id} {token.User.First_Name} {token.User.Last_Name} added new airline: {airline.Name}");
+                    try
+                    {
+                        airline.User.User_Role = 2;
+                        _airlineDAO.Add(airline);
+                        log.Info($"{token.User.Id} {token.User.First_Name} {token.User.Last_Name} added new airline: {airline.Name}");
+                    }
+                    catch (Exception ex)
+                    {
+                        log.Error($"Could not Add New airline company: {ex.Message}");
+                        throw new WrongCredentialsException($"Could not Add New airline company: {ex.Message}");
+                    }
                 }
                 else
                 {
@@ -80,8 +114,17 @@ namespace BusinessLogic
             {
                 if (token.User.Level != 1)
                 {
-                    _customerDAO.Add(customer);
-                    log.Info($"{token.User.Id} {token.User.First_Name} {token.User.Last_Name} added new customer: {customer.First_Name} {customer.Last_Name}");
+                    try
+                    {
+                        customer.User.Id = 3;
+                        _customerDAO.Add(customer);
+                        log.Info($"{token.User.Id} {token.User.First_Name} {token.User.Last_Name} added new customer: {customer.First_Name} {customer.Last_Name}");
+                    }
+                    catch (Exception ex)
+                    {
+                        log.Error($"Could not create new customer: {ex.Message}");
+                        throw new WrongCredentialsException($"Could not create new customer: {ex.Message}");
+                    }
                 }
                 else
                 {
@@ -116,15 +159,27 @@ namespace BusinessLogic
             {
                 if (token.User.Level > admin.Level && token.User.Level == 3)
                 {
+                    User user = admin.User;
                     _adminDAO.Remove(admin);
+                    _userDAO.Remove(user);
                     log.Info($"{token.User.Id} {token.User.First_Name} {token.User.Last_Name} removed admin {admin.First_Name} {admin.Last_Name} from the system");
                 }
                 else
                 {
-                    if (token.User.Level > admin.Level)
+                    if (token.User.Level == 3)
                     {
-                        log.Error($"{token.User.Id} {token.User.First_Name} {token.User.Last_Name} did not have sanction to remove admin {admin.First_Name} {admin.Last_Name} from the system");
-                        throw new AdministratorDoesntHaveSanctionException($"{token.User.Id} {token.User.First_Name} {token.User.Last_Name} did not have sanction to remove admin {admin.First_Name} {admin.Last_Name} from the system");
+                        if (token.User.First_Name == "Main" && token.User.Last_Name == "admin")
+                        {
+                            User user = admin.User;
+                            _adminDAO.Remove(admin);
+                            _userDAO.Remove(user);
+                            log.Info("Main admin removed admin from the system");
+                        }
+                        else
+                        {
+                            log.Error($"{token.User.Id} {token.User.First_Name} {token.User.Last_Name} did not have sanction to add new administrator");
+                            throw new AdministratorDoesntHaveSanctionException($"{token.User.Id} {token.User.First_Name} {token.User.Last_Name} did not have sanction to add new administrator");
+                        }
                     }
                     log.Error($"{token.User.Id} {token.User.First_Name} {token.User.Last_Name} did not have sanction to remove admins from the system");
                     throw new AdministratorDoesntHaveSanctionException($"{token.User.Id} {token.User.First_Name} {token.User.Last_Name} did not have sanction to remove admins from the system");
@@ -143,7 +198,22 @@ namespace BusinessLogic
             {
                 if (token.User.Level != 1)
                 {
+                    IList<Flight> flights = _flightDAO.GetAll();
+                    foreach (Flight flight in flights)
+                    {
+                        if (flight.Airline_Company_Id == airline.Id)
+                        {
+                            IList<Ticket> tickets = _ticketDAO.GetTicketsByFlight(flight);
+                            foreach (Ticket ticket in tickets)
+                            {
+                                _ticketDAO.Remove(ticket);
+                            }
+                            _flightDAO.Remove(flight);
+                        }
+                    }
+                    User user = airline.User;
                     _airlineDAO.Remove(airline);
+                    _userDAO.Remove(user);
                     log.Info($"{token.User.Id} {token.User.First_Name} {token.User.Last_Name} removed airline {airline.Name} from the system");
                 }
                 else
@@ -165,6 +235,24 @@ namespace BusinessLogic
             {
                 if (token.User.Level == 3)
                 {
+                    foreach (AirlineCompany airlineCompany in _airlineDAO.GetAll())
+                    {
+                        if (airlineCompany.Country_Id == country.Id)
+                            RemoveAirline(token, airlineCompany);
+                    }
+                    IList<Flight> flights = _flightDAO.GetAll();
+                    foreach (Flight flight in flights)
+                    {
+                        if (flight.Destination_Country_Id == country.Id || flight.Origin_Country_Id == country.Id)
+                        {
+                            IList<Ticket> tickets = _ticketDAO.GetTicketsByFlight(flight);
+                            foreach (Ticket ticket in tickets)
+                            {
+                                _ticketDAO.Remove(ticket);
+                            }
+                            _flightDAO.Remove(flight);
+                        }
+                    }
                     _countryDAO.Remove(country);
                     log.Info($"{token.User.Id} {token.User.First_Name} {token.User.Last_Name} removed country {country.Name} from the system");
 
@@ -188,7 +276,19 @@ namespace BusinessLogic
             {
                 if (token.User.Level != 1)
                 {
+                    foreach (Ticket ticket in _ticketDAO.GetAll())
+                    {
+                        if (ticket.Customer_Id == customer.Id)
+                        {
+                            Flight flight = ticket.Flight;
+                            flight.Remaining_Tickets++;
+                            _flightDAO.Update(flight);
+                            _ticketDAO.Remove(ticket);
+                        }
+                    }
+                    User user = customer.User;
                     _customerDAO.Remove(customer);
+                    _userDAO.Remove(user);
                     log.Info($"{token.User.Id} {token.User.First_Name} {token.User.Last_Name} removed customer {customer.First_Name} {customer.Last_Name} from the system");
                 }
                 else

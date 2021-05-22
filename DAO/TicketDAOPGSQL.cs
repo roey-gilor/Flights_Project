@@ -80,7 +80,7 @@ namespace DAO
                             Flight_Id = (long)reader["flight_id"],
                             Customer_Id = (long)reader["customer_id"],
                             Customer = customerDAOPGSQL.Get((long)reader["customer_id"]),
-                            Flight = flightDAOPGSQL.Get((long)reader["customer_id"])
+                            Flight = flightDAOPGSQL.Get((long)reader["flight_id"])
                         };
                         tickets.Add(ticket);
                     }

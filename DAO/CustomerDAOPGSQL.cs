@@ -54,6 +54,7 @@ namespace DAO
             catch (Exception ex)
             {
                 log.Error($"Could not run {sp_name} procedure: {ex.Message}");
+                throw new Exception(ex.Message);
             }
         }
         private List<Customer> GetCustomers(string conn_string, string sp_name, NpgsqlParameter[] parameters)
@@ -96,15 +97,22 @@ namespace DAO
         }
         public void Add(Customer t)
         {
-            RunSpNonExecute(AppConfig.Instance.ConnectionString, "sp_add_customer", new NpgsqlParameter[]
+            try
             {
+                RunSpNonExecute(AppConfig.Instance.ConnectionString, "sp_add_customer", new NpgsqlParameter[]
+                {
                 new NpgsqlParameter("_first_name" ,t.First_Name),
                 new NpgsqlParameter("_last_name" ,t.Last_Name),
                 new NpgsqlParameter("_address" ,t.Address),
                 new NpgsqlParameter("_phone_no" ,t.Phone_No),
                 new NpgsqlParameter("_credit_card_no" ,t.Credit_Card_No),
                 new NpgsqlParameter("_user_id" ,t.User_Id)
-            });
+                });
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
 
         public Customer Get(long id)
@@ -138,8 +146,10 @@ namespace DAO
 
         public void Update(Customer t)
         {
-            RunSpNonExecute(AppConfig.Instance.ConnectionString, "sp_update_customer", new NpgsqlParameter[]
+            try
             {
+                RunSpNonExecute(AppConfig.Instance.ConnectionString, "sp_update_customer", new NpgsqlParameter[]
+                {
                 new NpgsqlParameter("_id" ,t.Id),
                 new NpgsqlParameter("_first_name" ,t.First_Name),
                 new NpgsqlParameter("_last_name" ,t.Last_Name),
@@ -147,7 +157,12 @@ namespace DAO
                 new NpgsqlParameter("_phone_no" ,t.Phone_No),
                 new NpgsqlParameter("_credit_card_no" ,t.Credit_Card_No),
                 new NpgsqlParameter("_user_id" ,t.User_Id)
-            });
+                });
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
 
         public Customer GetCustomerByUserId(long id)

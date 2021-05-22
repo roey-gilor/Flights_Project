@@ -55,6 +55,7 @@ namespace DAO
             catch (Exception ex)
             {
                 log.Error($"Could not run {sp_name} procedure: {ex.Message}");
+                throw new Exception(ex.Message);
             }
         }
         private List<Country> GetCountries(string conn_string, string sp_name, NpgsqlParameter[] parameters)
@@ -91,10 +92,17 @@ namespace DAO
         }
         public void Add(Country t)
         {
-            RunSpNonExecute(AppConfig.Instance.ConnectionString, "sp_add_country", new NpgsqlParameter[]
+            try
             {
+                RunSpNonExecute(AppConfig.Instance.ConnectionString, "sp_add_country", new NpgsqlParameter[]
+                {
                 new NpgsqlParameter("_name" ,t.Name)
-            });
+                });
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
 
         public Country Get(long id)
@@ -120,11 +128,18 @@ namespace DAO
 
         public void Update(Country t)
         {
-            RunSpNonExecute(AppConfig.Instance.ConnectionString, "sp_update_country", new NpgsqlParameter[]
+            try
             {
+                RunSpNonExecute(AppConfig.Instance.ConnectionString, "sp_update_country", new NpgsqlParameter[]
+                {
                 new NpgsqlParameter("_id" ,t.Id),
                 new NpgsqlParameter("_name", t.Name)
-            });
+                });
+            }
+            catch (Exception  ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
     }
 }

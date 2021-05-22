@@ -54,6 +54,7 @@ namespace DAO
             catch (Exception ex)
             {
                 log.Error($"Could not run {sp_name} procedure: {ex.Message}");
+                throw new Exception(ex.Message);
             }
         }
         private List<AirlineCompany> GetAirlineCompanies(string conn_string, string sp_name, NpgsqlParameter[] parameters)
@@ -93,12 +94,19 @@ namespace DAO
         }
         public void Add(AirlineCompany t)
         {
-            RunSpNonExecute(AppConfig.Instance.ConnectionString, "sp_add_airline", new NpgsqlParameter[]
+            try
             {
+                RunSpNonExecute(AppConfig.Instance.ConnectionString, "sp_add_airline", new NpgsqlParameter[]
+                {
                 new NpgsqlParameter("_name" ,t.Name),
                 new NpgsqlParameter("_country_id",t.Country_Id),
                 new NpgsqlParameter("_user_id",t.User_Id)
-            });
+                });
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
 
         public AirlineCompany Get(long id)
@@ -140,13 +148,20 @@ namespace DAO
 
         public void Update(AirlineCompany t)
         {
-            RunSpNonExecute(AppConfig.Instance.ConnectionString, "sp_update_airline", new NpgsqlParameter[]
+            try
             {
+                RunSpNonExecute(AppConfig.Instance.ConnectionString, "sp_update_airline", new NpgsqlParameter[]
+                {
                 new NpgsqlParameter("_id" ,t.Id),
                 new NpgsqlParameter("_name" ,t.Name),
                 new NpgsqlParameter("_country_id",t.Country_Id),
                 new NpgsqlParameter("_user_id",t.User_Id)
-            });
+                });
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
 
         public AirlineCompany GetAirlineByUserId(long id)
