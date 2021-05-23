@@ -475,5 +475,207 @@ namespace FlightProjectTest
             LoggedInAdministratorFacade facade = (LoggedInAdministratorFacade)facadeBase;
             facade.RemoveCountry(null, new Country());
         }
+        [TestMethod]
+        public void UpdateAdmin_Test()
+        {
+            FlightCenterSystem.Instance.Login(out FacadeBase facadeBase, out ILoginToken loginToken, "danny121121", "fdsaa23");
+            LoginToken<Administrator> token = (LoginToken<Administrator>)loginToken;
+            LoggedInAdministratorFacade facade = (LoggedInAdministratorFacade)facadeBase;
+            Administrator administrator = _adminDAO.Get(5);
+            administrator.Last_Name = "Valdman";
+            facade.UpdateAdmin(token, administrator);
+            Assert.AreEqual(_adminDAO.Get(5).Last_Name, "Valdman");
+        }
+        [TestMethod]
+        public void AdminUpdatedHisOwnDetails()
+        {
+            FlightCenterSystem.Instance.Login(out FacadeBase facadeBase, out ILoginToken loginToken, "Bar_36", "rvdsgr");
+            LoginToken<Administrator> token = (LoginToken<Administrator>)loginToken;
+            LoggedInAdministratorFacade facade = (LoggedInAdministratorFacade)facadeBase;
+            Administrator administrator = token.User;
+            administrator.User.Email = "TheBar@gmail.com";
+            facade.UpdateAdmin(token, administrator);
+            Assert.AreEqual(token.User.User.Email, "TheBar@gmail.com");
+        }
+        [TestMethod]
+        public void MainAdminUpdatedLevelThreeUser()
+        {
+            FlightCenterSystem.Instance.Login(out FacadeBase facadeBase, out ILoginToken loginToken, "admin", "9999");
+            LoginToken<Administrator> token = (LoginToken<Administrator>)loginToken;
+            LoggedInAdministratorFacade facade = (LoggedInAdministratorFacade)facadeBase;
+            Administrator administrator = _adminDAO.Get(1);
+            administrator.Last_Name = "Levy";
+            facade.UpdateAdmin(token, administrator);
+            Assert.AreEqual(_adminDAO.Get(1).Last_Name, "Levy");
+        }
+        [TestMethod]
+        [ExpectedException(typeof(WrongCredentialsException))]
+        public void SelfUpdateDuplicateDetailsException()
+        {
+            FlightCenterSystem.Instance.Login(out FacadeBase facadeBase, out ILoginToken loginToken, "Bar_36", "rvdsgr");
+            LoginToken<Administrator> token = (LoginToken<Administrator>)loginToken;
+            LoggedInAdministratorFacade facade = (LoggedInAdministratorFacade)facadeBase;
+            Administrator administrator = token.User;
+            administrator.User.User_Name = "danny121121";
+            facade.UpdateAdmin(token, administrator);
+        }
+        [TestMethod]
+        [ExpectedException(typeof(WrongCredentialsException))]
+        public void UpdateAdminDuplicateDetailsException()
+        {
+            FlightCenterSystem.Instance.Login(out FacadeBase facadeBase, out ILoginToken loginToken, "danny121121", "fdsaa23");
+            LoginToken<Administrator> token = (LoginToken<Administrator>)loginToken;
+            LoggedInAdministratorFacade facade = (LoggedInAdministratorFacade)facadeBase;
+            Administrator administrator = _adminDAO.Get(1);
+            administrator.User.Email = "TheBar@gmail.com";
+            facade.UpdateAdmin(token, administrator);
+        }
+        [TestMethod]
+        [ExpectedException(typeof(WrongCredentialsException))]
+        public void MainAdminUpdateDuplicteDetailsToLevelThreeUserException()
+        {
+            FlightCenterSystem.Instance.Login(out FacadeBase facadeBase, out ILoginToken loginToken, "admin", "9999");
+            LoginToken<Administrator> token = (LoginToken<Administrator>)loginToken;
+            LoggedInAdministratorFacade facade = (LoggedInAdministratorFacade)facadeBase;
+            Administrator administrator = _adminDAO.Get(7);
+            administrator.User.Email = "TheBar@gmail.com";
+            facade.UpdateAdmin(token, administrator);
+        }
+        [TestMethod]
+        [ExpectedException(typeof(AdministratorDoesntHaveSanctionException))]
+        public void LowerAdminTriesToUpdateAdmin()
+        {
+            FlightCenterSystem.Instance.Login(out FacadeBase facadeBase, out ILoginToken loginToken, "Bar_36", "rvdsgr");
+            LoginToken<Administrator> token = (LoginToken<Administrator>)loginToken;
+            LoggedInAdministratorFacade facade = (LoggedInAdministratorFacade)facadeBase;
+            Administrator administrator = _adminDAO.Get(1);
+            administrator.User.User_Name = "1111";
+            facade.UpdateAdmin(token, administrator);
+        }
+        [TestMethod]
+        [ExpectedException(typeof(AdministratorDoesntHaveSanctionException))]
+        public void LowerAdminTriesToUpdateLevelThreeAdmin()
+        {
+            FlightCenterSystem.Instance.Login(out FacadeBase facadeBase, out ILoginToken loginToken, "Bar_36", "rvdsgr");
+            LoginToken<Administrator> token = (LoginToken<Administrator>)loginToken;
+            LoggedInAdministratorFacade facade = (LoggedInAdministratorFacade)facadeBase;
+            Administrator administrator = _adminDAO.Get(7);
+            administrator.User.User_Name = "1111";
+            facade.UpdateAdmin(token, administrator);
+        }
+        [TestMethod]
+        [ExpectedException(typeof(WasntActivatedByAdministratorException))]
+        public void NullUserTriesToUpdateAdmin()
+        {
+            FlightCenterSystem.Instance.Login(out FacadeBase facadeBase, out ILoginToken loginToken, "Bar_36", "rvdsgr");
+            LoginToken<Administrator> token = (LoginToken<Administrator>)loginToken;
+            LoggedInAdministratorFacade facade = (LoggedInAdministratorFacade)facadeBase;
+            facade.UpdateAdmin(null, new Administrator());
+        }
+        [TestMethod]
+        public void UpdateAirlineDetails_Test()
+        {
+            FlightCenterSystem.Instance.Login(out FacadeBase facadeBase, out ILoginToken loginToken, "Bar_36", "rvdsgr");
+            LoginToken<Administrator> token = (LoginToken<Administrator>)loginToken;
+            LoggedInAdministratorFacade facade = (LoggedInAdministratorFacade)facadeBase;
+            AirlineCompany airlineCompany = _airlineDAO.Get(7);
+            airlineCompany.Name = "flying_wings";
+            facade.UpdateAirlineDetails(token, airlineCompany);
+            Assert.AreEqual(_airlineDAO.Get(7).Name, "flying_wings");
+        }
+        [TestMethod]
+        [ExpectedException(typeof(WrongCredentialsException))]
+        public void DuplicateAirlineDetailsException()
+        {
+            FlightCenterSystem.Instance.Login(out FacadeBase facadeBase, out ILoginToken loginToken, "Bar_36", "rvdsgr");
+            LoginToken<Administrator> token = (LoginToken<Administrator>)loginToken;
+            LoggedInAdministratorFacade facade = (LoggedInAdministratorFacade)facadeBase;
+            AirlineCompany airlineCompany = _airlineDAO.Get(7);
+            User user = airlineCompany.User;
+            user.User_Name = "roey123";
+            facade.UpdateAirlineDetails(token, airlineCompany);
+        }
+        [TestMethod]
+        [ExpectedException(typeof(WasntActivatedByAdministratorException))]
+        public void NullUserTriesToUpdateAirlineDetailsException()
+        {
+            FlightCenterSystem.Instance.Login(out FacadeBase facadeBase, out ILoginToken loginToken, "Bar_36", "rvdsgr");
+            LoginToken<Administrator> token = (LoginToken<Administrator>)loginToken;
+            LoggedInAdministratorFacade facade = (LoggedInAdministratorFacade)facadeBase;
+            facade.UpdateAirlineDetails(null, new AirlineCompany());
+        }
+        [TestMethod]
+        public void UpdateCountry_Test()
+        {
+            FlightCenterSystem.Instance.Login(out FacadeBase facadeBase, out ILoginToken loginToken, "danny121121", "fdsaa23");
+            LoginToken<Administrator> token = (LoginToken<Administrator>)loginToken;
+            LoggedInAdministratorFacade facade = (LoggedInAdministratorFacade)facadeBase;
+            Country country = _countryDAO.Get(2);
+            country.Name = "USA";
+            facade.UpdateCountry(token, country);
+            Assert.AreEqual(_countryDAO.Get(2).Name, "USA");
+        }
+        [TestMethod]
+        [ExpectedException(typeof(WrongCredentialsException))]
+        public void DuplicateCountryNameException()
+        {
+            FlightCenterSystem.Instance.Login(out FacadeBase facadeBase, out ILoginToken loginToken, "danny121121", "fdsaa23");
+            LoginToken<Administrator> token = (LoginToken<Administrator>)loginToken;
+            LoggedInAdministratorFacade facade = (LoggedInAdministratorFacade)facadeBase;
+            Country country = _countryDAO.Get(2);
+            country.Name = "Italy";
+            facade.UpdateCountry(token, country);
+        }
+        [TestMethod]
+        [ExpectedException(typeof(AdministratorDoesntHaveSanctionException))]
+        public void LowerLevelAdmiinTriesToUpdateCountryException()
+        {
+            FlightCenterSystem.Instance.Login(out FacadeBase facadeBase, out ILoginToken loginToken, "Bar_36", "rvdsgr");
+            LoginToken<Administrator> token = (LoginToken<Administrator>)loginToken;
+            LoggedInAdministratorFacade facade = (LoggedInAdministratorFacade)facadeBase;
+            Country country = _countryDAO.Get(2);
+            country.Name = "lalala";
+            facade.UpdateCountry(token, country);
+        }
+        [TestMethod]
+        [ExpectedException(typeof(WasntActivatedByAdministratorException))]
+        public void NullUserTriesToUpdateCountryException()
+        {
+            FlightCenterSystem.Instance.Login(out FacadeBase facadeBase, out ILoginToken loginToken, "danny121121", "fdsaa23");
+            LoginToken<Administrator> token = (LoginToken<Administrator>)loginToken;
+            LoggedInAdministratorFacade facade = (LoggedInAdministratorFacade)facadeBase;
+            facade.UpdateCountry(null, new Country());
+        }
+        [TestMethod]
+        public void UpdateCustomerDetails_Test()
+        {
+            FlightCenterSystem.Instance.Login(out FacadeBase facadeBase, out ILoginToken loginToken, "roey123", "12345");
+            LoginToken<Administrator> token = (LoginToken<Administrator>)loginToken;
+            LoggedInAdministratorFacade facade = (LoggedInAdministratorFacade)facadeBase;
+            Customer customer = _customerDAO.Get(1);
+            customer.User.Email = "UriBuri123@gmail.com";
+            facade.UpdateCustomerDetails(token, customer);
+            Assert.AreEqual(_customerDAO.Get(1).User.Email, "UriBuri123@gmail.com");
+        }
+        [TestMethod]
+        [ExpectedException(typeof(WrongCredentialsException))]
+        public void DuplicateCustomerDetailsWhenUpdateException()
+        {
+            FlightCenterSystem.Instance.Login(out FacadeBase facadeBase, out ILoginToken loginToken, "roey123", "12345");
+            LoginToken<Administrator> token = (LoginToken<Administrator>)loginToken;
+            LoggedInAdministratorFacade facade = (LoggedInAdministratorFacade)facadeBase;
+            Customer customer = _customerDAO.Get(5);
+            customer.Credit_Card_No = "1287";
+            facade.UpdateCustomerDetails(token, customer);
+        }
+        [TestMethod]
+        [ExpectedException(typeof(WasntActivatedByAdministratorException))]
+        public void NullUserTriesToUpdateCustomerDetailsException()
+        {
+            FlightCenterSystem.Instance.Login(out FacadeBase facadeBase, out ILoginToken loginToken, "roey123", "12345");
+            LoginToken<Administrator> token = (LoginToken<Administrator>)loginToken;
+            LoggedInAdministratorFacade facade = (LoggedInAdministratorFacade)facadeBase;
+            facade.UpdateCustomerDetails(null, new Customer());
+        }
     }
 }
