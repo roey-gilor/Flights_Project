@@ -43,7 +43,6 @@ namespace FlightProjectTest
             LoginToken<Administrator> token = (LoginToken<Administrator>)loginToken;
             LoggedInAdministratorFacade facade = (LoggedInAdministratorFacade)facadeBase;
 
-            AnonymousUserFacade anonymous = new AnonymousUserFacade();
             User user = new User
             {
                 User_Name = "Bar_36",
@@ -51,7 +50,7 @@ namespace FlightProjectTest
                 Email = "bar12121213@gmail.com",
                 User_Role = 1
             };
-            anonymous.AddNewUser(user);
+            _userDAO.Add(user);
             Administrator administrator = new Administrator
             {
                 First_Name = "Bar",
@@ -70,7 +69,6 @@ namespace FlightProjectTest
             LoginToken<Administrator> token = (LoginToken<Administrator>)loginToken;
             LoggedInAdministratorFacade facade = (LoggedInAdministratorFacade)facadeBase;
 
-            AnonymousUserFacade anonymous = new AnonymousUserFacade();
             User user = new User
             {
                 User_Name = "Shlomi5431",
@@ -78,7 +76,7 @@ namespace FlightProjectTest
                 Email = "shlomi98@gmail.com",
                 User_Role = 1
             };
-            anonymous.AddNewUser(user);
+            _userDAO.Add(user);
             Administrator administrator = new Administrator
             {
                 First_Name = "Shlomi",
@@ -204,8 +202,7 @@ namespace FlightProjectTest
                 Email = "wings@gmail.com",
                 User_Role = 2
             };
-            AnonymousUserFacade anonymous = new AnonymousUserFacade();
-            anonymous.AddNewUser(user);
+            _userDAO.Add(user);
             AirlineCompany airlineCompany = new AirlineCompany
             {
                 Name = "flying wings",
@@ -284,8 +281,7 @@ namespace FlightProjectTest
                 Email = "Malka@walla.com",
                 User_Role = 3
             };
-            AnonymousUserFacade anonymous = new AnonymousUserFacade();
-            anonymous.AddNewUser(user);
+            _userDAO.Add(user);
             Customer customer = new Customer
             {
                 First_Name = "Malka",

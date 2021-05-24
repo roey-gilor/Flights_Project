@@ -11,6 +11,6 @@ namespace BusinessLogic
         Ticket PurchaseTicket(LoginToken<Customer> token, Flight flight);
         void CancelTicket(LoginToken<Customer> token, Ticket ticket);
         void ChangeMyPassword(LoginToken<Customer> token, string oldPassword, string newPassword);
-        void UpdateUserDetails(LoginToken<Customer> token, User user);
+        void UpdateUserDetails(LoginToken<Customer> token, Customer customer);
     }
 }

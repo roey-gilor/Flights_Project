@@ -10,7 +10,7 @@ namespace FlightProjectTest
     [TestClass]
     public class AnonymousTest
     {
-        
+        ICustomerDAO _customerDAO = new CustomerDAOPGSQL();
         [TestMethod]
         public void GetAllAirlineCompanies_Test()
         {
@@ -61,19 +61,29 @@ namespace FlightProjectTest
             Assert.AreEqual(list.Count, 2);
         }
         [TestMethod]
-        public void AddNewUser_Tets()
+        public void AddNewUser_Test()
         {
             IUserDAO _userDAO = new UserDAOPGSQL();
             AnonymousUserFacade anonymous = new AnonymousUserFacade();
             User user = new User
             {
-                User_Name = "Moshe87",
+                User_Name = "Moshe817",
                 Password = "rerert",
-                Email = "moshe@gmail.com",
+                Email = "moshe111@gmail.com",
                 User_Role = 3
             };
-            anonymous.AddNewUser(user);
-            Assert.AreEqual(_userDAO.GetAll().Count, 8);
+            Customer customer = new Customer
+            {
+                First_Name = "Moshe",
+                Last_Name = "yakov",
+                Address = "king5",
+                Phone_No = "050-1351151",
+                Credit_Card_No = "1212123545",
+                User_Id = 12,
+                User = user
+            };
+            anonymous.AddNewCustomer(customer);
+            Assert.AreEqual(_customerDAO.GetAll().Count, 3);
         }
         [TestMethod]
         [ExpectedException(typeof(WrongCredentialsException))]
@@ -88,7 +98,9 @@ namespace FlightProjectTest
                 Email = "moshe@gmail.com",
                 User_Role = 3
             };
-            anonymous.AddNewUser(user);
+            Customer customer = new Customer();
+            customer.User = user;
+            anonymous.AddNewCustomer(customer);
         }
     }
 }

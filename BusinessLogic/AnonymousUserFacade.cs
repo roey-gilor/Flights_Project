@@ -9,12 +9,13 @@ namespace BusinessLogic
     {
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-        public void AddNewUser(User user)
+        public void AddNewCustomer(Customer customer)
         {
             try
             {
-                _userDAO.Add(user);
-                log.Info($"User  {user.Id} {user.User_Name} was added to the system");
+                _userDAO.Add(customer.User);
+                _customerDAO.Add(customer);
+                log.Info($"User  {customer.User.Id} {customer.User.User_Name} was added to the system");
             }
             catch (Exception ex)
             {

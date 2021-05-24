@@ -141,13 +141,14 @@ namespace BusinessLogic
             }
         }
 
-        public void UpdateUserDetails(LoginToken<AirlineCompany> token, User user)
+        public void UpdateUserDetails(LoginToken<AirlineCompany> token, AirlineCompany airline)
         {
             if (token != null)
             {
                 try
                 {
-                    _userDAO.Update(user);
+                    _userDAO.Update(airline.User);
+                    _airlineDAO.Update(airline);
                     log.Info($"User {token.User.User.Id} updated his details");
                 }
                 catch (Exception ex)

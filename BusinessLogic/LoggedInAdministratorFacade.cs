@@ -14,7 +14,7 @@ namespace BusinessLogic
             {
                 if (token.User.Level > admin.Level && token.User.Level == 3)
                 {
-                    admin.User.User_Role = 1;
+                    _userDAO.Add(admin.User);
                     _adminDAO.Add(admin);
                     log.Info($"{token.User.Id} {token.User.First_Name} {token.User.Last_Name} added new administrator: {admin.First_Name} {admin.Last_Name}");
                 }
@@ -24,7 +24,7 @@ namespace BusinessLogic
                     {
                         if (token.User.First_Name == "Main" && token.User.Last_Name == "admin")
                         {
-                            admin.User.User_Role = 1;
+                            _userDAO.Add(admin.User);
                             _adminDAO.Add(admin);
                             log.Info($"Main admin added new administrator: {admin.First_Name} {admin.Last_Name}");
                         }
@@ -85,7 +85,7 @@ namespace BusinessLogic
                 {
                     try
                     {
-                        airline.User.User_Role = 2;
+                        _userDAO.Add(airline.User);
                         _airlineDAO.Add(airline);
                         log.Info($"{token.User.Id} {token.User.First_Name} {token.User.Last_Name} added new airline: {airline.Name}");
                     }
@@ -116,7 +116,7 @@ namespace BusinessLogic
                 {
                     try
                     {
-                        customer.User.Id = 3;
+                        _userDAO.Add(customer.User);
                         _customerDAO.Add(customer);
                         log.Info($"{token.User.Id} {token.User.First_Name} {token.User.Last_Name} added new customer: {customer.First_Name} {customer.Last_Name}");
                     }

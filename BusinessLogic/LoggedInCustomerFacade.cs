@@ -102,13 +102,14 @@ namespace BusinessLogic
             }
         }
 
-        public void UpdateUserDetails(LoginToken<Customer> token, User user)
+        public void UpdateUserDetails(LoginToken<Customer> token, Customer customer)
         {
             if (token != null)
             {
                 try
                 {
-                    _userDAO.Update(user);
+                    _userDAO.Update(customer.User);
+                    _customerDAO.Update(customer);
                     log.Info($"User {token.User.User.Id} updated his details");
                 }
                 catch (Exception ex)
