@@ -15,6 +15,8 @@ namespace BusinessLogic
                 if (token.User.Level > admin.Level && token.User.Level == 3)
                 {
                     _userDAO.Add(admin.User);
+                    IList<User> users = _userDAO.GetAll();
+                    admin.User_Id = users[users.Count - 1].Id;
                     _adminDAO.Add(admin);
                     log.Info($"{token.User.Id} {token.User.First_Name} {token.User.Last_Name} added new administrator: {admin.First_Name} {admin.Last_Name}");
                 }
@@ -25,6 +27,8 @@ namespace BusinessLogic
                         if (token.User.First_Name == "Main" && token.User.Last_Name == "admin")
                         {
                             _userDAO.Add(admin.User);
+                            IList<User> users = _userDAO.GetAll();
+                            admin.User_Id = users[users.Count - 1].Id;
                             _adminDAO.Add(admin);
                             log.Info($"Main admin added new administrator: {admin.First_Name} {admin.Last_Name}");
                         }
@@ -86,6 +90,8 @@ namespace BusinessLogic
                     try
                     {
                         _userDAO.Add(airline.User);
+                        IList<User> users = _userDAO.GetAll();
+                        airline.User_Id = users[users.Count - 1].Id;
                         _airlineDAO.Add(airline);
                         log.Info($"{token.User.Id} {token.User.First_Name} {token.User.Last_Name} added new airline: {airline.Name}");
                     }
@@ -117,6 +123,8 @@ namespace BusinessLogic
                     try
                     {
                         _userDAO.Add(customer.User);
+                        IList<User> users = _userDAO.GetAll();
+                        customer.User_Id = users[users.Count - 1].Id;
                         _customerDAO.Add(customer);
                         log.Info($"{token.User.Id} {token.User.First_Name} {token.User.Last_Name} added new customer: {customer.First_Name} {customer.Last_Name}");
                     }
