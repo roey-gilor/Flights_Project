@@ -92,13 +92,14 @@ namespace DAO
             }
             return tickets;
         }
-        public void Add(Ticket t)
+        public long Add(Ticket t)
         {
             RunSpNonExecute(AppConfig.Instance.ConnectionString, "sp_add_ticket", new NpgsqlParameter[]
             {
                 new NpgsqlParameter("_flight_id" ,t.Flight_Id),
                 new NpgsqlParameter("_customer_id" ,t.Customer_Id)
             });
+            return 0;
         }
 
         public Ticket Get(long id)

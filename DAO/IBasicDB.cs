@@ -8,7 +8,7 @@ namespace DAO
     {
         public T Get(long id);
         public IList<T> GetAll();
-        public void Add(T t);
+        public long Add(T t);
         public void Remove(T t);
         public void Update(T t);
     }

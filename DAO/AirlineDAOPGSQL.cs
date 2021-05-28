@@ -92,16 +92,33 @@ namespace DAO
             }
             return airline_companies;
         }
-        public void Add(AirlineCompany t)
+        public long Add(AirlineCompany t)
         {
             try
             {
-                RunSpNonExecute(AppConfig.Instance.ConnectionString, "sp_add_airline", new NpgsqlParameter[]
+                long id = 0;
+                NpgsqlParameter[] parameters = new NpgsqlParameter[]
                 {
                 new NpgsqlParameter("_name" ,t.Name),
                 new NpgsqlParameter("_country_id",t.Country_Id),
                 new NpgsqlParameter("_user_id",t.User_Id)
-                });
+                };
+                using (var conn = new NpgsqlConnection(AppConfig.Instance.ConnectionString))
+                {
+                    conn.Open();
+
+                    NpgsqlCommand command = new NpgsqlCommand("sp_add_airline", conn);
+                    command.CommandType = System.Data.CommandType.StoredProcedure;
+
+                    command.Parameters.AddRange(parameters);
+
+                    var reader = command.ExecuteReader();
+                    while (reader.Read())
+                    {
+                        id = (long)reader[0];
+                    }
+                }
+                return id;
             }
             catch (Exception ex)
             {

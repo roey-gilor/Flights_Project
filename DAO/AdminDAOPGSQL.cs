@@ -92,15 +92,32 @@ namespace DAO
             }
             return administrators;
         }
-        public void Add(Administrator t)
+        public long Add(Administrator t)
         {
-            RunSpNonExecute(AppConfig.Instance.ConnectionString, "sp_add_admin", new NpgsqlParameter[]
+            long id = 0;
+            NpgsqlParameter[] parameters = new NpgsqlParameter[]
             {
                 new NpgsqlParameter("_first_name", t.First_Name),
                 new NpgsqlParameter("_last_name", t.Last_Name),
                 new NpgsqlParameter("_level", t.Level),
                 new NpgsqlParameter("_user_id", t.User_Id)
-            });
+            };
+            using (var conn = new NpgsqlConnection(AppConfig.Instance.ConnectionString))
+            {
+                conn.Open();
+
+                NpgsqlCommand command = new NpgsqlCommand("sp_add_admin", conn);
+                command.CommandType = System.Data.CommandType.StoredProcedure;
+
+                command.Parameters.AddRange(parameters);
+
+                var reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    id = (long)reader[0];
+                }
+            }
+            return id;
         }
 
         public Administrator Get(long id)

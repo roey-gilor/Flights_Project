@@ -50,13 +50,11 @@ namespace FlightProjectTest
                 Email = "bar12121213@gmail.com",
                 User_Role = 1
             };
-            _userDAO.Add(user);
             Administrator administrator = new Administrator
             {
                 First_Name = "Bar",
                 Last_Name = "Cohen",
                 Level = 2,
-                User_Id = 16,
                 User = user
             };
             facade.CreateAdmin(token, administrator);
@@ -76,17 +74,15 @@ namespace FlightProjectTest
                 Email = "shlomi98@gmail.com",
                 User_Role = 1
             };
-            _userDAO.Add(user);
             Administrator administrator = new Administrator
             {
                 First_Name = "Shlomi",
                 Last_Name = "Banai",
                 Level = 3,
-                User_Id = 20,
                 User = user
             };
             facade.CreateAdmin(token, administrator);
-            Assert.AreEqual(_adminDAO.GetAll().Count, 4);
+            Assert.AreEqual(_adminDAO.GetAll().Count, 5);
         }
         [TestMethod]
         [ExpectedException(typeof(AdministratorDoesntHaveSanctionException))]
@@ -202,12 +198,10 @@ namespace FlightProjectTest
                 Email = "wings@gmail.com",
                 User_Role = 2
             };
-            _userDAO.Add(user);
             AirlineCompany airlineCompany = new AirlineCompany
             {
                 Name = "flying wings",
                 Country_Id = 2,
-                User_Id = 18,
                 User = user
             };
             facade.CreateNewAirline(token, airlineCompany);
@@ -281,7 +275,6 @@ namespace FlightProjectTest
                 Email = "Malka@walla.com",
                 User_Role = 3
             };
-            _userDAO.Add(user);
             Customer customer = new Customer
             {
                 First_Name = "Malka",
@@ -289,7 +282,6 @@ namespace FlightProjectTest
                 Address = "Halevi 35",
                 Phone_No = "050-913768",
                 Credit_Card_No = "254565414",
-                User_Id = 19,
                 User = user
             };
             facade.CreateNewCustomer(token, customer);

@@ -94,7 +94,7 @@ namespace DAO
             }
             return flights;
         }
-        public void Add(Flight t)
+        public long Add(Flight t)
         {
             RunSpNonExecute(AppConfig.Instance.ConnectionString, "sp_add_flight", new NpgsqlParameter[]
             {
@@ -105,6 +105,7 @@ namespace DAO
                 new NpgsqlParameter("_landing_time" ,t.Landing_Time),
                 new NpgsqlParameter("_remaining_tickets" ,t.Remaining_Tickets),
             });
+            return 0;
         }
 
         public Flight Get(long id)

@@ -79,7 +79,6 @@ namespace FlightProjectTest
                 Address = "king5",
                 Phone_No = "050-1351151",
                 Credit_Card_No = "1212123545",
-                User_Id = 12,
                 User = user
             };
             anonymous.AddNewCustomer(customer);

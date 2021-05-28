@@ -90,7 +90,7 @@ namespace DAO
             }
             return countries;
         }
-        public void Add(Country t)
+        public long Add(Country t)
         {
             try
             {
@@ -98,6 +98,7 @@ namespace DAO
                 {
                 new NpgsqlParameter("_name" ,t.Name)
                 });
+                return 0;
             }
             catch (Exception ex)
             {

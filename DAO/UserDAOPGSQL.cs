@@ -92,17 +92,35 @@ namespace DAO
             }
             return users;
         }
-        public void Add(User t)
+        public long Add(User t)
         {
             try
             {
-                RunSpNonExecute(AppConfig.Instance.ConnectionString, "sp_add_user", new NpgsqlParameter[]
+                long id = 0;
+                NpgsqlParameter[] parameters = new NpgsqlParameter[]
                 {
-                new NpgsqlParameter("_user_name" ,t.User_Name),
-                new NpgsqlParameter("_password", t.Password),
-                new NpgsqlParameter("_email", t.Email),
-                new NpgsqlParameter("_user_role", t.User_Role)
-                });
+                    new NpgsqlParameter("_user_name" ,t.User_Name),
+                    new NpgsqlParameter("_password", t.Password),
+                    new NpgsqlParameter("_email", t.Email),
+                    new NpgsqlParameter("_user_role", t.User_Role)
+                };
+
+                using (var conn = new NpgsqlConnection(AppConfig.Instance.ConnectionString))
+                {
+                    conn.Open();
+
+                    NpgsqlCommand command = new NpgsqlCommand("sp_add_user", conn);
+                    command.CommandType = System.Data.CommandType.StoredProcedure;
+
+                    command.Parameters.AddRange(parameters);
+
+                    var reader = command.ExecuteReader();
+                    while (reader.Read())
+                    {
+                        id = (long)reader[0];
+                    }
+                }
+                return id;
             }
             catch (Exception ex)
             {

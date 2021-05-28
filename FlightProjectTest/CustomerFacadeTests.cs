@@ -15,6 +15,7 @@ namespace FlightProjectTest
         static IFlightDAO _flightDAO = new FlightDAOPGSQL();
         static ITicketDAO _ticketDAO = new TicketDAOPGSQL();
         static IUserDAO _userDAO = new UserDAOPGSQL();
+        protected ICustomerDAO _customerDAO = new CustomerDAOPGSQL();
         [TestMethod]
         public void GetAllMyFlights_Test()
         {
@@ -39,12 +40,12 @@ namespace FlightProjectTest
         [TestMethod]
         public void PurchaseTicket_Test()
         {
-            Flight flight = _flightDAO.Get(9);
-            FlightCenterSystem.Instance.Login(out FacadeBase facadeBase, out ILoginToken token, "uri321", "vzd474");
+            Flight flight = _flightDAO.Get(6);
+            FlightCenterSystem.Instance.Login(out FacadeBase facadeBase, out ILoginToken token, "Malka4444", "bgfvs");
             LoginToken<Customer> loginToken = (LoginToken<Customer>)token;
             LoggedInCustomerFacade facade = (LoggedInCustomerFacade)facadeBase;
             facade.PurchaseTicket(loginToken, flight);
-            Assert.AreEqual(flight.Remaining_Tickets, 44);
+            Assert.AreEqual(_flightDAO.Get(6).Remaining_Tickets, 4);
         }
         [TestMethod]
         [ExpectedException(typeof(CustomerAlreadyBoughtTicketException))]
@@ -147,7 +148,8 @@ namespace FlightProjectTest
                 Email = loginToken.User.User.Email,
                 User_Role = loginToken.User.User.User_Role
             };
-            facade.UpdateUserDetails(loginToken, user);
+            _customerDAO.Get(1).User = user;
+            facade.UpdateUserDetails(loginToken, _customerDAO.Get(1));
             Assert.AreEqual(_userDAO.Get(6).User_Name, "shany203");
         }
         [TestMethod]
@@ -165,7 +167,8 @@ namespace FlightProjectTest
                 Email = "danny@gmail.com",
                 User_Role = loginToken.User.User.User_Role
             };
-            facade.UpdateUserDetails(loginToken, user);
+            _customerDAO.Get(1).User = user;
+            facade.UpdateUserDetails(loginToken, _customerDAO.Get(1));
         }
         [TestMethod]
         [ExpectedException(typeof(WasntActivatedByCustomerException))]
@@ -174,7 +177,7 @@ namespace FlightProjectTest
             FlightCenterSystem.Instance.Login(out FacadeBase facadeBase, out ILoginToken token, "shany203", "dsaasa");
             LoginToken<Customer> loginToken = (LoginToken<Customer>)token;
             LoggedInCustomerFacade facade = (LoggedInCustomerFacade)facadeBase;
-            facade.UpdateUserDetails(null, new User());
+            facade.UpdateUserDetails(null, new Customer());
         }
     }
 }

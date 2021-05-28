@@ -9,15 +9,15 @@ namespace BusinessLogic
     {
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-        public void AddNewCustomer(Customer customer)
+        public long AddNewCustomer(Customer customer)
         {
             try
             {
-                _userDAO.Add(customer.User);
-                IList<User> users = _userDAO.GetAll();
-                customer.User_Id = users[users.Count - 1].Id;
-                _customerDAO.Add(customer);
+                long id = _userDAO.Add(customer.User);
+                customer.User_Id = id;
+                long customerId = _customerDAO.Add(customer);
                 log.Info($"User  {customer.User.Id} {customer.User.User_Name} was added to the system");
+                return customerId;
             }
             catch (Exception ex)
             {

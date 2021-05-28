@@ -95,11 +95,12 @@ namespace DAO
             }
             return customers;
         }
-        public void Add(Customer t)
+        public long Add(Customer t)
         {
             try
             {
-                RunSpNonExecute(AppConfig.Instance.ConnectionString, "sp_add_customer", new NpgsqlParameter[]
+                long id = 0;
+                NpgsqlParameter[] parameters = new NpgsqlParameter[]
                 {
                 new NpgsqlParameter("_first_name" ,t.First_Name),
                 new NpgsqlParameter("_last_name" ,t.Last_Name),
@@ -107,7 +108,24 @@ namespace DAO
                 new NpgsqlParameter("_phone_no" ,t.Phone_No),
                 new NpgsqlParameter("_credit_card_no" ,t.Credit_Card_No),
                 new NpgsqlParameter("_user_id" ,t.User_Id)
-                });
+                };
+
+                using (var conn = new NpgsqlConnection(AppConfig.Instance.ConnectionString))
+                {
+                    conn.Open();
+
+                    NpgsqlCommand command = new NpgsqlCommand("sp_add_customer", conn);
+                    command.CommandType = System.Data.CommandType.StoredProcedure;
+
+                    command.Parameters.AddRange(parameters);
+
+                    var reader = command.ExecuteReader();
+                    while (reader.Read())
+                    {
+                        id = (long)reader[0];
+                    }
+                }
+                return id;
             }
             catch (Exception ex)
             {

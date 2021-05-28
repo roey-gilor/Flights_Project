@@ -8,17 +8,17 @@ namespace BusinessLogic
     public class LoggedInAdministratorFacade : AnonymousUserFacade, ILoggedInAdministratorFacade
     {
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-        public void CreateAdmin(LoginToken<Administrator> token, Administrator admin)
+        public long CreateAdmin(LoginToken<Administrator> token, Administrator admin)
         {
             if (token != null)
             {
                 if (token.User.Level > admin.Level && token.User.Level == 3)
                 {
-                    _userDAO.Add(admin.User);
-                    IList<User> users = _userDAO.GetAll();
-                    admin.User_Id = users[users.Count - 1].Id;
-                    _adminDAO.Add(admin);
+                    long userId = _userDAO.Add(admin.User);
+                    admin.User_Id = userId;
+                    long id = _adminDAO.Add(admin);
                     log.Info($"{token.User.Id} {token.User.First_Name} {token.User.Last_Name} added new administrator: {admin.First_Name} {admin.Last_Name}");
+                    return id;
                 }
                 else
                 {
@@ -26,11 +26,11 @@ namespace BusinessLogic
                     {
                         if (token.User.First_Name == "Main" && token.User.Last_Name == "admin")
                         {
-                            _userDAO.Add(admin.User);
-                            IList<User> users = _userDAO.GetAll();
-                            admin.User_Id = users[users.Count - 1].Id;
-                            _adminDAO.Add(admin);
+                            long userId = _userDAO.Add(admin.User);
+                            admin.User_Id = userId;
+                            long id = _adminDAO.Add(admin);
                             log.Info($"Main admin added new administrator: {admin.First_Name} {admin.Last_Name}");
+                            return id;
                         }
                         else
                         {
@@ -81,7 +81,7 @@ namespace BusinessLogic
             }
         }
 
-        public void CreateNewAirline(LoginToken<Administrator> token, AirlineCompany airline)
+        public long CreateNewAirline(LoginToken<Administrator> token, AirlineCompany airline)
         {
             if (token != null)
             {
@@ -89,11 +89,11 @@ namespace BusinessLogic
                 {
                     try
                     {
-                        _userDAO.Add(airline.User);
-                        IList<User> users = _userDAO.GetAll();
-                        airline.User_Id = users[users.Count - 1].Id;
-                        _airlineDAO.Add(airline);
+                        long userId = _userDAO.Add(airline.User);
+                        airline.User_Id = userId;
+                        long id = _airlineDAO.Add(airline);
                         log.Info($"{token.User.Id} {token.User.First_Name} {token.User.Last_Name} added new airline: {airline.Name}");
+                        return id;
                     }
                     catch (Exception ex)
                     {
@@ -114,7 +114,7 @@ namespace BusinessLogic
             }
         }
 
-        public void CreateNewCustomer(LoginToken<Administrator> token, Customer customer)
+        public long CreateNewCustomer(LoginToken<Administrator> token, Customer customer)
         {
             if (token != null)
             {
@@ -122,11 +122,11 @@ namespace BusinessLogic
                 {
                     try
                     {
-                        _userDAO.Add(customer.User);
-                        IList<User> users = _userDAO.GetAll();
-                        customer.User_Id = users[users.Count - 1].Id;
-                        _customerDAO.Add(customer);
+                        long userId = _userDAO.Add(customer.User);
+                        customer.User_Id = userId;
+                        long id = _customerDAO.Add(customer);
                         log.Info($"{token.User.Id} {token.User.First_Name} {token.User.Last_Name} added new customer: {customer.First_Name} {customer.Last_Name}");
+                        return id;
                     }
                     catch (Exception ex)
                     {

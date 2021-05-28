@@ -17,34 +17,42 @@ SET client_min_messages = warning;
 SET row_security = off;
 
 --
--- Name: sp_add_admin(text, text, integer, bigint); Type: PROCEDURE; Schema: public; Owner: postgres
+-- Name: sp_add_admin(text, text, integer, bigint); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
-CREATE PROCEDURE public.sp_add_admin(_first_name text, _last_name text, _level integer, _user_id bigint)
+CREATE FUNCTION public.sp_add_admin(_first_name text, _last_name text, _level integer, _user_id bigint) RETURNS bigint
     LANGUAGE plpgsql
     AS $$
+Declare
+    new_id bigint;
    begin 
-	   insert into administrators (first_name,last_name,"level",user_id) values (_first_name,_last_name,_level,_user_id);
+	   insert into administrators (first_name,last_name,"level",user_id) 
+	   values (_first_name,_last_name,_level,_user_id) returning id into new_id;
+	   return new_id;
    end;
    $$;
 
 
-ALTER PROCEDURE public.sp_add_admin(_first_name text, _last_name text, _level integer, _user_id bigint) OWNER TO postgres;
+ALTER FUNCTION public.sp_add_admin(_first_name text, _last_name text, _level integer, _user_id bigint) OWNER TO postgres;
 
 --
--- Name: sp_add_airline(text, bigint, bigint); Type: PROCEDURE; Schema: public; Owner: postgres
+-- Name: sp_add_airline(text, bigint, bigint); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
-CREATE PROCEDURE public.sp_add_airline(_name text, _country_id bigint, _user_id bigint)
+CREATE FUNCTION public.sp_add_airline(_name text, _country_id bigint, _user_id bigint) RETURNS bigint
     LANGUAGE plpgsql
     AS $$
+Declare
+    new_id bigint;
      begin 
-	     insert into airline_companies (name,country_id,user_id) values (_name,_country_id,_user_id);
+	     insert into airline_companies (name,country_id,user_id) 
+		 values (_name,_country_id,_user_id) returning id into new_id;
+		 return new_id;
      end;
 $$;
 
 
-ALTER PROCEDURE public.sp_add_airline(_name text, _country_id bigint, _user_id bigint) OWNER TO postgres;
+ALTER FUNCTION public.sp_add_airline(_name text, _country_id bigint, _user_id bigint) OWNER TO postgres;
 
 --
 -- Name: sp_add_country(text); Type: PROCEDURE; Schema: public; Owner: postgres
@@ -62,19 +70,23 @@ $$;
 ALTER PROCEDURE public.sp_add_country(_name text) OWNER TO postgres;
 
 --
--- Name: sp_add_customer(text, text, text, text, text, bigint); Type: PROCEDURE; Schema: public; Owner: postgres
+-- Name: sp_add_customer(text, text, text, text, text, bigint); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
-CREATE PROCEDURE public.sp_add_customer(_first_name text, _last_name text, _address text, _phone_no text, _credit_card_no text, _user_id bigint)
+CREATE FUNCTION public.sp_add_customer(_first_name text, _last_name text, _address text, _phone_no text, _credit_card_no text, _user_id bigint) RETURNS bigint
     LANGUAGE plpgsql
     AS $$
+Declare
+    new_id bigint;
     begin 
-	    insert into customers(first_name,last_name,address,phone_no,credit_card_no,user_id) values (_first_name,_last_name,_address,_phone_no,_credit_card_no,_user_id);
-    end;
+	    insert into customers(first_name,last_name,address,phone_no,credit_card_no,user_id)
+		values (_first_name,_last_name,_address,_phone_no,_credit_card_no,_user_id) returning id into new_id;
+    return new_id;
+	end;
 $$;
 
 
-ALTER PROCEDURE public.sp_add_customer(_first_name text, _last_name text, _address text, _phone_no text, _credit_card_no text, _user_id bigint) OWNER TO postgres;
+ALTER FUNCTION public.sp_add_customer(_first_name text, _last_name text, _address text, _phone_no text, _credit_card_no text, _user_id bigint) OWNER TO postgres;
 
 --
 -- Name: sp_add_flight(bigint, bigint, bigint, timestamp without time zone, timestamp without time zone, integer); Type: PROCEDURE; Schema: public; Owner: postgres
@@ -117,7 +129,7 @@ CREATE PROCEDURE public.sp_add_ticket(_flight_id bigint, _customer_id bigint)
     AS $$
      begin 
 	     insert into tickets (flight_id,customer_id) values (_flight_id,_customer_id);
-     end;
+	 end;
 $$;
 
 
@@ -139,19 +151,23 @@ $$;
 ALTER PROCEDURE public.sp_add_ticket_into_tickets_history(_ticket_id bigint, _flight_id bigint, _customer_id bigint) OWNER TO postgres;
 
 --
--- Name: sp_add_user(text, text, text, bigint); Type: PROCEDURE; Schema: public; Owner: postgres
+-- Name: sp_add_user(text, text, text, bigint); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
-CREATE PROCEDURE public.sp_add_user(_user_name text, _password text, _email text, _user_role bigint)
+CREATE FUNCTION public.sp_add_user(_user_name text, _password text, _email text, _user_role bigint) RETURNS bigint
     LANGUAGE plpgsql
     AS $$
+    Declare
+    new_id bigint;
      begin 
-	     insert into users (username,"password",email,user_role) values (_user_name,_password,_email,_user_role);
+	     insert into users (username,"password",email,user_role) values
+	    (_user_name,_password,_email,_user_role) returning id into new_id;
+	   return new_id;
      end;
 $$;
 
 
-ALTER PROCEDURE public.sp_add_user(_user_name text, _password text, _email text, _user_role bigint) OWNER TO postgres;
+ALTER FUNCTION public.sp_add_user(_user_name text, _password text, _email text, _user_role bigint) OWNER TO postgres;
 
 --
 -- Name: sp_get_admin_by_id(bigint); Type: FUNCTION; Schema: public; Owner: postgres

@@ -206,7 +206,8 @@ namespace FlightProjectTest
                 Email = loginToken.User.User.Email,
                 User_Role = loginToken.User.User.User_Role
             };
-            facade.UpdateUserDetails(loginToken, user);
+            _airlineDAO.Get(1).User = user;
+            facade.UpdateUserDetails(loginToken, _airlineDAO.Get(1));
             Assert.AreEqual(_userDAO.Get(4).User_Name, "dana111");
         }
         [TestMethod]
@@ -224,7 +225,8 @@ namespace FlightProjectTest
                 Email = "amir@gmail.com",
                 User_Role = loginToken.User.User.User_Role
             };
-            facade.UpdateUserDetails(loginToken, user);
+            _airlineDAO.Get(1).User = user;
+            facade.UpdateUserDetails(loginToken, _airlineDAO.Get(1));
         }
         [TestMethod]
         [ExpectedException(typeof(WasntActivatedByAirlineException))]
@@ -233,7 +235,7 @@ namespace FlightProjectTest
             FlightCenterSystem.Instance.Login(out FacadeBase facadebase, out ILoginToken token, "dana111", "gdfds");
             LoginToken<AirlineCompany> loginToken = (LoginToken<AirlineCompany>)token;
             LoggedInAirlineFacade facade = (LoggedInAirlineFacade)facadebase;
-            facade.UpdateUserDetails(null, new User());
+            facade.UpdateUserDetails(null, new AirlineCompany());
         }
     }
 }
