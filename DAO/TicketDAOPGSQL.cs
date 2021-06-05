@@ -94,12 +94,35 @@ namespace DAO
         }
         public long Add(Ticket t)
         {
-            RunSpNonExecute(AppConfig.Instance.ConnectionString, "sp_add_ticket", new NpgsqlParameter[]
+            try
             {
+                long id = 0;
+                NpgsqlParameter[] parameters = new NpgsqlParameter[]
+                {
                 new NpgsqlParameter("_flight_id" ,t.Flight_Id),
                 new NpgsqlParameter("_customer_id" ,t.Customer_Id)
-            });
-            return 0;
+                };
+                using (var conn = new NpgsqlConnection(AppConfig.Instance.ConnectionString))
+                {
+                    conn.Open();
+
+                    NpgsqlCommand command = new NpgsqlCommand("sp_add_ticket", conn);
+                    command.CommandType = System.Data.CommandType.StoredProcedure;
+
+                    command.Parameters.AddRange(parameters);
+
+                    var reader = command.ExecuteReader();
+                    while (reader.Read())
+                    {
+                        id = (long)reader[0];
+                    }
+                }
+                return id;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
 
         public Ticket Get(long id)

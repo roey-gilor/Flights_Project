@@ -117,8 +117,17 @@ namespace BusinessLogic
         {
             if (token != null)
             {
-                _airlineDAO.Update(airline);
-                log.Info($"Airline {token.User.Name} Got all updated their details");
+                try
+                {
+                    UpdateUserDetails(token, airline);
+                    _airlineDAO.Update(airline);
+                }
+                catch (Exception ex)
+                {
+                    log.Error($"Could not change Airkine {token.User.Id} details: {ex.Message}");
+                    throw new WrongCredentialsException($"Could not change Airkine {token.User.Id} details: {ex.Message}");
+                }
+                log.Info($"Airline {token.User.Name} updated their details");
             }
             else
             {
@@ -141,14 +150,13 @@ namespace BusinessLogic
             }
         }
 
-        public void UpdateUserDetails(LoginToken<AirlineCompany> token, AirlineCompany airline)
+        private void UpdateUserDetails(LoginToken<AirlineCompany> token, AirlineCompany airline)
         {
             if (token != null)
             {
                 try
                 {
                     _userDAO.Update(airline.User);
-                    _airlineDAO.Update(airline);
                     log.Info($"User {token.User.User.Id} updated his details");
                 }
                 catch (Exception ex)

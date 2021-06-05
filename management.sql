@@ -121,19 +121,22 @@ $$;
 ALTER PROCEDURE public.sp_add_flight_into_flights_history(_flight_id bigint, _airline_company_id bigint, _origin_country_id bigint, _destination_country_id bigint, _departure_time timestamp without time zone, _landing_time timestamp without time zone, _remaining_tickets integer) OWNER TO postgres;
 
 --
--- Name: sp_add_ticket(bigint, bigint); Type: PROCEDURE; Schema: public; Owner: postgres
+-- Name: sp_add_ticket(bigint, bigint); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
-CREATE PROCEDURE public.sp_add_ticket(_flight_id bigint, _customer_id bigint)
+CREATE FUNCTION public.sp_add_ticket(_flight_id bigint, _customer_id bigint) RETURNS bigint
     LANGUAGE plpgsql
     AS $$
+ Declare
+    new_id bigint;
      begin 
-	     insert into tickets (flight_id,customer_id) values (_flight_id,_customer_id);
+	     insert into tickets (flight_id,customer_id) values (_flight_id,_customer_id) returning id into new_id;
+	 return new_id;
 	 end;
 $$;
 
 
-ALTER PROCEDURE public.sp_add_ticket(_flight_id bigint, _customer_id bigint) OWNER TO postgres;
+ALTER FUNCTION public.sp_add_ticket(_flight_id bigint, _customer_id bigint) OWNER TO postgres;
 
 --
 -- Name: sp_add_ticket_into_tickets_history(bigint, bigint, bigint); Type: PROCEDURE; Schema: public; Owner: postgres

@@ -8,6 +8,32 @@ namespace BusinessLogic
     public class LoggedInAdministratorFacade : AnonymousUserFacade, ILoggedInAdministratorFacade
     {
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
+        public void ChangeMyPassword(LoginToken<Administrator> token, string oldPassword, string newPassword)
+        {
+            if (token != null)
+            {
+                if (token.User.User.Password != oldPassword)
+                {
+                    log.Error($"Discrepancies between {token.User.Id} {token.User.First_Name} {token.User.Last_Name} old password to the password that saved in the system");
+                    throw new WrongCredentialsException($"Discrepancies between {token.User.Id} {token.User.First_Name} {token.User.Last_Name} old password to the password that saved in the system");
+                }
+                if (token.User.User.Password == newPassword)
+                {
+                    log.Error($"User {token.User.Id} tried to make his new password like the old one");
+                    throw new WrongCredentialsException("New password can't be like the old one");
+                }
+                token.User.User.Password = newPassword;
+                _userDAO.Update(token.User.User);
+                log.Info($"Customer {token.User.Id} {token.User.First_Name} {token.User.Last_Name} changed password");
+            }
+            else
+            {
+                log.Error("An unknown user tried to change password");
+                throw new WasntActivatedByCustomerException("An unknown user tried to change password");
+            }
+        }
+
         public long CreateAdmin(LoginToken<Administrator> token, Administrator admin)
         {
             if (token != null)

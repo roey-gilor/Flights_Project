@@ -15,6 +15,8 @@ namespace DAO
         public string Credit_Card_No { get; set; }
         public long User_Id { get; set; }
         public User User { get; set; }
+        public string Name { get; set; }
+        public string Password { get; set; }
         public Customer()
         {
 

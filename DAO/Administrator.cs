@@ -13,6 +13,8 @@ namespace DAO
         public int Level { get; set; }
         public long User_Id { get; set; }
         public User User { get; set; }
+        public string Password { get; set; }
+        public string Name { get; set; }
         public Administrator()
         {
 

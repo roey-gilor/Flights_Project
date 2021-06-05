@@ -20,5 +20,6 @@ namespace BusinessLogic
         void CreateCountry(LoginToken<Administrator> token, Country country);
         void UpdateCountry(LoginToken<Administrator> token, Country country);
         void RemoveCountry(LoginToken<Administrator> token, Country country);
+        void ChangeMyPassword(LoginToken<Administrator> token, string oldPassword, string newPassword);
     }
 }

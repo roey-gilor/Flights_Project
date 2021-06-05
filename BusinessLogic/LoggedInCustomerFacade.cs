@@ -83,7 +83,7 @@ namespace BusinessLogic
                 if (flight.Remaining_Tickets > 0)
                 {
                     Ticket ticket = new Ticket { Flight_Id = flight.Id, Customer_Id = token.User.Id, Customer = token.User, Flight = flight };
-                    _ticketDAO.Add(ticket);
+                    ticket.Id = _ticketDAO.Add(ticket);
                     flight.Remaining_Tickets--;
                     _flightDAO.Update(flight);
                     log.Info($"Customer {token.User.Id} {token.User.First_Name} {token.User.Last_Name} bought a ticket");
@@ -110,12 +110,12 @@ namespace BusinessLogic
                 {
                     _userDAO.Update(customer.User);
                     _customerDAO.Update(customer);
-                    log.Info($"User {token.User.User.Id} updated his details");
+                    log.Info($"Customer {token.User.Id} updated his details");
                 }
                 catch (Exception ex)
                 {
-                    log.Error($"Could not change user {token.User.User.Id} details: {ex.Message}");
-                    throw new WrongCredentialsException($"Could not change user {token.User.User.Id} details: {ex.Message}");
+                    log.Error($"Could not change customer {token.User.Id} details: {ex.Message}");
+                    throw new WrongCredentialsException($"Could not change customer {token.User.Id} details: {ex.Message}");
                 }
             }
             else
