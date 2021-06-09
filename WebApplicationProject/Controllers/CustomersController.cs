@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using BusinessLogic;
 using DAO;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -16,15 +17,16 @@ namespace WebApplicationProject.Controllers
     [Route("api/[controller]")]
     [ApiController]
     [Authorize(Roles = "Customer")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class CustomersController : FlightControllerBase<Customer>
     {
-        //private ILoggedInCustomerFacade m_facade;
+        private ILoggedInCustomerFacade m_facade;
         private readonly IMapper m_mapper;
-        //public CustomersController(ILoggedInCustomerFacade customerFacade, IMapper mapper)
-        //{
-        //   // m_facade = customerFacade;
-        //    m_mapper = mapper;
-        //}
+        public CustomersController(ILoggedInCustomerFacade customerFacade, IMapper mapper)
+        {
+            m_facade = customerFacade;
+            m_mapper = mapper;
+        }
         private void AuthenticateAndGetTokenAndGetFacade(out LoginToken<Customer> token_customer, out LoggedInCustomerFacade facade)
         {
             FlightCenterSystem.Instance.Login(out FacadeBase facadeBase, out ILoginToken token, "uri321", "vzd474");
@@ -38,11 +40,10 @@ namespace WebApplicationProject.Controllers
         {
             //AuthenticateAndGetTokenAndGetFacade(out LoginToken<Customer> token, out LoggedInCustomerFacade facade);
             LoginToken<Customer> token = GetLoginToken();
-            LoggedInCustomerFacade facade = new LoggedInCustomerFacade();
             IList<Flight> flights = null;
             try
             {
-                flights = await Task.Run(() => facade.GetAllMyFlights(token));
+                flights = await Task.Run(() => m_facade.GetAllMyFlights(token));
             }
             catch (Exception ex)
             {

@@ -37,6 +37,7 @@ namespace WebApplicationProject.Controllers
                 return Unauthorized("Login Failed");
             }
             User user = GetUser(login);
+            string role = GetUserRole(user);
 
             string securityKey =
        "this_is_our_supper_long_security_key_for_token_validation_project_2018_09_07$smesk.in";
@@ -54,9 +55,10 @@ namespace WebApplicationProject.Controllers
             // add claims
             var claims = new List<Claim>();
 
-            claims.Add(new Claim(ClaimTypes.Role, GetUserRole(user))); // --> here use the role from the login result
+            claims.Add(new Claim(ClaimTypes.Role, role)); // --> here use the role from the login result
             claims.Add(new Claim("userid", user.Id.ToString())); // --> here use the user_id from the result
             claims.Add(new Claim("username", user.User_Name)); // --> here use the name from the login result
+            claims.Add(new Claim("mainUserId", GetRealUserId(login).ToString()));
 
             // 4) create token
             var token = new JwtSecurityToken(
@@ -104,6 +106,33 @@ namespace WebApplicationProject.Controllers
             if (user.User_Role == 2)
                 return "Airline Company";
             return "Customer";
+        }
+        private long GetRealUserId(ILoginToken token)
+        {
+            LoginToken<Administrator> administrator = null;
+            LoginToken<AirlineCompany> airline = null;
+            LoginToken<Customer> customer = null;
+            long id = 0;
+
+            try
+            {
+                administrator = (LoginToken<Administrator>)token;
+                id = administrator.User.Id;
+            }
+            catch (Exception)
+            {
+                try
+                {
+                    airline = (LoginToken<AirlineCompany>)token;
+                    id = airline.User.Id;
+                }
+                catch (Exception)
+                {
+                    customer = (LoginToken<Customer>)token;
+                    id = customer.User.Id;
+                }
+            }
+            return id;
         }
     }
 }

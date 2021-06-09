@@ -12,7 +12,14 @@ namespace DAO
         public long Country_Id { get; set; }
         public long User_Id { get; set; }
         public User User { get; set; }
-        public string Password { get; set; }
+        public string Password
+        {
+            get
+            {
+                return User.Password;
+            }
+            set { }
+        }
 
         public AirlineCompany()
         {

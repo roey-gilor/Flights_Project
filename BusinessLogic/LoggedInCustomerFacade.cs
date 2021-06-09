@@ -54,7 +54,7 @@ namespace BusinessLogic
         {
             if (token != null)
             {
-                log.Info($"Customer {token.User.Id} {token.User.First_Name} {token.User.Last_Name} Got his flights");
+                log.Info($"Customer {token.User.Id} Got his flights");
                 return _flightDAO.GetFlightsByCustomer(token.User);
             }
             else
