@@ -10,13 +10,14 @@ namespace BusinessLogic
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         public void CancelTicket(LoginToken<Customer> token, Ticket ticket)
         {
+            Customer customer = _customerDAO.Get(token.User.Id);
             if (token != null)
             {
                 Flight flight = _flightDAO.Get(ticket.Flight_Id);
                 flight.Remaining_Tickets++;
                 _flightDAO.Update(flight);
                 _ticketDAO.Remove(ticket);
-                log.Info($"Customer {token.User.Id} {token.User.First_Name} {token.User.Last_Name} canceled ticket purchasing");
+                log.Info($"Customer {token.User.Id} {customer.First_Name} {customer.Last_Name} canceled ticket purchasing");
             }
             else
             {
@@ -29,19 +30,22 @@ namespace BusinessLogic
         {
             if (token != null)
             {
-                if (token.User.User.Password != oldPassword)
+                Customer customer = _customerDAO.Get(token.User.Id);
+                User user = _userDAO.Get(token.User.User_Id);
+                oldPassword = user.Password;
+                if (token.User.Password != oldPassword)
                 {
-                    log.Error($"Discrepancies between {token.User.Id} {token.User.First_Name} {token.User.Last_Name} old password to the password that saved in the system");
-                    throw new WrongCredentialsException($"Discrepancies between {token.User.Id} {token.User.First_Name} {token.User.Last_Name} old password to the password that saved in the system");
+                    log.Error($"Discrepancies between {token.User.Id} {customer.First_Name} {customer.Last_Name} old password to the password that saved in the system");
+                    throw new WrongCredentialsException($"Discrepancies between {token.User.Id} {customer.First_Name} {customer.Last_Name} old password to the password that saved in the system");
                 }
-                if (token.User.User.Password == newPassword)
+                if (token.User.Password == newPassword)
                 {
                     log.Error($"User {token.User.Id} tried to make his new password like the old one");
                     throw new WrongCredentialsException("New password can't be like the old one");
                 }
-                token.User.User.Password = newPassword;
-                _userDAO.Update(token.User.User);
-                log.Info($"Customer {token.User.Id} {token.User.First_Name} {token.User.Last_Name} changed password");
+                user.Password = newPassword;
+                _userDAO.Update(user);
+                log.Info($"Customer {token.User.Id} {customer.First_Name} {customer.Last_Name} changed password");
             }
             else
             {
@@ -54,7 +58,8 @@ namespace BusinessLogic
         {
             if (token != null)
             {
-                log.Info($"Customer {token.User.Id} Got his flights");
+                Customer customer = _customerDAO.Get(token.User.Id);
+                log.Info($"Customer {token.User.Id} {customer.First_Name} {customer.Last_Name} Got his flights");
                 return _flightDAO.GetFlightsByCustomer(token.User);
             }
             else
@@ -68,14 +73,15 @@ namespace BusinessLogic
         {
             if (token != null)
             {
+                Customer customer = _customerDAO.Get(token.User.Id);
                 foreach (Ticket ticket in _ticketDAO.GetAll())
                 {
                     if (ticket.Flight_Id == flight.Id)
                     {
                         if (ticket.Customer_Id == token.User.Id)
                         {
-                            log.Error($"Customer {token.User.Id} {token.User.First_Name} {token.User.Last_Name} tried to buy a ticket to the flight twice");
-                            throw new CustomerAlreadyBoughtTicketException($"Customer {token.User.Id} {token.User.First_Name} {token.User.Last_Name} tried to buy a ticket to the flight twice");
+                            log.Error($"Customer {token.User.Id} {customer.First_Name} {customer.Last_Name} tried to buy a ticket to the flight twice");
+                            throw new CustomerAlreadyBoughtTicketException($"Customer {token.User.Id} {customer.First_Name} {customer.Last_Name} tried to buy a ticket to the flight twice");
                         }
                     }
                 }
@@ -86,8 +92,8 @@ namespace BusinessLogic
                     ticket.Id = _ticketDAO.Add(ticket);
                     flight.Remaining_Tickets--;
                     _flightDAO.Update(flight);
-                    log.Info($"Customer {token.User.Id} {token.User.First_Name} {token.User.Last_Name} bought a ticket");
-                    return ticket;
+                    log.Info($"Customer {token.User.Id} {customer.First_Name} {customer.Last_Name} bought a ticket");
+                    return _ticketDAO.Get(ticket.Id);
                 }
                 else
                 {
@@ -108,7 +114,7 @@ namespace BusinessLogic
             {
                 try
                 {
-                    _userDAO.Update(customer.User);
+                    UpdateUserDetails(token, customer.User);
                     _customerDAO.Update(customer);
                     log.Info($"Customer {token.User.Id} updated his details");
                 }
@@ -122,6 +128,27 @@ namespace BusinessLogic
             {
                 log.Error("An unknown user tried to update details");
                 throw new WasntActivatedByCustomerException("An unknown user tried to update details");
+            }
+        }
+        private void UpdateUserDetails(LoginToken<Customer> token, User user)
+        {
+            if (token != null)
+            {
+                try
+                {
+                    _userDAO.Update(user);
+                    log.Info($"User {token.User.User.Id} updated his details");
+                }
+                catch (Exception ex)
+                {
+                    log.Error($"Could not change user {token.User.User_Id} details: {ex.Message}");
+                    throw new WrongCredentialsException($"Could not change user {token.User.User.Id} details: {ex.Message}");
+                }
+            }
+            else
+            {
+                log.Error("An unknown user tried to update details");
+                throw new WasntActivatedByAirlineException("An unknown user tried to update details");
             }
         }
     }

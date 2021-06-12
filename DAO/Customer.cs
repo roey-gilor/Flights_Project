@@ -19,7 +19,7 @@ namespace DAO
         {
             get
             {
-                return User.Password;
+                return "";
             }
             set { }
         }

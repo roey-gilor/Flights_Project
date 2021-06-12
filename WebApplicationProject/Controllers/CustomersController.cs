@@ -4,6 +4,7 @@ using DAO;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -53,7 +54,13 @@ namespace WebApplicationProject.Controllers
             {
                 return StatusCode(204, "{ }");
             }
-            return Ok(flights);
+            List<FlightDTO> flightDTOs = new List<FlightDTO>();
+            foreach (Flight flight in flights)
+            {
+                FlightDTO flightDTO = m_mapper.Map<FlightDTO>(flight);
+                flightDTOs.Add(flightDTO);
+            }
+            return Ok(JsonConvert.SerializeObject(flightDTOs));
 
         }
 
@@ -61,10 +68,11 @@ namespace WebApplicationProject.Controllers
         [HttpPut("UpdateUserDetails")]
         public async Task<ActionResult> UpdateUserDetails([FromBody] Customer customer)
         {
-            AuthenticateAndGetTokenAndGetFacade(out LoginToken<Customer> token, out LoggedInCustomerFacade facade);
+            //AuthenticateAndGetTokenAndGetFacade(out LoginToken<Customer> token, out LoggedInCustomerFacade facade);
+            LoginToken<Customer> token = GetLoginToken();
             try
             {
-                await Task.Run(() => facade.UpdateUserDetails(token, customer));
+                await Task.Run(() => m_facade.UpdateUserDetails(token, customer));
             }
             catch (WrongCredentialsException ex)
             {
@@ -81,11 +89,12 @@ namespace WebApplicationProject.Controllers
         [HttpPost("PurchaseTicket")]
         public async Task<ActionResult<TicketDTO>> PurchaseTicket([FromBody] Flight flight)
         {
-            AuthenticateAndGetTokenAndGetFacade(out LoginToken<Customer> token, out LoggedInCustomerFacade facade);
+            //AuthenticateAndGetTokenAndGetFacade(out LoginToken<Customer> token, out LoggedInCustomerFacade facade);
+            LoginToken<Customer> token = GetLoginToken();
             Ticket ticket = null;
             try
             {
-                 ticket = await Task.Run(() => { return facade.PurchaseTicket(token, flight); });                          
+                ticket = await Task.Run(() => { return m_facade.PurchaseTicket(token, flight); });
             }
             catch (CustomerAlreadyBoughtTicketException ex)
             {
@@ -100,17 +109,18 @@ namespace WebApplicationProject.Controllers
                 return StatusCode(401, $"{{ error: \"{ex.Message}\" }}");
             }
             TicketDTO ticketDTO = m_mapper.Map<TicketDTO>(ticket);
-            return Created($"api/Customer/buyTicket/{ticketDTO.Id}", ticketDTO);
+            return Created($"api/Customer/buyTicket/{ticketDTO.Id}", JsonConvert.SerializeObject(ticketDTO));
         }
 
         // PUT api/<CustomersController>/5
         [HttpPut("ChangeMyPassword")]
-        public async Task<ActionResult> ChangeMyPassword([FromBody] object newPassword)
+        public async Task<ActionResult> ChangeMyPassword([FromBody] UserDetailsDTO userDetails)
         {
-            AuthenticateAndGetTokenAndGetFacade(out LoginToken<Customer> token, out LoggedInCustomerFacade facade);
+            //AuthenticateAndGetTokenAndGetFacade(out LoginToken<Customer> token, out LoggedInCustomerFacade facade);
+            LoginToken<Customer> token = GetLoginToken();
             try
             {
-                await Task.Run(() => facade.ChangeMyPassword(token, token.User.User.Password, newPassword.ToString()));
+                await Task.Run(() => m_facade.ChangeMyPassword(token, token.User.Password, userDetails.Password));
             }
             catch (WrongCredentialsException ex)
             {
@@ -125,16 +135,18 @@ namespace WebApplicationProject.Controllers
 
         // DELETE api/<CustomersController>/5
         [HttpDelete("CancelTicketPurchase")]
-        public async Task<ActionResult> CancelTicketPurchase([FromBody] Ticket ticket)
+        public async Task<ActionResult> CancelTicketPurchase([FromBody] TicketDTO ticketDTO)
         {
-            AuthenticateAndGetTokenAndGetFacade(out LoginToken<Customer> token, out LoggedInCustomerFacade facade);
+            //AuthenticateAndGetTokenAndGetFacade(out LoginToken<Customer> token, out LoggedInCustomerFacade facade);
+            LoginToken<Customer> token = GetLoginToken();
+            Ticket ticket = m_mapper.Map<Ticket>(ticketDTO);
             try
             {
-                await Task.Run(() => facade.CancelTicket(token, ticket));
+                await Task.Run(() => m_facade.CancelTicket(token, ticket));
             }
             catch (Exception ex)
             {
-                 return StatusCode(403, $"{{ error: \"{ex.Message}\" }}");
+                return StatusCode(403, $"{{ error: \"{ex.Message}\" }}");
             }
             return Ok();
         }
