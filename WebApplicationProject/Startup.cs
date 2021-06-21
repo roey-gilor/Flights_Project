@@ -29,6 +29,7 @@ namespace WebApplicationProject
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddScoped<ILoggedInCustomerFacade, LoggedInCustomerFacade>();
+            services.AddScoped<ILoggedInAirlineFacade, LoggedInAirlineFacade>();
 
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 

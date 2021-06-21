@@ -12,6 +12,7 @@ namespace BusinessLogic
         {
             if (token != null)
             {
+                AirlineCompany airlineCompany = _airlineDAO.Get(token.User.Id);
                 IList<Ticket> tickets = _ticketDAO.GetAll();
                 foreach (Ticket ticket in tickets)
                 {
@@ -19,7 +20,7 @@ namespace BusinessLogic
                         _ticketDAO.Remove(ticket);
                 }
                 _flightDAO.Remove(flight);
-                log.Info($"Airline {token.User.Name} canceled flight {flight.Id}");
+                log.Info($"Airline {airlineCompany.Name} canceled flight {flight.Id}");
             }
             else
             {
@@ -53,14 +54,24 @@ namespace BusinessLogic
             }
         }
 
-        public void CreateFlight(LoginToken<AirlineCompany> token, Flight flight)
+        public Flight CreateFlight(LoginToken<AirlineCompany> token, Flight flight)
         {
             if (token != null)
             {
-                flight.Airline_Company = token.User;
-                flight.Airline_Company_Id = token.User.Id;
-                _flightDAO.Add(flight);
-                log.Info($"Airline {token.User.Name} created flight {flight.Id}");
+                try
+                {
+                    AirlineCompany airlineCompany = _airlineDAO.Get(token.User.Id);
+                    flight.Airline_Company = airlineCompany;
+                    flight.Airline_Company_Id = airlineCompany.Id;
+                    long id = _flightDAO.Add(flight);
+                    log.Info($"Airline {airlineCompany.Name} created flight {airlineCompany.Id}");
+                    return _flightDAO.Get(id);
+                }
+                catch (Exception ex)
+                {
+                    log.Error($"Could not create new flight: {ex.Message}");
+                    throw new Exception($"Could not create new flight: {ex.Message}");
+                }
             }
             else
             {
@@ -73,15 +84,16 @@ namespace BusinessLogic
         {
             if (token != null)
             {
+                AirlineCompany airlineCompany = _airlineDAO.Get(token.User.Id);
                 List<Flight> flights = new List<Flight>();
                 foreach (Flight flight in _flightDAO.GetAll())
                 {
-                    if (flight.Airline_Company == token.User)
+                    if (flight.Airline_Company == airlineCompany)
                     {
                         flights.Add(flight);
                     }
                 }
-                log.Info($"Airline {token.User.Name} Got all it's flights");
+                log.Info($"Airline {airlineCompany.Name} Got all it's flights");
                 return flights;
             }
             else
@@ -95,6 +107,7 @@ namespace BusinessLogic
         {
             if (token != null)
             {
+                AirlineCompany airlineCompany = _airlineDAO.Get(token.User.Id);
                 List<Ticket> tickets = new List<Ticket>();
                 IList<Flight> flights = GetAllFlights(token);
                 IList<Ticket> tickets_list = _ticketDAO.GetAll();
@@ -103,7 +116,7 @@ namespace BusinessLogic
                     if (flights.Contains(ticket.Flight))
                         tickets.Add(ticket);
                 }
-                log.Info($"Airline {token.User.Name} Got all bought tickets from the system");
+                log.Info($"Airline {airlineCompany.Name} Got all bought tickets from the system");
                 return tickets;
             }
             else
@@ -140,8 +153,9 @@ namespace BusinessLogic
         {
             if (token != null)
             {
+                AirlineCompany airlineCompany = _airlineDAO.Get(token.User.Id);
                 _flightDAO.Update(flight);
-                log.Info($"Airline {token.User.Name} updated flight {flight.Id} details");
+                log.Info($"Airline {airlineCompany.Name} updated flight {flight.Id} details");
             }
             else
             {

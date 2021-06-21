@@ -11,8 +11,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using WebApplicationProject.DTO;
 
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-
 namespace WebApplicationProject.Controllers
 {
     [Route("api/[controller]")]
@@ -28,18 +26,10 @@ namespace WebApplicationProject.Controllers
             m_facade = customerFacade;
             m_mapper = mapper;
         }
-        private void AuthenticateAndGetTokenAndGetFacade(out LoginToken<Customer> token_customer, out LoggedInCustomerFacade facade)
-        {
-            FlightCenterSystem.Instance.Login(out FacadeBase facadeBase, out ILoginToken token, "uri321", "vzd474");
-            token_customer = (LoginToken<Customer>)token;
-            facade = (LoggedInCustomerFacade)facadeBase;
-        }
 
-        // GET: api/<CustomersController>
-        [HttpGet("GetAllMyFlights")]
-        public async Task<ActionResult<IList<Flight>>> GetAllCustomerFlights()
+        [HttpGet("GetAllCustomerFlights")]
+        public async Task<ActionResult<IList<CustomerFlightDTO>>> GetAllCustomerFlights()
         {
-            //AuthenticateAndGetTokenAndGetFacade(out LoginToken<Customer> token, out LoggedInCustomerFacade facade);
             LoginToken<Customer> token = GetLoginToken();
             IList<Flight> flights = null;
             try
@@ -50,25 +40,23 @@ namespace WebApplicationProject.Controllers
             {
                 return StatusCode(500, $"{{ error: \"{ex.Message}\" }}");
             }
-            if (flights == null)
+            if (flights.Count == 0)
             {
                 return StatusCode(204, "{ }");
             }
-            List<FlightDTO> flightDTOs = new List<FlightDTO>();
+            List<CustomerFlightDTO> flightDTOs = new List<CustomerFlightDTO>();
             foreach (Flight flight in flights)
             {
-                FlightDTO flightDTO = m_mapper.Map<FlightDTO>(flight);
+                CustomerFlightDTO flightDTO = m_mapper.Map<CustomerFlightDTO>(flight);
                 flightDTOs.Add(flightDTO);
             }
             return Ok(JsonConvert.SerializeObject(flightDTOs));
 
         }
 
-        // GET api/<CustomersController>/5
         [HttpPut("UpdateUserDetails")]
         public async Task<ActionResult> UpdateUserDetails([FromBody] Customer customer)
         {
-            //AuthenticateAndGetTokenAndGetFacade(out LoginToken<Customer> token, out LoggedInCustomerFacade facade);
             LoginToken<Customer> token = GetLoginToken();
             try
             {
@@ -85,11 +73,9 @@ namespace WebApplicationProject.Controllers
             return Ok();
         }
 
-        // POST api/<CustomersController>
         [HttpPost("PurchaseTicket")]
         public async Task<ActionResult<TicketDTO>> PurchaseTicket([FromBody] Flight flight)
         {
-            //AuthenticateAndGetTokenAndGetFacade(out LoginToken<Customer> token, out LoggedInCustomerFacade facade);
             LoginToken<Customer> token = GetLoginToken();
             Ticket ticket = null;
             try
@@ -112,11 +98,9 @@ namespace WebApplicationProject.Controllers
             return Created($"api/Customer/buyTicket/{ticketDTO.Id}", JsonConvert.SerializeObject(ticketDTO));
         }
 
-        // PUT api/<CustomersController>/5
         [HttpPut("ChangeMyPassword")]
         public async Task<ActionResult> ChangeMyPassword([FromBody] UserDetailsDTO userDetails)
         {
-            //AuthenticateAndGetTokenAndGetFacade(out LoginToken<Customer> token, out LoggedInCustomerFacade facade);
             LoginToken<Customer> token = GetLoginToken();
             try
             {
@@ -133,11 +117,9 @@ namespace WebApplicationProject.Controllers
             return Ok();
         }
 
-        // DELETE api/<CustomersController>/5
         [HttpDelete("CancelTicketPurchase")]
         public async Task<ActionResult> CancelTicketPurchase([FromBody] TicketDTO ticketDTO)
         {
-            //AuthenticateAndGetTokenAndGetFacade(out LoginToken<Customer> token, out LoggedInCustomerFacade facade);
             LoginToken<Customer> token = GetLoginToken();
             Ticket ticket = m_mapper.Map<Ticket>(ticketDTO);
             try

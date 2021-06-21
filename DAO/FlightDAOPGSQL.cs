@@ -96,16 +96,40 @@ namespace DAO
         }
         public long Add(Flight t)
         {
-            RunSpNonExecute(AppConfig.Instance.ConnectionString, "sp_add_flight", new NpgsqlParameter[]
+            try
             {
+                long id = 0;
+                NpgsqlParameter[] parameters = new NpgsqlParameter[]
+                {
                 new NpgsqlParameter("_airline_company_id" ,t.Airline_Company_Id),
                 new NpgsqlParameter("_origin_country_id" ,t.Origin_Country_Id),
                 new NpgsqlParameter("_destination_country_id" ,t.Destination_Country_Id),
                 new NpgsqlParameter("_departure_time" ,t.Departure_Time),
                 new NpgsqlParameter("_landing_time" ,t.Landing_Time),
-                new NpgsqlParameter("_remaining_tickets" ,t.Remaining_Tickets),
-            });
-            return 0;
+                new NpgsqlParameter("_remaining_tickets" ,t.Remaining_Tickets)
+                };
+
+                using (var conn = new NpgsqlConnection(AppConfig.Instance.ConnectionString))
+                {
+                    conn.Open();
+
+                    NpgsqlCommand command = new NpgsqlCommand("sp_add_flight", conn);
+                    command.CommandType = System.Data.CommandType.StoredProcedure;
+
+                    command.Parameters.AddRange(parameters);
+
+                    var reader = command.ExecuteReader();
+                    while (reader.Read())
+                    {
+                        id = (long)reader[0];
+                    }
+                }
+                return id;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
 
         public Flight Get(long id)

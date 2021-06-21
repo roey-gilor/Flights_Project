@@ -89,20 +89,24 @@ $$;
 ALTER FUNCTION public.sp_add_customer(_first_name text, _last_name text, _address text, _phone_no text, _credit_card_no text, _user_id bigint) OWNER TO postgres;
 
 --
--- Name: sp_add_flight(bigint, bigint, bigint, timestamp without time zone, timestamp without time zone, integer); Type: PROCEDURE; Schema: public; Owner: postgres
+-- Name: sp_add_flight(bigint, bigint, bigint, timestamp without time zone, timestamp without time zone, integer); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
-CREATE PROCEDURE public.sp_add_flight(_airline_company_id bigint, _origin_country_id bigint, _destination_country_id bigint, _departure_time timestamp without time zone, _landing_time timestamp without time zone, _remaining_tickets integer)
+CREATE FUNCTION public.sp_add_flight(_airline_company_id bigint, _origin_country_id bigint, _destination_country_id bigint, _departure_time timestamp without time zone, _landing_time timestamp without time zone, _remaining_tickets integer) RETURNS bigint
     LANGUAGE plpgsql
     AS $$
+Declare
+    new_id bigint;
      begin 
 	     insert into flights (airline_company_id,origin_country_id,destination_country_id,departure_time,landing_time,remaining_tickets)
-	     values (_airline_company_id,_origin_country_id,_destination_country_id,_departure_time,_landing_time,_remaining_tickets);
+	     values (_airline_company_id,_origin_country_id,_destination_country_id,_departure_time,_landing_time,_remaining_tickets)
+		 returning id into new_id;
+		return new_id;
      end;
 $$;
 
 
-ALTER PROCEDURE public.sp_add_flight(_airline_company_id bigint, _origin_country_id bigint, _destination_country_id bigint, _departure_time timestamp without time zone, _landing_time timestamp without time zone, _remaining_tickets integer) OWNER TO postgres;
+ALTER FUNCTION public.sp_add_flight(_airline_company_id bigint, _origin_country_id bigint, _destination_country_id bigint, _departure_time timestamp without time zone, _landing_time timestamp without time zone, _remaining_tickets integer) OWNER TO postgres;
 
 --
 -- Name: sp_add_flight_into_flights_history(bigint, bigint, bigint, bigint, timestamp without time zone, timestamp without time zone, integer); Type: PROCEDURE; Schema: public; Owner: postgres
