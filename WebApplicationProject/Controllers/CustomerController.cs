@@ -17,11 +17,11 @@ namespace WebApplicationProject.Controllers
     [ApiController]
     [Authorize(Roles = "Customer")]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-    public class CustomersController : FlightControllerBase<Customer>
+    public class CustomerController : FlightControllerBase<Customer>
     {
         private ILoggedInCustomerFacade m_facade;
         private readonly IMapper m_mapper;
-        public CustomersController(ILoggedInCustomerFacade customerFacade, IMapper mapper)
+        public CustomerController(ILoggedInCustomerFacade customerFacade, IMapper mapper)
         {
             m_facade = customerFacade;
             m_mapper = mapper;
@@ -54,7 +54,7 @@ namespace WebApplicationProject.Controllers
 
         }
 
-        [HttpPut("UpdateUserDetails")]
+        [HttpPut("UpdateCustomerDetails")]
         public async Task<ActionResult> UpdateUserDetails([FromBody] Customer customer)
         {
             LoginToken<Customer> token = GetLoginToken();
@@ -74,9 +74,10 @@ namespace WebApplicationProject.Controllers
         }
 
         [HttpPost("PurchaseTicket")]
-        public async Task<ActionResult<TicketDTO>> PurchaseTicket([FromBody] Flight flight)
+        public async Task<ActionResult<TicketDTO>> PurchaseTicket([FromBody] AirlineFlightDTO flightDTO)
         {
             LoginToken<Customer> token = GetLoginToken();
+            Flight flight = m_mapper.Map<Flight>(flightDTO);
             Ticket ticket = null;
             try
             {
@@ -98,7 +99,7 @@ namespace WebApplicationProject.Controllers
             return Created($"api/Customer/buyTicket/{ticketDTO.Id}", JsonConvert.SerializeObject(ticketDTO));
         }
 
-        [HttpPut("ChangeMyPassword")]
+        [HttpPut("ChangeCustomerPassword")]
         public async Task<ActionResult> ChangeMyPassword([FromBody] UserDetailsDTO userDetails)
         {
             LoginToken<Customer> token = GetLoginToken();

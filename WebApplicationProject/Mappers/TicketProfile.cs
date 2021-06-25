@@ -28,6 +28,10 @@ namespace WebApplicationProject.Mappers
                 .ForMember(dest => dest.DestinationCountry, opt => opt.MapFrom(src => map_countryid_to_name[src.Flight.Destination_Country_Id].Name))
                 .ForMember(dest => dest.Departure_Time, opt => opt.MapFrom(src => src.Flight.Departure_Time))
                 .ForMember(dest => dest.Landing_Time, opt => opt.MapFrom(src => src.Flight.Landing_Time))
+                .ForMember(dest => dest.First_Name, opt => opt.MapFrom(src => src.Customer.First_Name))
+                .ForMember(dest => dest.Last_Name, opt => opt.MapFrom(src => src.Customer.Last_Name))
+                .ForMember(dest => dest.Address, opt => opt.MapFrom(src => src.Customer.Address))
+                .ForMember(dest => dest.Phone_No, opt => opt.MapFrom(src => src.Customer.Phone_No))
                 .ReverseMap();
         }
     }

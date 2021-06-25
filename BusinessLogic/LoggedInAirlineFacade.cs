@@ -33,19 +33,22 @@ namespace BusinessLogic
         {
             if (token != null)
             {
-                if (token.User.User.Password != oldPassword)
+                AirlineCompany airlineCompany = _airlineDAO.Get(token.User.Id);
+                User user = _userDAO.Get(airlineCompany.User_Id);
+                oldPassword = user.Password;
+                if (user.Password != oldPassword)
                 {
-                    log.Error($"Discrepancies between {token.User.Name} old password to the password that saved in the system");
-                    throw new WrongCredentialsException($"Discrepancies between {token.User.Name} old password to the password that saved in the system");
+                    log.Error($"Discrepancies between {airlineCompany.Name} old password to the password that saved in the system");
+                    throw new WrongCredentialsException($"Discrepancies between {airlineCompany.Name} old password to the password that saved in the system");
                 }
-                if (token.User.User.Password == newPassword)
+                if (user.Password == newPassword)
                 {
                     log.Error($"User {token.User.Id} tried to make his new password like the old one");
                     throw new WrongCredentialsException("New password can't be like the old one");
                 }
-                token.User.User.Password = newPassword;
-                _userDAO.Update(token.User.User);
-                log.Info($"Airline {token.User.Name} updated their password");
+                user.Password = newPassword;
+                _userDAO.Update(user);
+                log.Info($"Airline {airlineCompany.Name} updated their password");
             }
             else
             {
@@ -54,7 +57,7 @@ namespace BusinessLogic
             }
         }
 
-        public Flight CreateFlight(LoginToken<AirlineCompany> token, Flight flight)
+        public long CreateFlight(LoginToken<AirlineCompany> token, Flight flight)
         {
             if (token != null)
             {
@@ -65,7 +68,7 @@ namespace BusinessLogic
                     flight.Airline_Company_Id = airlineCompany.Id;
                     long id = _flightDAO.Add(flight);
                     log.Info($"Airline {airlineCompany.Name} created flight {airlineCompany.Id}");
-                    return _flightDAO.Get(id);
+                    return id;
                 }
                 catch (Exception ex)
                 {
@@ -132,15 +135,16 @@ namespace BusinessLogic
             {
                 try
                 {
+                    AirlineCompany airlineCompany = _airlineDAO.Get(token.User.Id);
                     UpdateUserDetails(token, airline);
                     _airlineDAO.Update(airline);
+                    log.Info($"Airline {airlineCompany.Name} updated their details");
                 }
                 catch (Exception ex)
                 {
                     log.Error($"Could not change Airkine {token.User.Id} details: {ex.Message}");
                     throw new WrongCredentialsException($"Could not change Airkine {token.User.Id} details: {ex.Message}");
-                }
-                log.Info($"Airline {token.User.Name} updated their details");
+                }            
             }
             else
             {
@@ -166,17 +170,19 @@ namespace BusinessLogic
 
         private void UpdateUserDetails(LoginToken<AirlineCompany> token, AirlineCompany airline)
         {
+            AirlineCompany airlineCompany = _airlineDAO.Get(token.User.Id);
+            User user = _userDAO.Get(airlineCompany.User_Id);
             if (token != null)
             {
                 try
                 {
                     _userDAO.Update(airline.User);
-                    log.Info($"User {token.User.User.Id} updated his details");
+                    log.Info($"User {user.Id} updated his details");
                 }
                 catch (Exception ex)
                 {
                     log.Error($"Could not change user {token.User.User.Id} details: {ex.Message}");
-                    throw new WrongCredentialsException($"Could not change user {token.User.User.Id} details: {ex.Message}");
+                    throw new WrongCredentialsException($"Could not change user {user.Id} details: {ex.Message}");
                 }
             }
             else

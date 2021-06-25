@@ -14,6 +14,10 @@ namespace WebApplicationProject.DTO
         public string DestinationCountry { get; set; }
         public DateTime Departure_Time { get; set; }
         public DateTime Landing_Time { get; set; }
+        public string First_Name { get; set; }
+        public string Last_Name { get; set; }
+        public string Address { get; set; }
+        public string Phone_No { get; set; }
         public TicketDTO()
         {
 

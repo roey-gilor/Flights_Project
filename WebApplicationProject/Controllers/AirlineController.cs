@@ -29,7 +29,7 @@ namespace WebApplicationProject.Controllers
         }
 
         [HttpGet("GetAllAirlineFlights")]
-        public async Task<ActionResult<IList<Flight>>> GetAllAirlineFlights()
+        public async Task<ActionResult<IList<AirlineFlightDTO>>> GetAllAirlineFlights()
         {
             LoginToken<AirlineCompany> token = GetLoginToken();
             IList<Flight> flights = null;
@@ -80,26 +80,25 @@ namespace WebApplicationProject.Controllers
             return Ok(JsonConvert.SerializeObject(ticketDTOs));
         }
 
-        // POST api/<AirlineController>
         [HttpPost("CreateNewFlight")]
         public async Task<ActionResult<AirlineFlightDTO>> Post([FromBody] AirlineFlightDTO airlineFlightDTO)
         {
             LoginToken<AirlineCompany> token = GetLoginToken();
             Flight flight = m_mapper.Map<Flight>(airlineFlightDTO);
-            Flight createdFlight;
+            long id;
             try
             {
-                createdFlight = await Task.Run(() => m_facade.CreateFlight(token, flight));
+                id = await Task.Run(() => m_facade.CreateFlight(token, flight));
             }
             catch (Exception ex)
             {
                 return StatusCode(500, $"{{ error: \"{ex.Message}\" }}");
             }
-            AirlineFlightDTO flightDTO = m_mapper.Map<AirlineFlightDTO>(createdFlight);
+            airlineFlightDTO.Id = id;
+            AirlineFlightDTO flightDTO = m_mapper.Map<AirlineFlightDTO>(airlineFlightDTO);
             return Created($"api/Airline/CreateNewFlight/{flightDTO.Id}", JsonConvert.SerializeObject(flightDTO));
         }
 
-        // PUT api/<AirlineController>/5
         [HttpPut("UpdateFlight")]
         public async Task<ActionResult> UpdateFlight([FromBody] AirlineFlightDTO airlineFlightDTO)
         {
@@ -116,10 +115,57 @@ namespace WebApplicationProject.Controllers
             return Ok();
         }
 
-        // DELETE api/<AirlineController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
+        [HttpDelete("CancelFlight")]
+        public async Task<ActionResult> CancelFlight([FromBody] AirlineFlightDTO airlineFlightDTO)
         {
+            LoginToken<AirlineCompany> token = GetLoginToken();
+            Flight flight = m_mapper.Map<Flight>(airlineFlightDTO);
+            try
+            {
+                await Task.Run(() => m_facade.CancelFlight(token, flight));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(400, $"{{ error: \"{ex.Message}\" }}");
+            }
+            return Ok();
+        }
+        [HttpPut("ChangeAirlinePassword")]
+        public async Task<ActionResult> ChangeMyPassword([FromBody] UserDetailsDTO userDetails)
+        {
+            LoginToken<AirlineCompany> token = GetLoginToken();
+            try
+            {
+                await Task.Run(() => m_facade.ChangeMyPassword(token, token.User.Password, userDetails.Password));
+            }
+            catch (WrongCredentialsException ex)
+            {
+                return StatusCode(403, $"{{ error: \"{ex.Message}\" }}");
+            }
+            catch (WasntActivatedByCustomerException ex)
+            {
+                return StatusCode(401, $"{{ error: \"{ex.Message}\" }}");
+            }
+            return Ok();
+        }
+        [HttpPut("UpdateAirlineDetails")]
+        public async Task<ActionResult> UpdateAirlineDetails([FromBody] AirlineDTO airline)
+        {
+            LoginToken<AirlineCompany> token = GetLoginToken();
+            AirlineCompany airlineCompany = m_mapper.Map<AirlineCompany>(airline);
+            try
+            {
+                await Task.Run(() => m_facade.MofidyAirlineDetails(token, airlineCompany));
+            }
+            catch (WrongCredentialsException ex)
+            {
+                return StatusCode(403, $"{{ error: \"{ex.Message}\" }}");
+            }
+            catch (WasntActivatedByCustomerException ex)
+            {
+                return StatusCode(401, $"{{ error: \"{ex.Message}\" }}");
+            }
+            return Ok();
         }
     }
 }
