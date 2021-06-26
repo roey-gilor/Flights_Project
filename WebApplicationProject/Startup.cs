@@ -30,6 +30,7 @@ namespace WebApplicationProject
         {
             services.AddScoped<ILoggedInCustomerFacade, LoggedInCustomerFacade>();
             services.AddScoped<ILoggedInAirlineFacade, LoggedInAirlineFacade>();
+            services.AddScoped<IAnonymousUserFacade, AnonymousUserFacade>();
 
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 

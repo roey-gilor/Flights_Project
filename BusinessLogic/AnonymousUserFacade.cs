@@ -15,8 +15,9 @@ namespace BusinessLogic
             {
                 long id = _userDAO.Add(customer.User);
                 customer.User_Id = id;
+                customer.User.Id = id;
                 long customerId = _customerDAO.Add(customer);
-                log.Info($"User  {customer.User.Id} {customer.User.User_Name} was added to the system");
+                log.Info($"User {customer.User.Id} {customer.User.User_Name} was added to the system");
                 return customerId;
             }
             catch (Exception ex)

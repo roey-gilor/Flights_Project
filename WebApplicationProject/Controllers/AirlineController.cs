@@ -81,7 +81,7 @@ namespace WebApplicationProject.Controllers
         }
 
         [HttpPost("CreateNewFlight")]
-        public async Task<ActionResult<AirlineFlightDTO>> Post([FromBody] AirlineFlightDTO airlineFlightDTO)
+        public async Task<ActionResult<AirlineFlightDTO>> CreateNewFlight([FromBody] AirlineFlightDTO airlineFlightDTO)
         {
             LoginToken<AirlineCompany> token = GetLoginToken();
             Flight flight = m_mapper.Map<Flight>(airlineFlightDTO);
