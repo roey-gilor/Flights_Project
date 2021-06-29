@@ -75,9 +75,9 @@ namespace WebApplicationProject.Controllers
             return Ok(JsonConvert.SerializeObject(customerFlightsDTOs));
         }
         [HttpGet("GetFlightsByDepatrureDate")]
-        public async Task<ActionResult<List<AirlineFlightDTO>>> GetFlightsByDepatrureDate([FromBody] DateObjectDTO dateObject)
+        public async Task<ActionResult<List<AirlineFlightDTO>>> GetFlightsByDepatrureDate(DateTime date)
         {
-            IList<Flight> flights = await Task.Run(() => m_facade.GetFlightsByDepatrureDate(dateObject.Date));
+            IList<Flight> flights = await Task.Run(() => m_facade.GetFlightsByDepatrureDate(date));
             List<AirlineFlightDTO> airlineFlightsDTOs = new List<AirlineFlightDTO>();
             foreach (Flight flight in flights)
             {
@@ -87,9 +87,9 @@ namespace WebApplicationProject.Controllers
             return Ok(JsonConvert.SerializeObject(airlineFlightsDTOs));
         }
         [HttpGet("GetFlightsByLandingDate")]
-        public async Task<ActionResult<List<AirlineFlightDTO>>> GetFlightsByLandingDate([FromBody] DateObjectDTO dateObject)
+        public async Task<ActionResult<List<AirlineFlightDTO>>> GetFlightsByLandingDate(DateTime date)
         {
-            IList<Flight> flights = await Task.Run(() => m_facade.GetFlightsByLandingDate(dateObject.Date));
+            IList<Flight> flights = await Task.Run(() => m_facade.GetFlightsByLandingDate(date));
             List<AirlineFlightDTO> airlineFlightsDTOs = new List<AirlineFlightDTO>();
             foreach (Flight flight in flights)
             {
@@ -99,9 +99,9 @@ namespace WebApplicationProject.Controllers
             return Ok(JsonConvert.SerializeObject(airlineFlightsDTOs));
         }
         [HttpGet("GetFlightsByDestinationCountry")]
-        public async Task<ActionResult<List<AirlineFlightDTO>>> GetFlightsByDestinationCountry([FromBody] CountryDTO countryDTO)
+        public async Task<ActionResult<List<AirlineFlightDTO>>> GetFlightsByDestinationCountry(string countryName)
         {
-            long id = countryDTO.ReturnIdFromName(countryDTO.Country_Name);
+            long id = CountryDTO.ReturnIdFromName(countryName);
             if (id == 0)
                 return StatusCode(400, $"{{ error: \"{"Country name does not exists"}\" }}");
             IList<Flight> flights = await Task.Run(() => m_facade.GetFlightsByDestinationCountry((int)id));
@@ -114,9 +114,9 @@ namespace WebApplicationProject.Controllers
             return Ok(JsonConvert.SerializeObject(airlineFlightsDTOs));
         }
         [HttpGet("GetFlightsByOriginCountry")]
-        public async Task<ActionResult<List<AirlineFlightDTO>>> GetFlightsByOriginCountry([FromBody] CountryDTO countryDTO)
+        public async Task<ActionResult<List<AirlineFlightDTO>>> GetFlightsByOriginCountry(string countryName)
         {
-            long id = countryDTO.ReturnIdFromName(countryDTO.Country_Name);
+            long id = CountryDTO.ReturnIdFromName(countryName);
             if (id == 0)
                 return StatusCode(400, $"{{ error: \"{"Country name does not exists"}\" }}");
             IList<Flight> flights = await Task.Run(() => m_facade.GetFlightsByOriginCountry((int)id));

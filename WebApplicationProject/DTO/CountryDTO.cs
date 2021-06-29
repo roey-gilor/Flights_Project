@@ -6,12 +6,11 @@ using System.Threading.Tasks;
 
 namespace WebApplicationProject.DTO
 {
-    public class CountryDTO
-    {
-        public string Country_Name { get; set; }
-        CountryDAOPGSQL countryDAOPGSQL = new CountryDAOPGSQL();      
-        public long ReturnIdFromName(string name)
+    public static class CountryDTO
+    { 
+        public static long ReturnIdFromName(string name)
         {
+            CountryDAOPGSQL countryDAOPGSQL = new CountryDAOPGSQL();
             IList<Country> countries = countryDAOPGSQL.GetAll();
             foreach (Country country in countries)
             {
