@@ -34,20 +34,19 @@ namespace BusinessLogic
             if (token != null)
             {
                 AirlineCompany airlineCompany = _airlineDAO.Get(token.User.Id);
-                User user = _userDAO.Get(airlineCompany.User_Id);
-                oldPassword = user.Password;
-                if (user.Password != oldPassword)
+                oldPassword = airlineCompany.User.Password;
+                if (airlineCompany.User.Password != oldPassword)
                 {
                     log.Error($"Discrepancies between {airlineCompany.Name} old password to the password that saved in the system");
                     throw new WrongCredentialsException($"Discrepancies between {airlineCompany.Name} old password to the password that saved in the system");
                 }
-                if (user.Password == newPassword)
+                if (airlineCompany.User.Password == newPassword)
                 {
                     log.Error($"User {token.User.Id} tried to make his new password like the old one");
                     throw new WrongCredentialsException("New password can't be like the old one");
                 }
-                user.Password = newPassword;
-                _userDAO.Update(user);
+                airlineCompany.User.Password = newPassword;
+                _userDAO.Update(airlineCompany.User);
                 log.Info($"Airline {airlineCompany.Name} updated their password");
             }
             else
@@ -181,7 +180,7 @@ namespace BusinessLogic
                 }
                 catch (Exception ex)
                 {
-                    log.Error($"Could not change user {token.User.User.Id} details: {ex.Message}");
+                    log.Error($"Could not change user {user.Id} details: {ex.Message}");
                     throw new WrongCredentialsException($"Could not change user {user.Id} details: {ex.Message}");
                 }
             }

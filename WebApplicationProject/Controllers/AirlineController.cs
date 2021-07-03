@@ -142,7 +142,7 @@ namespace WebApplicationProject.Controllers
             {
                 return StatusCode(403, $"{{ error: \"{ex.Message}\" }}");
             }
-            catch (WasntActivatedByCustomerException ex)
+            catch (WasntActivatedByAirlineException ex)
             {
                 return StatusCode(401, $"{{ error: \"{ex.Message}\" }}");
             }

@@ -96,7 +96,7 @@ namespace WebApplicationProject.Controllers
                 return StatusCode(401, $"{{ error: \"{ex.Message}\" }}");
             }
             TicketDTO ticketDTO = m_mapper.Map<TicketDTO>(ticket);
-            return Created($"api/Customer/buyTicket/{ticketDTO.Id}", JsonConvert.SerializeObject(ticketDTO));
+            return Created($"api/Customer/PurchaseTicket/{ticketDTO.Id}", JsonConvert.SerializeObject(ticketDTO));
         }
 
         [HttpPut("ChangeCustomerPassword")]

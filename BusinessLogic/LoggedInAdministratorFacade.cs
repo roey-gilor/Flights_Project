@@ -13,24 +13,27 @@ namespace BusinessLogic
         {
             if (token != null)
             {
-                if (token.User.User.Password != oldPassword)
+                Administrator administrator = _adminDAO.Get(token.User.Id);
+                User user = administrator.User;
+                oldPassword = user.Password;
+                if (user.Password != oldPassword)
                 {
-                    log.Error($"Discrepancies between {token.User.Id} {token.User.First_Name} {token.User.Last_Name} old password to the password that saved in the system");
-                    throw new WrongCredentialsException($"Discrepancies between {token.User.Id} {token.User.First_Name} {token.User.Last_Name} old password to the password that saved in the system");
+                    log.Error($"Discrepancies between {token.User.Id} {administrator.First_Name} {administrator.Last_Name} old password to the password that saved in the system");
+                    throw new WrongCredentialsException($"Discrepancies between {token.User.Id} {administrator.First_Name} {administrator.Last_Name} old password to the password that saved in the system");
                 }
-                if (token.User.User.Password == newPassword)
+                if (user.Password == newPassword)
                 {
                     log.Error($"User {token.User.Id} tried to make his new password like the old one");
                     throw new WrongCredentialsException("New password can't be like the old one");
                 }
-                token.User.User.Password = newPassword;
-                _userDAO.Update(token.User.User);
-                log.Info($"Customer {token.User.Id} {token.User.First_Name} {token.User.Last_Name} changed password");
+                user.Password = newPassword;
+                _userDAO.Update(user);
+                log.Info($"Admin {token.User.Id} {administrator.First_Name} {administrator.Last_Name} changed password");
             }
             else
             {
                 log.Error("An unknown user tried to change password");
-                throw new WasntActivatedByCustomerException("An unknown user tried to change password");
+                throw new WasntActivatedByAdministratorException("An unknown user tried to change password");
             }
         }
 
@@ -38,21 +41,24 @@ namespace BusinessLogic
         {
             if (token != null)
             {
-                if (token.User.Level > admin.Level && token.User.Level == 3)
+                Administrator administrator = token.User.Id != 0 ? _adminDAO.Get(token.User.Id) : LoginService.mainAdmin;
+                if (administrator.Level > admin.Level && administrator.Level == 3)
                 {
                     long userId = _userDAO.Add(admin.User);
+                    admin.User.Id = userId;
                     admin.User_Id = userId;
                     long id = _adminDAO.Add(admin);
-                    log.Info($"{token.User.Id} {token.User.First_Name} {token.User.Last_Name} added new administrator: {admin.First_Name} {admin.Last_Name}");
+                    log.Info($"{token.User.Id} {administrator.First_Name} {administrator.Last_Name} added new administrator: {admin.First_Name} {admin.Last_Name}");
                     return id;
                 }
                 else
                 {
-                    if (token.User.Level == 3)
+                    if (administrator.Level == 3)
                     {
-                        if (token.User.First_Name == "Main" && token.User.Last_Name == "admin")
+                        if (administrator.First_Name == "Main" && administrator.Last_Name == "admin")
                         {
                             long userId = _userDAO.Add(admin.User);
+                            admin.User.Id = userId;
                             admin.User_Id = userId;
                             long id = _adminDAO.Add(admin);
                             log.Info($"Main admin added new administrator: {admin.First_Name} {admin.Last_Name}");
@@ -60,14 +66,14 @@ namespace BusinessLogic
                         }
                         else
                         {
-                            log.Error($"{token.User.Id} {token.User.First_Name} {token.User.Last_Name} did not have sanction to add new administrator");
-                            throw new AdministratorDoesntHaveSanctionException($"{token.User.Id} {token.User.First_Name} {token.User.Last_Name} did not have sanction to add new administrator");
+                            log.Error($"{token.User.Id} {administrator.First_Name} {administrator.Last_Name} did not have sanction to add new administrator");
+                            throw new AdministratorDoesntHaveSanctionException($"{token.User.Id} {administrator.First_Name} {administrator.Last_Name} did not have sanction to add new administrator");
                         }
                     }
                     else
                     {
-                        log.Error($"{token.User.Id} {token.User.First_Name} {token.User.Last_Name} did not have sanction to add new administrator");
-                        throw new AdministratorDoesntHaveSanctionException($"{token.User.Id} {token.User.First_Name} {token.User.Last_Name} did not have sanction to add new administrator");
+                        log.Error($"{token.User.Id} {administrator.First_Name} {administrator.Last_Name} did not have sanction to add new administrator");
+                        throw new AdministratorDoesntHaveSanctionException($"{token.User.Id} {administrator.First_Name} {administrator.Last_Name} did not have sanction to add new administrator");
                     }
                 }
             }
@@ -82,12 +88,13 @@ namespace BusinessLogic
         {
             if (token != null)
             {
-                if (token.User.Level == 3)
+                Administrator administrator = token.User.Id != 0 ? _adminDAO.Get(token.User.Id) : LoginService.mainAdmin;
+                if (administrator.Level == 3)
                 {
                     try
                     {
                         _countryDAO.Add(country);
-                        log.Info($"{token.User.Id} {token.User.First_Name} {token.User.Last_Name} added new country: {country.Name}");
+                        log.Info($"{token.User.Id} {administrator.First_Name} {administrator.Last_Name} added new country: {country.Name}");
                     }
                     catch (Exception ex)
                     {
@@ -96,8 +103,8 @@ namespace BusinessLogic
                 }
                 else
                 {
-                    log.Error($"{token.User.Id} {token.User.First_Name} {token.User.Last_Name} did not have sanction to create new country in the Db");
-                    throw new AdministratorDoesntHaveSanctionException($"{token.User.Id} {token.User.First_Name} {token.User.Last_Name} did not have sanction tocreate new country in the Db");
+                    log.Error($"{token.User.Id} {administrator.First_Name} {administrator.Last_Name} did not have sanction to create new country in the Db");
+                    throw new AdministratorDoesntHaveSanctionException($"{token.User.Id} {administrator.First_Name} {administrator.Last_Name} did not have sanction tocreate new country in the Db");
                 }
             }
             else
@@ -111,14 +118,16 @@ namespace BusinessLogic
         {
             if (token != null)
             {
-                if (token.User.Level != 1)
+                Administrator administrator = token.User.Id != 0 ? _adminDAO.Get(token.User.Id) : LoginService.mainAdmin;
+                if (administrator.Level != 1)
                 {
                     try
                     {
                         long userId = _userDAO.Add(airline.User);
+                        airline.User.Id = userId;
                         airline.User_Id = userId;
                         long id = _airlineDAO.Add(airline);
-                        log.Info($"{token.User.Id} {token.User.First_Name} {token.User.Last_Name} added new airline: {airline.Name}");
+                        log.Info($"{token.User.Id} {administrator.First_Name} {administrator.Last_Name} added new airline: {airline.Name}");
                         return id;
                     }
                     catch (Exception ex)
@@ -129,8 +138,8 @@ namespace BusinessLogic
                 }
                 else
                 {
-                    log.Error($"{token.User.Id} {token.User.First_Name} {token.User.Last_Name} did not have sanction to create new airline in the Db");
-                    throw new AdministratorDoesntHaveSanctionException($"{token.User.Id} {token.User.First_Name} {token.User.Last_Name} did not have sanction tocreate new airline in the Db");
+                    log.Error($"{token.User.Id} {administrator.First_Name} {administrator.Last_Name} did not have sanction to create new airline in the Db");
+                    throw new AdministratorDoesntHaveSanctionException($"{token.User.Id} {administrator.First_Name} {administrator.Last_Name} did not have sanction to create new airline in the Db");
                 }
             }
             else
@@ -144,14 +153,16 @@ namespace BusinessLogic
         {
             if (token != null)
             {
-                if (token.User.Level != 1)
+                Administrator administrator = token.User.Id != 0 ? _adminDAO.Get(token.User.Id) : LoginService.mainAdmin;
+                if (administrator.Level != 1)
                 {
                     try
                     {
                         long userId = _userDAO.Add(customer.User);
                         customer.User_Id = userId;
+                        customer.User.Id = userId;
                         long id = _customerDAO.Add(customer);
-                        log.Info($"{token.User.Id} {token.User.First_Name} {token.User.Last_Name} added new customer: {customer.First_Name} {customer.Last_Name}");
+                        log.Info($"{token.User.Id} {administrator.First_Name} {administrator.Last_Name} added new customer: {customer.First_Name} {customer.Last_Name}");
                         return id;
                     }
                     catch (Exception ex)
@@ -162,8 +173,8 @@ namespace BusinessLogic
                 }
                 else
                 {
-                    log.Error($"{token.User.Id} {token.User.First_Name} {token.User.Last_Name} did not have sanction to create new customer");
-                    throw new AdministratorDoesntHaveSanctionException($"{token.User.Id} {token.User.First_Name} {token.User.Last_Name} did not have sanction tocreate new customer");
+                    log.Error($"{token.User.Id} {administrator.First_Name} {administrator.Last_Name} did not have sanction to create new customer");
+                    throw new AdministratorDoesntHaveSanctionException($"{token.User.Id} {administrator.First_Name} {administrator.Last_Name} did not have sanction to create new customer");
                 }
             }
             else
@@ -177,7 +188,8 @@ namespace BusinessLogic
         {
             if (token != null)
             {
-                log.Info($"{token.User.Id} {token.User.First_Name} {token.User.Last_Name} got all customers from the system");
+                Administrator administrator = token.User.Id != 0 ? _adminDAO.Get(token.User.Id) : LoginService.mainAdmin;
+                log.Info($"{token.User.Id} {administrator.First_Name} {administrator.Last_Name} got all customers from the system");
                 return _customerDAO.GetAll();
             }
             else
@@ -191,16 +203,17 @@ namespace BusinessLogic
         {
             if (token != null)
             {
-                if (token.User.Level > admin.Level && token.User.Level == 3)
+                Administrator administrator = token.User.Id != 0 ? _adminDAO.Get(token.User.Id) : LoginService.mainAdmin;
+                if (administrator.Level > admin.Level && administrator.Level == 3)
                 {
                     User user = admin.User;
                     _adminDAO.Remove(admin);
                     _userDAO.Remove(user);
-                    log.Info($"{token.User.Id} {token.User.First_Name} {token.User.Last_Name} removed admin {admin.First_Name} {admin.Last_Name} from the system");
+                    log.Info($"{token.User.Id} {administrator.First_Name} {administrator.Last_Name} removed admin {admin.First_Name} {admin.Last_Name} from the system");
                 }
                 else
                 {
-                    if (token.User.Level == 3)
+                    if (administrator.Level == 3)
                     {
                         if (token.User.First_Name == "Main" && token.User.Last_Name == "admin")
                         {
@@ -211,12 +224,12 @@ namespace BusinessLogic
                         }
                         else
                         {
-                            log.Error($"{token.User.Id} {token.User.First_Name} {token.User.Last_Name} did not have sanction to add new administrator");
-                            throw new AdministratorDoesntHaveSanctionException($"{token.User.Id} {token.User.First_Name} {token.User.Last_Name} did not have sanction to add new administrator");
+                            log.Error($"{token.User.Id} {administrator.First_Name} {administrator.Last_Name} did not have sanction to add new administrator");
+                            throw new AdministratorDoesntHaveSanctionException($"{token.User.Id} {administrator.First_Name} {administrator.Last_Name} did not have sanction to add new administrator");
                         }
                     }
-                    log.Error($"{token.User.Id} {token.User.First_Name} {token.User.Last_Name} did not have sanction to remove admins from the system");
-                    throw new AdministratorDoesntHaveSanctionException($"{token.User.Id} {token.User.First_Name} {token.User.Last_Name} did not have sanction to remove admins from the system");
+                    log.Error($"{token.User.Id} {administrator.First_Name} {administrator.Last_Name} did not have sanction to remove admins from the system");
+                    throw new AdministratorDoesntHaveSanctionException($"{token.User.Id} {administrator.First_Name} {administrator.Last_Name} did not have sanction to remove admins from the system");
                 }
             }
             else

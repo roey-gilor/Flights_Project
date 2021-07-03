@@ -31,20 +31,19 @@ namespace BusinessLogic
             if (token != null)
             {
                 Customer customer = _customerDAO.Get(token.User.Id);
-                User user = _userDAO.Get(token.User.User_Id);
-                oldPassword = user.Password;
+                oldPassword = customer.User.Password;
                 if (token.User.Password != oldPassword)
                 {
                     log.Error($"Discrepancies between {token.User.Id} {customer.First_Name} {customer.Last_Name} old password to the password that saved in the system");
                     throw new WrongCredentialsException($"Discrepancies between {token.User.Id} {customer.First_Name} {customer.Last_Name} old password to the password that saved in the system");
                 }
-                if (user.Password == newPassword)
+                if (customer.User.Password == newPassword)
                 {
                     log.Error($"User {token.User.Id} tried to make his new password like the old one");
                     throw new WrongCredentialsException("New password can't be like the old one");
                 }
-                user.Password = newPassword;
-                _userDAO.Update(user);
+                customer.User.Password = newPassword;
+                _userDAO.Update(customer.User);
                 log.Info($"Customer {token.User.Id} {customer.First_Name} {customer.Last_Name} changed password");
             }
             else

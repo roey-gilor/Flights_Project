@@ -12,7 +12,7 @@ namespace BusinessLogic
         ICustomerDAO _customerDAO = new CustomerDAOPGSQL();
         IAdminDAO _adminDAO = new AdminDAOPGSQL();
         IUserDAO _userDAO = new UserDAOPGSQL();
-        static Administrator mainAdmin = new Administrator()
+        internal static Administrator mainAdmin = new Administrator()
         {
             Id = 0,
             First_Name = "Main",
@@ -23,7 +23,7 @@ namespace BusinessLogic
             {
                 Id = 0,
                 User_Name = "admin",
-                Password = "9999",
+                Password = "99999",
                 User_Role = 1
             }
         };
@@ -32,7 +32,7 @@ namespace BusinessLogic
         {
             if (userName == "admin")
             {
-                if (password == "9999")
+                if (password == "99999")
                 {
                     facade = new LoggedInAdministratorFacade();
                     loginToken = new LoginToken<Administrator>()
