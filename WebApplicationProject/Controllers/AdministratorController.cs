@@ -153,5 +153,104 @@ namespace WebApplicationProject.Controllers
                 return StatusCode(204, "{ }");
             return Ok(JsonConvert.SerializeObject(customers));
         }
+        [HttpPut("UpdateMyDetails")]
+        public async Task<ActionResult> UpdateMyDetails([FromBody] Administrator admin)
+        {
+            LoginToken<Administrator> token = GetLoginToken();
+            try
+            {
+                await Task.Run(() => m_facade.ModifyMyAdminUser(token, admin));
+            }
+            catch (WrongCredentialsException ex)
+            {
+                return StatusCode(403, $"{{ error: \"{ex.Message}\" }}");
+            }
+            catch (WasntActivatedByAdministratorException ex)
+            {
+                return StatusCode(401, $"{{ error: \"{ex.Message}\" }}");
+            }
+            return Ok();
+        }
+        [HttpPut("UpdateAdmin")]
+        public async Task<ActionResult> UpdateAdmin([FromBody] Administrator admin)
+        {
+            LoginToken<Administrator> token = GetLoginToken();
+            try
+            {
+                await Task.Run(() => m_facade.UpdateAdmin(token, admin));
+            }
+            catch (WrongCredentialsException ex)
+            {
+                return StatusCode(403, $"{{ error: \"{ex.Message}\" }}");
+            }
+            catch (AdministratorDoesntHaveSanctionException ex)
+            {
+                return StatusCode(403, $"{{ error: \"{ex.Message}\" }}");
+            }
+            catch (WasntActivatedByAdministratorException ex)
+            {
+                return StatusCode(401, $"{{ error: \"{ex.Message}\" }}");
+            }
+            return Ok();
+        }
+        [HttpPut("UpdateAirlineDetails")]
+        public async Task<ActionResult> UpdateAirlineDetails ([FromBody] AirlineDTO airline)
+        {
+            LoginToken<Administrator> token = GetLoginToken();
+            AirlineCompany airlineCompany = m_mapper.Map<AirlineCompany>(airline);
+            try
+            {
+                await Task.Run(() => m_facade.UpdateAirlineDetails(token, airlineCompany));
+            }
+            catch (WrongCredentialsException ex)
+            {
+                return StatusCode(403, $"{{ error: \"{ex.Message}\" }}");
+            }
+            catch (WasntActivatedByAdministratorException ex)
+            {
+                return StatusCode(401, $"{{ error: \"{ex.Message}\" }}");
+            }
+            return Ok();
+        }
+        [HttpPut("UpdateCountry")]
+        public async Task<ActionResult> UpdateCountry ([FromBody] Country country)
+        {
+            LoginToken<Administrator> token = GetLoginToken();
+            try
+            {
+                await Task.Run(() => m_facade.UpdateCountry(token, country));
+            }
+            catch (WrongCredentialsException ex)
+            {
+                return StatusCode(403, $"{{ error: \"{ex.Message}\" }}");
+            }
+            catch (AdministratorDoesntHaveSanctionException ex)
+            {
+                return StatusCode(403, $"{{ error: \"{ex.Message}\" }}");
+            }
+            catch (WasntActivatedByAdministratorException ex)
+            {
+                return StatusCode(401, $"{{ error: \"{ex.Message}\" }}");
+            }
+            return Ok();
+        }
+        [HttpPut("UpdateCustomerDetails")]
+        public async Task<ActionResult> UpdateCustomerDetails ([FromBody] Customer customer)
+        {
+            LoginToken<Administrator> token = GetLoginToken();
+            try
+            {
+                await Task.Run(() => m_facade.UpdateCustomerDetails(token, customer));
+            }
+            catch (WrongCredentialsException ex)
+            {
+                return StatusCode(403, $"{{ error: \"{ex.Message}\" }}");
+            }
+            catch (WasntActivatedByAdministratorException ex)
+            {
+                return StatusCode(401, $"{{ error: \"{ex.Message}\" }}");
+            }
+            return Ok();
+        }
     }
 }

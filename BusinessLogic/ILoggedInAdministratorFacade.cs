@@ -15,6 +15,7 @@ namespace BusinessLogic
         void UpdateCustomerDetails(LoginToken<Administrator> token, Customer customer);
         void RemoveCustomer(LoginToken<Administrator> token, Customer customer);
         long CreateAdmin(LoginToken<Administrator> token, Administrator admin);
+        public void ModifyMyAdminUser(LoginToken<Administrator> token, Administrator admin);
         void UpdateAdmin(LoginToken<Administrator> token, Administrator admin);
         void RemoveAdmin(LoginToken<Administrator> token, Administrator admin);
         void CreateCountry(LoginToken<Administrator> token, Country country);

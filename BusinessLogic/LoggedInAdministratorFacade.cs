@@ -350,70 +350,77 @@ namespace BusinessLogic
                 throw new WasntActivatedByAdministratorException("An unknown user tried to remove a customer from the system");
             }
         }
-
+        public void ModifyMyAdminUser(LoginToken<Administrator> token, Administrator admin)
+        {
+            if (token != null)
+            {
+                Administrator administrator = token.User.Id != 0 ? _adminDAO.Get(token.User.Id) : LoginService.mainAdmin;
+                User user = administrator.User;
+                try
+                {
+                    UpdateUserDetails(token, admin.User);
+                    _adminDAO.Update(admin);
+                    log.Info($"{token.User.Id} {administrator.First_Name} {administrator.Last_Name} Updated it's details");
+                }
+                catch (Exception ex)
+                {
+                    log.Error($"Could not change user {user.Id} details: {ex.Message}");
+                    throw new WrongCredentialsException($"Could not change user {user.Id} details: {ex.Message}");
+                }
+            }
+            else
+            {
+                log.Error("An unknown user tried to update an admin details");
+                throw new WasntActivatedByAdministratorException("An unknown user tried to update an admin details");
+            }
+        }
         public void UpdateAdmin(LoginToken<Administrator> token, Administrator admin)
         {
             if (token != null)
             {
-                if (token.User.Id == admin.Id)
+                Administrator administrator = token.User.Id != 0 ? _adminDAO.Get(token.User.Id) : LoginService.mainAdmin;
+                if (administrator.Level > admin.Level && administrator.Level == 3)
                 {
                     try
                     {
                         UpdateUserDetails(token, admin.User);
                         _adminDAO.Update(admin);
-                        log.Info($"{token.User.Id} {token.User.First_Name} {token.User.Last_Name} Updated it's details");
+                        log.Info($"{token.User.Id} {administrator.First_Name} {administrator.Last_Name} Updated admin {admin.First_Name} {admin.Last_Name} details");
                     }
                     catch (Exception ex)
                     {
-                        log.Error($"Could not change user {token.User.User.Id} details: {ex.Message}");
-                        throw new WrongCredentialsException($"Could not change user {token.User.User.Id} details: {ex.Message}");
+                        log.Error($"Could not change user {admin.User.Id} details: {ex.Message}");
+                        throw new WrongCredentialsException($"Could not change user {admin.User.Id} details: {ex.Message}");
                     }
                 }
                 else
                 {
-                    if (token.User.Level > admin.Level && token.User.Level == 3)
+                    if (administrator.Level == 3)
                     {
-                        try
+                        if (administrator.First_Name == "Main" && administrator.Last_Name == "admin")
                         {
-                            UpdateUserDetails(token, admin.User);
-                            _adminDAO.Update(admin);
-                            log.Info($"{token.User.Id} {token.User.First_Name} {token.User.Last_Name} Updated admin {admin.First_Name} {admin.Last_Name} details");
-                        }
-                        catch (Exception ex)
-                        {
-                            log.Error($"Could not change user {token.User.User.Id} details: {ex.Message}");
-                            throw new WrongCredentialsException($"Could not change user {token.User.User.Id} details: {ex.Message}");
-                        }
-                    }                     
-                    else
-                    {
-                        if (token.User.Level == 3)
-                        {
-                            if (token.User.First_Name == "Main" && token.User.Last_Name == "admin")
+                            try
                             {
-                                try
-                                {
                                 UpdateUserDetails(token, admin.User);
                                 _adminDAO.Update(admin);
                                 log.Info($"Main Admin Updated admin {admin.First_Name} {admin.Last_Name} details");
-                                }
-                                catch (Exception ex)
-                                {
-                                    log.Error($"Could not change user {token.User.User.Id} details: {ex.Message}");
-                                    throw new WrongCredentialsException($"Could not change user {token.User.User.Id} details: {ex.Message}");
-                                }
                             }
-                            else
+                            catch (Exception ex)
                             {
-                                log.Error($"{token.User.Id} {token.User.First_Name} {token.User.Last_Name} did not have sanction to update admin {admin.First_Name} {admin.Last_Name} details");
-                                throw new AdministratorDoesntHaveSanctionException($"{token.User.Id} {token.User.First_Name} {token.User.Last_Name} did not have sanction to update admin {admin.First_Name} {admin.Last_Name} details");
+                                log.Error($"Could not change user {admin.User.Id} details: {ex.Message}");
+                                throw new WrongCredentialsException($"Could not change user {admin.User.Id} details: {ex.Message}");
                             }
                         }
                         else
                         {
-                            log.Error($"{token.User.Id} {token.User.First_Name} {token.User.Last_Name} did not have sanction to update admin {admin.First_Name} {admin.Last_Name} details");
-                            throw new AdministratorDoesntHaveSanctionException($"{token.User.Id} {token.User.First_Name} {token.User.Last_Name} did not have sanction to update admin {admin.First_Name} {admin.Last_Name} details");
+                            log.Error($"{token.User.Id} {administrator.First_Name} {administrator.Last_Name} did not have sanction to update admin {admin.First_Name} {admin.Last_Name} details");
+                            throw new AdministratorDoesntHaveSanctionException($"{token.User.Id} {administrator.First_Name} {administrator.Last_Name} did not have sanction to update admin {admin.First_Name} {admin.Last_Name} details");
                         }
+                    }
+                    else
+                    {
+                        log.Error($"{token.User.Id} {administrator.First_Name} {administrator.Last_Name} did not have sanction to update admin {admin.First_Name} {admin.Last_Name} details");
+                        throw new AdministratorDoesntHaveSanctionException($"{token.User.Id} {administrator.First_Name} {administrator.Last_Name} did not have sanction to update admin {admin.First_Name} {admin.Last_Name} details");
                     }
                 }
             }
@@ -428,16 +435,17 @@ namespace BusinessLogic
         {
             if (token != null)
             {
+                Administrator administrator = token.User.Id != 0 ? _adminDAO.Get(token.User.Id) : LoginService.mainAdmin;
                 try
                 {
                     UpdateUserDetails(token, airline.User);
                     _airlineDAO.Update(airline);
-                    log.Info($"{token.User.Id} {token.User.First_Name} {token.User.Last_Name} Updated airline {airline.Name} details");
+                    log.Info($"{token.User.Id} {administrator.First_Name} {administrator.Last_Name} Updated airline {airline.Name} details");
                 }
                 catch (Exception ex)
                 {
-                    log.Error($"Could not change user {token.User.User.Id} details: {ex.Message}");
-                    throw new WrongCredentialsException($"Could not change user {token.User.User.Id} details: {ex.Message}");
+                    log.Error($"Could not change user {airline.User.Id} details: {ex.Message}");
+                    throw new WrongCredentialsException($"Could not change user {airline.User.Id} details: {ex.Message}");
                 }
             }
             else
@@ -451,12 +459,13 @@ namespace BusinessLogic
         {
             if (token != null)
             {
-                if (token.User.Level == 3)
+                Administrator administrator = token.User.Id != 0 ? _adminDAO.Get(token.User.Id) : LoginService.mainAdmin;
+                if (administrator.Level == 3)
                 {
                     try
                     {
                         _countryDAO.Update(country);
-                        log.Info($"{token.User.Id} {token.User.First_Name} {token.User.Last_Name} Updated country {country.Name} details");
+                        log.Info($"{token.User.Id} {administrator.First_Name} {administrator.Last_Name} Updated country {country.Name} details");
 
                     }
                     catch(Exception ex)
@@ -467,8 +476,8 @@ namespace BusinessLogic
                 }
                 else
                 {
-                    log.Error($"{token.User.Id} {token.User.First_Name} {token.User.Last_Name} did not have sanction to update country {country.Name} details");
-                    throw new AdministratorDoesntHaveSanctionException();
+                    log.Error($"{token.User.Id} {administrator.First_Name} {administrator.Last_Name} did not have sanction to update country {country.Name} details");
+                    throw new AdministratorDoesntHaveSanctionException($"{token.User.Id} {administrator.First_Name} {administrator.Last_Name} did not have sanction to update country {country.Name} details");
                 }
             }
             else
@@ -482,16 +491,17 @@ namespace BusinessLogic
         {
             if (token != null)
             {
+                Administrator administrator = token.User.Id != 0 ? _adminDAO.Get(token.User.Id) : LoginService.mainAdmin;
                 try
                 {
                     UpdateUserDetails(token, customer.User);
                     _customerDAO.Update(customer);
-                    log.Info($"{token.User.Id} {token.User.First_Name} {token.User.Last_Name} Updated customer {customer.First_Name} {customer.Last_Name} details");
+                    log.Info($"{token.User.Id} {administrator.First_Name} {administrator.Last_Name} Updated customer {customer.First_Name} {customer.Last_Name} details");
                 }
                 catch (Exception ex)
                 {
-                    log.Error($"Could not change user {token.User.User.Id} details: {ex.Message}");
-                    throw new WrongCredentialsException($"Could not change user {token.User.User.Id} details: {ex.Message}");
+                    log.Error($"Could not change user {administrator.User.Id} details: {ex.Message}");
+                    throw new WrongCredentialsException($"Could not change user {administrator.User.Id} details: {ex.Message}");
                 }
             }
             else
@@ -508,12 +518,12 @@ namespace BusinessLogic
                 try
                 {
                     _userDAO.Update(user);
-                    log.Info($"User {token.User.User.Id} updated his details");
+                    log.Info($"User {user.Id} updated his details");
                 }
                 catch (Exception ex)
                 {
-                    log.Error($"Could not change user {token.User.User.Id} details: {ex.Message}");
-                    throw new WrongCredentialsException($"Could not change user {token.User.User.Id} details: {ex.Message}");
+                    log.Error($"Could not change user {user.Id} details: {ex.Message}");
+                    throw new WrongCredentialsException($"Could not change user {user.Id} details: {ex.Message}");
                 }
             }
             else
