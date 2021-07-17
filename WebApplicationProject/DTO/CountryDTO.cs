@@ -19,5 +19,16 @@ namespace WebApplicationProject.DTO
             }
             return 0;
         }
+        public static string returnNameFromId(long id)
+        {
+            CountryDAOPGSQL countryDAOPGSQL = new CountryDAOPGSQL();
+            IList<Country> countries = countryDAOPGSQL.GetAll();
+            foreach (Country country in countries)
+            {
+                if (country.Id == id)
+                    return country.Name;
+            }
+            return null;
+        }
     }
 }

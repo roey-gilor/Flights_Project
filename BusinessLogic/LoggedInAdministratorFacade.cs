@@ -215,7 +215,7 @@ namespace BusinessLogic
                 {
                     if (administrator.Level == 3)
                     {
-                        if (token.User.First_Name == "Main" && token.User.Last_Name == "admin")
+                        if (administrator.First_Name == "Main" && administrator.Last_Name == "admin")
                         {
                             User user = admin.User;
                             _adminDAO.Remove(admin);
@@ -243,7 +243,8 @@ namespace BusinessLogic
         {
             if (token != null)
             {
-                if (token.User.Level != 1)
+                Administrator administrator = token.User.Id != 0 ? _adminDAO.Get(token.User.Id) : LoginService.mainAdmin;
+                if (administrator.Level != 1)
                 {
                     IList<Flight> flights = _flightDAO.GetAll();
                     foreach (Flight flight in flights)
@@ -261,12 +262,12 @@ namespace BusinessLogic
                     User user = airline.User;
                     _airlineDAO.Remove(airline);
                     _userDAO.Remove(user);
-                    log.Info($"{token.User.Id} {token.User.First_Name} {token.User.Last_Name} removed airline {airline.Name} from the system");
+                    log.Info($"{token.User.Id} {administrator.First_Name} {administrator.Last_Name} removed airline {airline.Name} from the system");
                 }
                 else
                 {
-                    log.Error($"{token.User.Id} {token.User.First_Name} {token.User.Last_Name} did not have sanction to remove airline {airline.Name} from the system");
-                    throw new AdministratorDoesntHaveSanctionException($"{token.User.Id} {token.User.First_Name} {token.User.Last_Name} did not have sanction to remove airline {airline.Name} from the system");
+                    log.Error($"{token.User.Id} {administrator.First_Name} {administrator.Last_Name} did not have sanction to remove airline {airline.Name} from the system");
+                    throw new AdministratorDoesntHaveSanctionException($"{token.User.Id} {administrator.First_Name} {administrator.Last_Name} did not have sanction to remove airline {airline.Name} from the system");
                 }
             }
             else
@@ -280,7 +281,8 @@ namespace BusinessLogic
         {
             if (token != null)
             {
-                if (token.User.Level == 3)
+                Administrator administrator = token.User.Id != 0 ? _adminDAO.Get(token.User.Id) : LoginService.mainAdmin;
+                if (administrator.Level == 3)
                 {
                     foreach (AirlineCompany airlineCompany in _airlineDAO.GetAll())
                     {
@@ -301,13 +303,13 @@ namespace BusinessLogic
                         }
                     }
                     _countryDAO.Remove(country);
-                    log.Info($"{token.User.Id} {token.User.First_Name} {token.User.Last_Name} removed country {country.Name} from the system");
+                    log.Info($"{token.User.Id} {administrator.First_Name} {administrator.Last_Name} removed country {country.Name} from the system");
 
                 }
                 else
                 {
-                    log.Error($"{token.User.Id} {token.User.First_Name} {token.User.Last_Name} did not have sanction to remove country {country.Name} from the system");
-                    throw new AdministratorDoesntHaveSanctionException($"{token.User.Id} {token.User.First_Name} {token.User.Last_Name} did not have sanction to remove country {country.Name} from the system");
+                    log.Error($"{token.User.Id} {administrator.First_Name} {administrator.Last_Name} did not have sanction to remove country {country.Name} from the system");
+                    throw new AdministratorDoesntHaveSanctionException($"{token.User.Id} {administrator.First_Name} {administrator.Last_Name} did not have sanction to remove country {country.Name} from the system");
                 }
             }
             else
@@ -321,7 +323,8 @@ namespace BusinessLogic
         {
             if (token != null)
             {
-                if (token.User.Level != 1)
+                Administrator administrator = token.User.Id != 0 ? _adminDAO.Get(token.User.Id) : LoginService.mainAdmin;
+                if (administrator.Level != 1)
                 {
                     foreach (Ticket ticket in _ticketDAO.GetAll())
                     {
@@ -336,12 +339,12 @@ namespace BusinessLogic
                     User user = customer.User;
                     _customerDAO.Remove(customer);
                     _userDAO.Remove(user);
-                    log.Info($"{token.User.Id} {token.User.First_Name} {token.User.Last_Name} removed customer {customer.First_Name} {customer.Last_Name} from the system");
+                    log.Info($"{token.User.Id} {administrator.First_Name} {administrator.Last_Name} removed customer {customer.First_Name} {customer.Last_Name} from the system");
                 }
                 else
                 {
-                    log.Error($"{token.User.Id} {token.User.First_Name} {token.User.Last_Name} didn't have sanction to remove customer {customer.First_Name} {customer.Last_Name} from the system");
-                    throw new AdministratorDoesntHaveSanctionException($"{token.User.Id} {token.User.First_Name} {token.User.Last_Name} didn't have sanction to remove customer {customer.First_Name} {customer.Last_Name} from the system");
+                    log.Error($"{token.User.Id} {administrator.First_Name} {administrator.Last_Name} didn't have sanction to remove customer {customer.First_Name} {customer.Last_Name} from the system");
+                    throw new AdministratorDoesntHaveSanctionException($"{token.User.Id} {administrator.First_Name} {administrator.Last_Name} didn't have sanction to remove customer {customer.First_Name} {customer.Last_Name} from the system");
                 }
             }
             else

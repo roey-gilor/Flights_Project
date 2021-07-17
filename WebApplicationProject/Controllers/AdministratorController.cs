@@ -252,5 +252,82 @@ namespace WebApplicationProject.Controllers
             }
             return Ok();
         }
+        [HttpDelete("RemoveAdmin")]
+        public async Task<ActionResult> RemoveAdmin ([FromBody] Administrator administrator)
+        {
+            LoginToken<Administrator> token = GetLoginToken();
+            try
+            {
+                await Task.Run(() => { m_facade.RemoveAdmin(token, administrator); });
+            }
+            catch (AdministratorDoesntHaveSanctionException ex)
+            {
+                return StatusCode(403, $"{{ error: \"{ex.Message}\" }}");
+            }
+            catch (WasntActivatedByAdministratorException ex)
+            {
+                return StatusCode(401, $"{{ error: \"{ex.Message}\" }}");
+            }
+            return Ok();
+        }
+        [HttpDelete("RemoveAirline")]
+        public async Task<ActionResult> RemoveAirline([FromBody] AirlineDTO airlineDTO)
+        {
+            LoginToken<Administrator> token = GetLoginToken();
+            AirlineCompany airlineCompany = m_mapper.Map<AirlineCompany>(airlineDTO);
+            try
+            {
+                await Task.Run(() => { m_facade.RemoveAirline(token, airlineCompany); });
+            }
+            catch (AdministratorDoesntHaveSanctionException ex)
+            {
+                return StatusCode(403, $"{{ error: \"{ex.Message}\" }}");
+            }
+            catch (WasntActivatedByAdministratorException ex)
+            {
+                return StatusCode(401, $"{{ error: \"{ex.Message}\" }}");
+            }
+            return Ok();
+        }
+        [HttpDelete("RemoveCountry/{countryId}")]
+        public async Task<ActionResult> RemoveCountry(long countryId)
+        {
+            LoginToken<Administrator> token = GetLoginToken();
+            string countryName = CountryDTO.returnNameFromId(countryId);
+            if (countryName == null)
+                return StatusCode(400, $"{{ error: \"{"Country id does not exists"}\" }}");
+            Country country = new Country { Id = countryId, Name = countryName };
+            try
+            {
+                await Task.Run(() => { m_facade.RemoveCountry(token, country); });
+            }
+            catch (AdministratorDoesntHaveSanctionException ex)
+            {
+                return StatusCode(403, $"{{ error: \"{ex.Message}\" }}");
+            }
+            catch (WasntActivatedByAdministratorException ex)
+            {
+                return StatusCode(401, $"{{ error: \"{ex.Message}\" }}");
+            }
+            return Ok();
+        }
+        [HttpDelete("RemoveCustomer")]
+        public async Task<ActionResult> RemoveCustomer([FromBody] Customer customer)
+        {
+            LoginToken<Administrator> token = GetLoginToken();
+            try
+            {
+                await Task.Run(() => { m_facade.RemoveCustomer(token, customer); });
+            }
+            catch (AdministratorDoesntHaveSanctionException ex)
+            {
+                return StatusCode(403, $"{{ error: \"{ex.Message}\" }}");
+            }
+            catch (WasntActivatedByAdministratorException ex)
+            {
+                return StatusCode(401, $"{{ error: \"{ex.Message}\" }}");
+            }
+            return Ok();
+        }
     }
 }
