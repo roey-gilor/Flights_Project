@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WebApplicationProject.Middlewares;
 
 namespace WebApplicationProject
 {
@@ -35,6 +36,7 @@ namespace WebApplicationProject
 
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
+            services.AddCors();
             services.AddControllersWithViews();
 
             services.AddControllers();
@@ -131,6 +133,17 @@ namespace WebApplicationProject
                        "FlightsManagmentSystemWebAPI v1");
                 c.DocumentTitle = "Flights Managment System API";
             });
+
+            app.UseMiddleware<RequestResponseLoggingMiddleware>();
+
+            app.UseHttpsRedirection();
+            app.UseStaticFiles();
+
+            app.UseCors(builder => builder
+                .AllowAnyOrigin()
+                .AllowAnyMethod()
+                .AllowAnyHeader());
+
         }
     }
 }

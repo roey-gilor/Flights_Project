@@ -21,6 +21,11 @@ namespace WebApplicationProject
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
+                }).ConfigureLogging(builder =>
+                //Configure log4net, need to add the log4net configuration file, 
+                {
+                    builder.SetMinimumLevel(LogLevel.Debug);
+                    builder.AddLog4Net("Log4Net.config");
                 });
     }
 }

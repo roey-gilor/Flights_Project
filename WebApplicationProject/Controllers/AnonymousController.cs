@@ -3,6 +3,7 @@ using BusinessLogic;
 using DAO;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -18,10 +19,12 @@ namespace WebApplicationProject.Controllers
     {
         private IAnonymousUserFacade m_facade;
         private readonly IMapper m_mapper;
-        public AnonymousController(IAnonymousUserFacade anonymousFacade, IMapper mapper)
+        private readonly ILogger<AnonymousController> _logger;
+        public AnonymousController(IAnonymousUserFacade anonymousFacade, IMapper mapper, ILogger<AnonymousController> logger)
         {
             m_facade = anonymousFacade;
             m_mapper = mapper;
+            _logger = logger;
         }
         [HttpPost("CreateNewCustomer")]
         public async Task<ActionResult<Customer>> CreateNewCustomer([FromBody] Customer customer)
