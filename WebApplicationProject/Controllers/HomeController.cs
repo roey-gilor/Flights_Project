@@ -22,7 +22,7 @@ namespace WebApplicationProject.Controllers
         public ActionResult Index()
         {
             //return View();
-            var res = System.IO.File.ReadAllText("wwwroot\\FlightPages\\loginPage.html");
+            var res = System.IO.File.ReadAllText("wwwroot\\FlightPages\\RegisterationCustomerPage.html");
             return Content(res, "text/html");
         }
 
