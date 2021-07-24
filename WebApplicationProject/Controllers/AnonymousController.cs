@@ -34,7 +34,7 @@ namespace WebApplicationProject.Controllers
             {
                 id = await Task.Run(() => m_facade.AddNewCustomer(customer));
             }
-            catch (Exception ex)
+            catch (DuplicateDetailsException ex)
             {
                 return StatusCode(400, $"{{ error: \"{ex.Message}\" }}");
             }

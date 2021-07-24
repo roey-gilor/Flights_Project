@@ -61,6 +61,10 @@ namespace WebApplicationProject.Controllers
             {
                 return StatusCode(401, $"{{ error: \"{ex.Message}\" }}");
             }
+            catch (DuplicateDetailsException ex)
+            {
+                return StatusCode(400, $"{{ error: \"{ex.Message}\" }}");
+            }
             administrator.Id = id;
             return Created($"api/Administrator/CreateAdmin/{id}", JsonConvert.SerializeObject(administrator));
         }
@@ -76,7 +80,7 @@ namespace WebApplicationProject.Controllers
             {
                 return StatusCode(403, $"{{ error: \"{ex.Message}\" }}");
             }
-            catch (WrongCredentialsException ex)
+            catch (DuplicateDetailsException ex)
             {
                 return StatusCode(401, $"{{ error: \"{ex.Message}\" }}");
             }
@@ -100,7 +104,7 @@ namespace WebApplicationProject.Controllers
             {
                 return StatusCode(403, $"{{ error: \"{ex.Message}\" }}");
             }
-            catch (WrongCredentialsException ex)
+            catch (DuplicateDetailsException ex)
             {
                 return StatusCode(401, $"{{ error: \"{ex.Message}\" }}");
             }
@@ -125,7 +129,7 @@ namespace WebApplicationProject.Controllers
             {
                 return StatusCode(403, $"{{ error: \"{ex.Message}\" }}");
             }
-            catch (WrongCredentialsException ex)
+            catch (DuplicateDetailsException ex)
             {
                 return StatusCode(401, $"{{ error: \"{ex.Message}\" }}");
             }

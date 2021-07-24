@@ -22,9 +22,10 @@ namespace BusinessLogic
             }
             catch (Exception ex)
             {
-
+                if (customer.User_Id != 0)
+                    _userDAO.Remove(customer.User);
                 log.Error($"faild to add user: {ex.Message}");
-                throw new WrongCredentialsException($"faild to add user: {ex.Message}");
+                throw new DuplicateDetailsException($"faild to add user: {ex.Message}");
             }
         }
 

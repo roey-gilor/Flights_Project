@@ -44,12 +44,22 @@ namespace BusinessLogic
                 Administrator administrator = token.User.Id != 0 ? _adminDAO.Get(token.User.Id) : LoginService.mainAdmin;
                 if (administrator.Level > admin.Level && administrator.Level == 3)
                 {
-                    long userId = _userDAO.Add(admin.User);
-                    admin.User.Id = userId;
-                    admin.User_Id = userId;
-                    long id = _adminDAO.Add(admin);
-                    log.Info($"{token.User.Id} {administrator.First_Name} {administrator.Last_Name} added new administrator: {admin.First_Name} {admin.Last_Name}");
-                    return id;
+                    try
+                    {
+                        long userId = _userDAO.Add(admin.User);
+                        admin.User.Id = userId;
+                        admin.User_Id = userId;
+                        long id = _adminDAO.Add(admin);
+                        log.Info($"{token.User.Id} {administrator.First_Name} {administrator.Last_Name} added new administrator: {admin.First_Name} {admin.Last_Name}");
+                        return id;
+                    }
+                    catch (Exception ex)
+                    {
+                        if (admin.User_Id != 0)
+                            _userDAO.Remove(admin.User);
+                        log.Error($"faild to add user: {ex.Message}");
+                        throw new DuplicateDetailsException($"faild to add user: {ex.Message}");
+                    }
                 }
                 else
                 {
@@ -57,12 +67,22 @@ namespace BusinessLogic
                     {
                         if (administrator.First_Name == "Main" && administrator.Last_Name == "admin")
                         {
-                            long userId = _userDAO.Add(admin.User);
-                            admin.User.Id = userId;
-                            admin.User_Id = userId;
-                            long id = _adminDAO.Add(admin);
-                            log.Info($"Main admin added new administrator: {admin.First_Name} {admin.Last_Name}");
-                            return id;
+                            try
+                            {
+                                long userId = _userDAO.Add(admin.User);
+                                admin.User.Id = userId;
+                                admin.User_Id = userId;
+                                long id = _adminDAO.Add(admin);
+                                log.Info($"Main admin added new administrator: {admin.First_Name} {admin.Last_Name}");
+                                return id;
+                            }
+                            catch (Exception ex)
+                            {
+                                if (admin.User_Id != 0)
+                                    _userDAO.Remove(admin.User);
+                                log.Error($"faild to add user: {ex.Message}");
+                                throw new DuplicateDetailsException($"faild to add user: {ex.Message}");
+                            }
                         }
                         else
                         {
@@ -98,7 +118,8 @@ namespace BusinessLogic
                     }
                     catch (Exception ex)
                     {
-                        throw new WrongCredentialsException($"Could not Add new country: {ex.Message}");
+                        log.Error($"Could not Add new country: {ex.Message}");
+                        throw new DuplicateDetailsException($"Could not Add new country: {ex.Message}");
                     }
                 }
                 else
@@ -132,8 +153,10 @@ namespace BusinessLogic
                     }
                     catch (Exception ex)
                     {
+                        if (airline.User_Id != 0)
+                            _userDAO.Remove(airline.User);
                         log.Error($"Could not Add New airline company: {ex.Message}");
-                        throw new WrongCredentialsException($"Could not Add New airline company: {ex.Message}");
+                        throw new DuplicateDetailsException($"Could not Add New airline company: {ex.Message}");
                     }
                 }
                 else
@@ -167,8 +190,10 @@ namespace BusinessLogic
                     }
                     catch (Exception ex)
                     {
+                        if (customer.User_Id != 0)
+                            _userDAO.Remove(customer.User);
                         log.Error($"Could not create new customer: {ex.Message}");
-                        throw new WrongCredentialsException($"Could not create new customer: {ex.Message}");
+                        throw new DuplicateDetailsException($"Could not create new customer: {ex.Message}");
                     }
                 }
                 else

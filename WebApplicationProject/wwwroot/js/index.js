@@ -18,13 +18,17 @@ const createNewCustomer = () => {
         data: customer,
         contentType: 'application/json'
     }).done(() => {
-        // console.log(jqXhr);
-        Swal.fire(
-            'New Customer was created succefully!',
-            'You can login to the system now!',
-            'success'
-        )
-    }).fail(() => {
-        console.log(jqXhr.status)
+    Swal.fire(
+        'New Customer was created succefully!',
+        'You can login to the system now!',
+        'success'
+    )
+}).fail(() => {
+    let text = (jqXhr.responseText.split("\"")[2]).split("_")[1];
+    Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: `${text} is allready taken`
     })
+})
 }
