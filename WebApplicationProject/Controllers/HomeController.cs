@@ -59,6 +59,11 @@ namespace WebApplicationProject.Controllers
             }
         }
 
+        public ActionResult AirlineRegister()
+        {
+            var res = System.IO.File.ReadAllText("wwwroot\\FlightPages\\loginPage.html");
+            return Content(res, "text/html");
+        }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
