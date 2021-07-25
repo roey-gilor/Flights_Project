@@ -10,19 +10,16 @@
         integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
         crossorigin="anonymous"></script>
     <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <!-- <script src="sweetalert2.min.js"></script>
-    <link rel="stylesheet" href="sweetalert2.min.css"> -->
     <title>Customer Registeration</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 </head>
 
 <body>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-    <script src="../js/inDex.js" type="text/javascript"></script>
     <section class="h-custom gradient-custom-2"> <br />
         <div class="container py-5 h-100">
             <h1 style="text-align: center; font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif">
                 Customer Registeration</h1>
-            <form onsubmit="CreateNewCustomer()">
+            <form id="regCuForm" onsubmit="createNewCustomer()">
                 <div class="row d-flex justify-content-center align-items-center h-100">
                     <div class="col-12">
                         <div class="card card-registration card-registration-2" style="border-radius: 15px;">
@@ -177,7 +174,7 @@
                                                 </div>
                                             </div>
 
-                                            <button type="button" onclick="createNewCustomer()"
+                                            <button type="submit" onclick="createNewCustomer()"
                                                 class="btn btn-light btn-lg" id="registerBtn"
                                                 data-mdb-ripple-color="dark">Register</button>
 
@@ -191,6 +188,7 @@
             </form>
         </div>
     </section>
+    <script src="../js/indexFile.js" type="text/javascript"></script>
 </body>
 
 </html>
