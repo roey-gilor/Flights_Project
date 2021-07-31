@@ -1,8 +1,8 @@
-
 const createNewCustomer = () => {
     if (!validateForm()) {
         event.preventDefault();
-        let error = validatePassword();
+        debugger;
+        let error = validateDetails();
         if (error !== '') {
             Swal.fire({
                 icon: 'error',
@@ -49,11 +49,19 @@ const createNewCustomer = () => {
 
 const validateForm = () => {
     let inputs = [$("#firstName").val(), $("#lastName").val(), $("#address").val(), $("#suffixNum").val(),
-    $("#userName").val(), $("#Password").val(), $("#email").val(), $("#card").val()]
+    $("#userName").val(), $("#Password").val(), $("#conPassword").val(), $("#email").val(), $("#card").val()]
     return inputs.some(val => val.length === 0)
 }
 
-const validatePassword = () => {
+const validateDetails = () => {
+    debugger;
+    if ($("#userName").val().length < 5) {
+        return 'User name is too short'
+    } else {
+        if ($("#userName").val().length > 20) {
+            return 'User name is too long'
+        }
+    }
     if ($("#Password").val() !== $("#conPassword").val()) {
         return 'You must confirm your password correctly!'
     }
@@ -63,6 +71,21 @@ const validatePassword = () => {
         if ($("#Password").val().length > 20) {
             return 'Your password is too long'
         }
+    }
+    if ($("#firstName").val().length < 2) {
+        return 'First name is too short'
+    }
+    if ($("#lastName").val().length < 2) {
+        return 'Last name is too short'
+    }
+    if ($("#address").val().length < 10) {
+        return 'Address is too short'
+    }
+    if ($("#suffixNum").val().length !== 7) {
+        return 'Phone number must include 7 digits'
+    }
+    if ($("#card").val().length !== 16) {
+        return 'Credit card number must include 16 digits'
     }
     return '';
 }
