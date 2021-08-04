@@ -333,5 +333,112 @@ namespace WebApplicationProject.Controllers
             }
             return Ok();
         }
+        [HttpGet("GetAllWaitingAirlines")]
+        public async Task<ActionResult<IList<AirlineDTO>>> GetAllWaitingAirlines()
+        {
+            LoginToken<Administrator> token = GetLoginToken();
+            IList<AirlineCompany> airlineCompanies = null;
+            try
+            {
+                airlineCompanies = await Task.Run(() => { return m_facade.GetWaitingAirlines(token); });
+            }
+            catch (AdministratorDoesntHaveSanctionException ex)
+            {
+                return StatusCode(403, $"{{ error: \"{ex.Message}\" }}");
+            }
+            catch (WasntActivatedByAdministratorException ex)
+            {
+                return StatusCode(401, $"{{ error: \"{ex.Message}\" }}");
+            }
+            if (airlineCompanies.Count == 0)
+                return StatusCode(204, "{ }");
+            IList<AirlineDTO> airlineDTOs = new List<AirlineDTO>();
+            foreach (AirlineCompany airline in airlineCompanies)
+            {
+                AirlineDTO airlineDTO = m_mapper.Map<AirlineDTO>(airline);
+                airlineDTOs.Add(airlineDTO);
+            }
+            return Ok(JsonConvert.SerializeObject(airlineDTOs));
+        }
+        [HttpPost("ApproveAirline")]
+        public async Task<ActionResult<AirlineCompany>> ApproveAirline([FromBody] AirlineDTO airline)
+        {
+            LoginToken<Administrator> token = GetLoginToken();
+            AirlineCompany airlineCompany = m_mapper.Map<AirlineCompany>(airline);
+            long id = 0;
+            try
+            {
+                id = await Task.Run(() => { return m_facade.AcceptWaitingAirline(token, airlineCompany); });
+            }
+            catch (AdministratorDoesntHaveSanctionException ex)
+            {
+                return StatusCode(403, $"{{ error: \"{ex.Message}\" }}");
+            }
+            catch (WasntActivatedByAdministratorException ex)
+            {
+                return StatusCode(401, $"{{ error: \"{ex.Message}\" }}");
+            }
+            airline.Id = id;
+            airline.User.User_Role = 2;
+            return Created($"api/Administrator/ApproveAirline/{id}", JsonConvert.SerializeObject(airline));
+        }
+        [HttpDelete("RejectAirline")]
+        public async Task<ActionResult<AirlineCompany>> RejectAirline([FromBody] AirlineDTO airline)
+        {
+            LoginToken<Administrator> token = GetLoginToken();
+            AirlineCompany airlineCompany = m_mapper.Map<AirlineCompany>(airline);
+            try
+            {
+                await Task.Run(() => m_facade.RejectWaitingAirline(token, airlineCompany));
+            }
+            catch (AdministratorDoesntHaveSanctionException ex)
+            {
+                return StatusCode(403, $"{{ error: \"{ex.Message}\" }}");
+            }
+            catch (WasntActivatedByAdministratorException ex)
+            {
+                return StatusCode(401, $"{{ error: \"{ex.Message}\" }}");
+            }
+            return Ok();
+        }
+        [HttpPost("ApproveAdmin")]
+        public async Task<ActionResult<AirlineCompany>> ApproveAdmin([FromBody] Administrator administrator)
+        {
+            LoginToken<Administrator> token = GetLoginToken();
+            long id = 0;
+            try
+            {
+                id = await Task.Run(() => { return m_facade.AcceptWaitingAdmin(token, administrator); });
+            }
+            catch (AdministratorDoesntHaveSanctionException ex)
+            {
+                return StatusCode(403, $"{{ error: \"{ex.Message}\" }}");
+            }
+            catch (WasntActivatedByAdministratorException ex)
+            {
+                return StatusCode(401, $"{{ error: \"{ex.Message}\" }}");
+            }
+            administrator.Id = id;
+            administrator.User.User_Role = 1;
+            return Created($"api/Administrator/ApproveAdmin/{id}", JsonConvert.SerializeObject(administrator));
+        }
+        [HttpDelete("RejectAdmin")]
+        public async Task<ActionResult<AirlineCompany>> RejectAdmin([FromBody] Administrator administrator)
+        {
+            LoginToken<Administrator> token = GetLoginToken();
+            try
+            {
+                await Task.Run(() => m_facade.RejectWaitingAdmin(token, administrator));
+            }
+            catch (AdministratorDoesntHaveSanctionException ex)
+            {
+                return StatusCode(403, $"{{ error: \"{ex.Message}\" }}");
+            }
+            catch (WasntActivatedByAdministratorException ex)
+            {
+                return StatusCode(401, $"{{ error: \"{ex.Message}\" }}");
+            }
+            return Ok();
+        }
     }
 }

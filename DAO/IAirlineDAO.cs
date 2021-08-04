@@ -9,5 +9,6 @@ namespace DAO
         AirlineCompany GetAirlineByUserame(string name);
         IList<AirlineCompany> GetAllAirlinesByCountry(int countryId);
         AirlineCompany GetAirlineByUserId(long id);
+        long AddWaitingAirline(AirlineCompany airlineCompany);
     }
 }

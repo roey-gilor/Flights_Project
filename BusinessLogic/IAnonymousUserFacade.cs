@@ -15,6 +15,9 @@ namespace BusinessLogic
         IList<Flight> GetFlightsByDepatrureDate(DateTime departureDate);
         IList<Flight> GetFlightsByLandingDate(DateTime landingDate);
         long AddNewCustomer(Customer customer);
+        long AddNewWaitingAirline(AirlineCompany airlineCompany);
+        IList<Country> GetAllCountries();
+        long AddNewWaitingAdmin(Administrator administrator);
 
     }
 }

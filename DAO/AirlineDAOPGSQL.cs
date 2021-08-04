@@ -188,5 +188,41 @@ namespace DAO
                 new NpgsqlParameter("_userid" ,id)
             })[0];
         }
+
+        public long AddWaitingAirline(AirlineCompany airlineCompany)
+        {
+            try
+            {
+                long id = 0;
+                NpgsqlParameter[] parameters = new NpgsqlParameter[]
+                {
+                new NpgsqlParameter("_airline_name" ,airlineCompany.Name),
+                new NpgsqlParameter("_country_id",airlineCompany.Country_Id),
+                new NpgsqlParameter("_username",airlineCompany.User.User_Name),
+                new NpgsqlParameter("_password",airlineCompany.User.Password),
+                new NpgsqlParameter("_email",airlineCompany.User.Email)
+                };
+                using (var conn = new NpgsqlConnection(AppConfig.Instance.ConnectionString))
+                {
+                    conn.Open();
+
+                    NpgsqlCommand command = new NpgsqlCommand("sp_add_waiting_airline", conn);
+                    command.CommandType = System.Data.CommandType.StoredProcedure;
+
+                    command.Parameters.AddRange(parameters);
+
+                    var reader = command.ExecuteReader();
+                    while (reader.Read())
+                    {
+                        id = (long)reader[0];
+                    }
+                }
+                return id;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
     }
 }

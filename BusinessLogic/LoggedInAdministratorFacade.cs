@@ -560,5 +560,168 @@ namespace BusinessLogic
                 throw new WasntActivatedByAdministratorException("An unknown user tried to update details");
             }
         }
+
+        public IList<AirlineCompany> GetWaitingAirlines(LoginToken<Administrator> token)
+        {
+            if (token != null)
+            {
+                Administrator administrator = token.User.Id != 0 ? _adminDAO.Get(token.User.Id) : LoginService.mainAdmin;
+                if (administrator.Level != 1)
+                {
+                    log.Info($"{token.User.Id} {administrator.First_Name} {administrator.Last_Name} got all waiting airlines");
+                    return _adminDAO.GetAllWaitingAirlines();
+                }
+                else
+                {
+                    log.Error($"{token.User.Id} {administrator.First_Name} {administrator.Last_Name} did not have sanction to get all waiting airlines");
+                    throw new AdministratorDoesntHaveSanctionException($"{token.User.Id} {administrator.First_Name} {administrator.Last_Name} did not have sanction to get all waiting airlines");
+                }
+            }
+            else
+            {
+                log.Error("An unknown user tried to get all waiting airlines");
+                throw new WasntActivatedByAdministratorException("An unknown user tried to get all waiting airlines");
+            }
+        }
+
+        public long AcceptWaitingAirline(LoginToken<Administrator> token, AirlineCompany airlineCompany)
+        {
+            if (token != null)
+            {
+                Administrator administrator = token.User.Id != 0 ? _adminDAO.Get(token.User.Id) : LoginService.mainAdmin;
+                if (administrator.Level != 1)
+                {
+                    log.Info($"{token.User.Id} {administrator.First_Name} {administrator.Last_Name} approved waiting airlines");
+                    _adminDAO.RemoveWaitingAirline(airlineCompany);
+                    airlineCompany.User.User_Role = 2;
+                   long id = CreateNewAirline(token, airlineCompany);
+                    return id;
+                }
+                else
+                {
+                    log.Error($"{token.User.Id} {administrator.First_Name} {administrator.Last_Name} did not have sanction to approve airline");
+                    throw new AdministratorDoesntHaveSanctionException($"{token.User.Id} {administrator.First_Name} {administrator.Last_Name} did not have sanction to approve airline");
+                }
+            }
+            else
+            {
+                log.Error("An unknown user tried to approve airline");
+                throw new WasntActivatedByAdministratorException("An unknown user tried to approve airline");
+            }
+        }
+
+        public void RejectWaitingAirline(LoginToken<Administrator> token, AirlineCompany airlineCompany)
+        {
+            if (token != null)
+            {
+                Administrator administrator = token.User.Id != 0 ? _adminDAO.Get(token.User.Id) : LoginService.mainAdmin;
+                if (administrator.Level != 1)
+                {
+                    log.Info($"{token.User.Id} {administrator.First_Name} {administrator.Last_Name} rejected waiting airlines");
+                    _adminDAO.RemoveWaitingAirline(airlineCompany);
+                }
+                else
+                {
+                    log.Error($"{token.User.Id} {administrator.First_Name} {administrator.Last_Name} did not have sanction to reject airline");
+                    throw new AdministratorDoesntHaveSanctionException($"{token.User.Id} {administrator.First_Name} {administrator.Last_Name} did not have sanction to reject airline");
+                }
+            }
+            else
+            {
+                log.Error("An unknown user tried to reject airline");
+                throw new WasntActivatedByAdministratorException("An unknown user tried to reject airline");
+            }
+        }
+
+        public IList<Administrator> GetWaitingAdmins(LoginToken<Administrator> token)
+        {
+            if (token != null)
+            {
+                Administrator administrator = token.User.Id != 0 ? _adminDAO.Get(token.User.Id) : LoginService.mainAdmin;
+                if (administrator.Level != 3)
+                {
+                    log.Info($"{token.User.Id} {administrator.First_Name} {administrator.Last_Name} got all waiting admins");
+                    return _adminDAO.GetAllWaitingAdmins();
+                }
+                else
+                {
+                    log.Error($"{token.User.Id} {administrator.First_Name} {administrator.Last_Name} did not have sanction to get all waiting admins");
+                    throw new AdministratorDoesntHaveSanctionException($"{token.User.Id} {administrator.First_Name} {administrator.Last_Name} did not have sanction to get all waiting admins");
+                }
+            }
+            else
+            {
+                log.Error("An unknown user tried to get all waiting admins");
+                throw new WasntActivatedByAdministratorException("An unknown user tried to get all waiting admins");
+            }
+        }
+
+        public long AcceptWaitingAdmin(LoginToken<Administrator> token, Administrator admin)
+        {
+            if (token != null)
+            {
+                Administrator administrator = token.User.Id != 0 ? _adminDAO.Get(token.User.Id) : LoginService.mainAdmin;
+                if (administrator.Level > admin.Level && administrator.Level == 3)
+                {
+                    log.Info($"{token.User.Id} {administrator.First_Name} {administrator.Last_Name} approved waiting admin");
+                    _adminDAO.RemoveWaitingAdmin(admin);
+                    admin.User.User_Role = 1;
+                    long id = CreateAdmin(token, admin);
+                    return id;
+                }
+                else
+                {
+                    if (administrator.Level == 3)
+                    {
+                        if (administrator.First_Name == "Main" && administrator.Last_Name == "admin")
+                        {
+                            log.Info($"{token.User.Id} {administrator.First_Name} {administrator.Last_Name} approved waiting admin");
+                            _adminDAO.RemoveWaitingAdmin(admin);
+                            admin.User.User_Role = 1;
+                            long id = CreateAdmin(token, admin);
+                            return id;
+                        }
+                        else
+                        {
+                            log.Error($"{token.User.Id} {administrator.First_Name} {administrator.Last_Name} did not have sanction to approve waiting admin");
+                            throw new AdministratorDoesntHaveSanctionException($"{token.User.Id} {administrator.First_Name} {administrator.Last_Name} did not have sanction to approve waiting admin");
+                        }
+                    }
+                    else
+                    {
+                        log.Error($"{token.User.Id} {administrator.First_Name} {administrator.Last_Name} did not have sanction to approve waiting admin");
+                        throw new AdministratorDoesntHaveSanctionException($"{token.User.Id} {administrator.First_Name} {administrator.Last_Name} did not have sanction to approve waiting admin");
+                    }
+                }
+            }
+            else
+            {
+                log.Error("An unknown user tried to approve waiting admin");
+                throw new WasntActivatedByAdministratorException("An unknown user tried to approve waiting admin");
+            }
+        }
+
+        public void RejectWaitingAdmin(LoginToken<Administrator> token, Administrator admin)
+        {
+            if (token != null)
+            {
+                Administrator administrator = token.User.Id != 0 ? _adminDAO.Get(token.User.Id) : LoginService.mainAdmin;
+                if (administrator.Level == 3)
+                {
+                    log.Info($"{token.User.Id} {administrator.First_Name} {administrator.Last_Name} rejected waiting admin");
+                    _adminDAO.RemoveWaitingAdmin(admin);
+                }
+                else
+                {
+                    log.Error($"{token.User.Id} {administrator.First_Name} {administrator.Last_Name} did not have sanction to reject admin");
+                    throw new AdministratorDoesntHaveSanctionException($"{token.User.Id} {administrator.First_Name} {administrator.Last_Name} did not have sanction to reject admin");
+                }
+            }
+            else
+            {
+                log.Error("An unknown user tried to reject admin");
+                throw new WasntActivatedByAdministratorException("An unknown user tried to reject admin");
+            }
+        } 
     }
 }

@@ -160,5 +160,132 @@ namespace DAO
                 new NpgsqlParameter("_userid" ,id)
             })[0];
         }
+        public IList<AirlineCompany> GetAllWaitingAirlines()
+        {
+            List<AirlineCompany> airline_companies = new List<AirlineCompany>();
+            try
+            {
+                using (var conn = new NpgsqlConnection(AppConfig.Instance.ConnectionString))
+                {
+                    conn.Open();
+
+                    NpgsqlCommand command = new NpgsqlCommand("sp_get_all_waiting_airlines", conn);
+                    command.CommandType = System.Data.CommandType.StoredProcedure;
+                    var reader = command.ExecuteReader();
+                    while (reader.Read())
+                    {
+                        AirlineCompany airlineCompany = new AirlineCompany
+                        {
+                            Id = (long)reader["id"],
+                            Name = reader["airline_name"].ToString(),
+                            Country_Id = (long)reader["country_id"],
+                            User = new User
+                            {
+                                User_Name = reader["username"].ToString(),
+                                Password = reader["password"].ToString(),
+                                Email = reader["email"].ToString()
+                            }
+                        };
+                        airline_companies.Add(airlineCompany);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                log.Error($"Could not get all waiting airlines: {ex.Message}");
+            }
+            return airline_companies;
+        }
+
+        public void RemoveWaitingAirline(AirlineCompany airlineCompany)
+        {
+            RunSpNonExecute(AppConfig.Instance.ConnectionString, "sp_remove_waiting_airline", new NpgsqlParameter[]
+            {
+                new NpgsqlParameter("_id" ,airlineCompany.Id)
+            });
+        }
+
+        public long AddWaitingAdmin(Administrator administrator)
+        {
+            try
+            {
+                long id = 0;
+                NpgsqlParameter[] parameters = new NpgsqlParameter[]
+                {
+                new NpgsqlParameter("_first_name" ,administrator.First_Name),
+                new NpgsqlParameter("_last_name",administrator.Last_Name),
+                new NpgsqlParameter("_level",administrator.Level),
+                new NpgsqlParameter("_username",administrator.User.User_Name),
+                new NpgsqlParameter("_password",administrator.User.Password),
+                new NpgsqlParameter("_email",administrator.User.Email)
+                };
+                using (var conn = new NpgsqlConnection(AppConfig.Instance.ConnectionString))
+                {
+                    conn.Open();
+
+                    NpgsqlCommand command = new NpgsqlCommand("sp_add_waiting_admin", conn);
+                    command.CommandType = System.Data.CommandType.StoredProcedure;
+
+                    command.Parameters.AddRange(parameters);
+
+                    var reader = command.ExecuteReader();
+                    while (reader.Read())
+                    {
+                        id = (long)reader[0];
+                    }
+                }
+                return id;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public IList<Administrator> GetAllWaitingAdmins()
+        {
+            List<Administrator> administrators = new List<Administrator>();
+            try
+            {
+                using (var conn = new NpgsqlConnection(AppConfig.Instance.ConnectionString))
+                {
+                    conn.Open();
+
+                    NpgsqlCommand command = new NpgsqlCommand("sp_get_all_waiting_admins", conn);
+                    command.CommandType = System.Data.CommandType.StoredProcedure;
+                    var reader = command.ExecuteReader();
+                    while (reader.Read())
+                    {
+                        Administrator administrator = new Administrator
+                        {
+                            Id = (long)reader["id"],
+                            First_Name = reader["first_name"].ToString(),
+                            Last_Name = reader["last_name"].ToString(),
+                            Level = (int)reader["level"],
+                            User = new User
+                            {
+                                User_Name = reader["username"].ToString(),
+                                Password = reader["password"].ToString(),
+                                Email = reader["email"].ToString()
+                            }
+                        };
+                        administrators.Add(administrator);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                log.Error($"Could not get all waiting airlines: {ex.Message}");
+            }
+            return administrators;
+        }
+
+        public void RemoveWaitingAdmin(Administrator administrator)
+        {
+            RunSpNonExecute(AppConfig.Instance.ConnectionString, "sp_remove_waiting_admin", new NpgsqlParameter[]
+            {
+                new NpgsqlParameter("_id" ,administrator.Id)
+            });
+        }
     }
 }

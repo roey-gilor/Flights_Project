@@ -1,4 +1,4 @@
-const createNewCustomer = () => {
+const createNewAirline = () => {
     if (!validateForm()) {
         event.preventDefault();
         let error = validateDetails();
@@ -10,36 +10,32 @@ const createNewCustomer = () => {
             })
         }
         else {
-            let customer = JSON.stringify({
+            let admin = JSON.stringify({
                 First_Name: $("#firstName").val(),
                 Last_Name: $("#lastName").val(),
-                Address: $("#address").val(),
-                Phone_No: $("#prefixNum").val() + '-' + $("#suffixNum").val(),
-                Credit_Card_No: $("#card").val(),
+                Level: $("#level").val(),
                 User: {
                     User_Name: $("#userName").val(),
                     Password: $("#Password").val(),
-                    Email: $("#email").val(),
-                    User_Role: 3
+                    Email: $("#email").val()
                 }
             })
             let jqXhr = $.ajax({
-                url: "/api/Anonymous/CreateNewCustomer",
+                url: "/api/Anonymous/CreateNewWaitingAdmin",
                 type: "POST",
-                data: customer,
+                data: admin,
                 contentType: 'application/json'
             }).done(() => {
                 Swal.fire(
-                    'New Customer was created succefully!',
-                    'You can login to the system now!',
+                    'New Admin creation request was created succefully!',
+                    'You can login to the system only after admin will approve your request',
                     'success'
                 )
             }).fail(() => {
-                let text = (jqXhr.responseText.split("\"")[2]).split("_")[1];
                 Swal.fire({
                     icon: 'error',
                     title: 'Oops...',
-                    text: `${text} is allready taken`
+                    text: `${jqXhr.responseText}`
                 })
             })
         }
@@ -47,8 +43,8 @@ const createNewCustomer = () => {
 }
 
 const validateForm = () => {
-    let inputs = [$("#firstName").val(), $("#lastName").val(), $("#address").val(), $("#suffixNum").val(),
-    $("#userName").val(), $("#Password").val(), $("#conPassword").val(), $("#email").val(), $("#card").val()]
+    let inputs = [$("#firstName").val(), $("#lastName").val(), $("#userName").val(),
+    $("#Password").val(), $("#conPassword").val(), $("#email").val()]
     return inputs.some(val => val.length === 0)
 }
 
@@ -75,15 +71,6 @@ const validateDetails = () => {
     }
     if ($("#lastName").val().length < 2) {
         return 'Last name is too short'
-    }
-    if ($("#address").val().length < 10) {
-        return 'Address is too short'
-    }
-    if ($("#suffixNum").val().length !== 7) {
-        return 'Phone number must include 7 digits'
-    }
-    if ($("#card").val().length !== 16) {
-        return 'Credit card number must include 16 digits'
     }
     return '';
 }

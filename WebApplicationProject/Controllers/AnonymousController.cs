@@ -41,6 +41,37 @@ namespace WebApplicationProject.Controllers
             customer.Id = id;
             return Created($"api/Anonymous/CreateNewCustomer/{id}", JsonConvert.SerializeObject(customer));
         }
+        [HttpPost("CreateNewWaitingAirline")]
+        public async Task<ActionResult<Customer>> CreateNewWaitingAirline([FromBody] AirlineDTO airline)
+        {
+            long id;
+            AirlineCompany airlineCompany = m_mapper.Map<AirlineCompany>(airline);
+            try
+            {
+                id = await Task.Run(() => m_facade.AddNewWaitingAirline(airlineCompany));
+            }
+            catch (DuplicateDetailsException ex)
+            {
+                return StatusCode(400, $"{ex.Message}");
+            }
+            airlineCompany.Id = id;
+            return Created($"api/Anonymous/CreateNewWaitingAirline/{id}", JsonConvert.SerializeObject(airlineCompany));
+        }
+        [HttpPost("CreateNewWaitingAdmin")]
+        public async Task<ActionResult<Customer>> CreateNewWaitingAdmin([FromBody] Administrator administrator)
+        {
+            long id;
+            try
+            {
+                id = await Task.Run(() => m_facade.AddNewWaitingAdmin(administrator));
+            }
+            catch (DuplicateDetailsException ex)
+            {
+                return StatusCode(400, $"{ex.Message}");
+            }
+            administrator.Id = id;
+            return Created($"api/Anonymous/CreateNewWaitingAdmin/{id}", JsonConvert.SerializeObject(administrator));
+        }
         [HttpGet("GetAllAirlineCompanies")]
         public async Task<ActionResult<List<AirlineReducedDTO>>> GetAllAirlineCompanies()
         {
@@ -130,6 +161,13 @@ namespace WebApplicationProject.Controllers
                 airlineFlightsDTOs.Add(airlineDTO);
             }
             return Ok(JsonConvert.SerializeObject(airlineFlightsDTOs));
+        }
+        [HttpGet("GetAllCountries")]
+        public async Task<ActionResult<IList<Country>>> GetAllCountries()
+        {
+            IList<Country> countries = new List<Country>();
+            countries = await Task.Run(() => m_facade.GetAllCountries());
+            return Ok(JsonConvert.SerializeObject(countries));
         }
     }
 }

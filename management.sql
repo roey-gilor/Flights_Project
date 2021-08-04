@@ -2,8 +2,8 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 13.2
--- Dumped by pg_dump version 13.2
+-- Dumped from database version 13.3
+-- Dumped by pg_dump version 13.3
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -175,6 +175,44 @@ $$;
 
 
 ALTER FUNCTION public.sp_add_user(_user_name text, _password text, _email text, _user_role bigint) OWNER TO postgres;
+
+--
+-- Name: sp_add_waiting_admin(text, text, integer, text, text, text); Type: FUNCTION; Schema: public; Owner: postgres
+--
+
+CREATE FUNCTION public.sp_add_waiting_admin(_first_name text, _last_name text, _level integer, _username text, _password text, _email text) RETURNS bigint
+    LANGUAGE plpgsql
+    AS $$
+Declare
+    new_id bigint;
+     begin 
+	     insert into waiting_admins (first_name,last_name,level,username,password,email) 
+		 values (_first_name,_last_name,_level,_username,_password,_email) returning id into new_id;
+		 return new_id;
+     end;
+$$;
+
+
+ALTER FUNCTION public.sp_add_waiting_admin(_first_name text, _last_name text, _level integer, _username text, _password text, _email text) OWNER TO postgres;
+
+--
+-- Name: sp_add_waiting_airline(text, bigint, text, text, text); Type: FUNCTION; Schema: public; Owner: postgres
+--
+
+CREATE FUNCTION public.sp_add_waiting_airline(_airline_name text, _country_id bigint, _username text, _password text, _email text) RETURNS bigint
+    LANGUAGE plpgsql
+    AS $$
+Declare
+    new_id bigint;
+     begin 
+	     insert into waiting_airlines (airline_name,country_id,username,password,email) 
+		 values (_airline_name,_country_id,_username,_password,_email) returning id into new_id;
+		 return new_id;
+     end;
+$$;
+
+
+ALTER FUNCTION public.sp_add_waiting_airline(_airline_name text, _country_id bigint, _username text, _password text, _email text) OWNER TO postgres;
 
 --
 -- Name: sp_get_admin_by_id(bigint); Type: FUNCTION; Schema: public; Owner: postgres
@@ -399,6 +437,38 @@ $$;
 
 
 ALTER FUNCTION public.sp_get_all_vacancy_flights() OWNER TO postgres;
+
+--
+-- Name: sp_get_all_waiting_admins(); Type: FUNCTION; Schema: public; Owner: postgres
+--
+
+CREATE FUNCTION public.sp_get_all_waiting_admins() RETURNS TABLE(id bigint, first_name text, last_name text, level integer, username text, password text, email text)
+    LANGUAGE plpgsql
+    AS $$
+     begin
+	     return query
+	     select * from waiting_admins;
+     end;
+$$;
+
+
+ALTER FUNCTION public.sp_get_all_waiting_admins() OWNER TO postgres;
+
+--
+-- Name: sp_get_all_waiting_airlines(); Type: FUNCTION; Schema: public; Owner: postgres
+--
+
+CREATE FUNCTION public.sp_get_all_waiting_airlines() RETURNS TABLE(id bigint, airline_name text, country_id bigint, username text, password text, email text)
+    LANGUAGE plpgsql
+    AS $$
+     begin
+	     return query
+	     select * from waiting_airlines;
+     end;
+$$;
+
+
+ALTER FUNCTION public.sp_get_all_waiting_airlines() OWNER TO postgres;
 
 --
 -- Name: sp_get_country_by_id(bigint); Type: FUNCTION; Schema: public; Owner: postgres
@@ -746,6 +816,36 @@ $$;
 
 
 ALTER PROCEDURE public.sp_remove_user(_id bigint) OWNER TO postgres;
+
+--
+-- Name: sp_remove_waiting_admin(bigint); Type: PROCEDURE; Schema: public; Owner: postgres
+--
+
+CREATE PROCEDURE public.sp_remove_waiting_admin(_id bigint)
+    LANGUAGE plpgsql
+    AS $$
+     begin 
+	     delete from waiting_admins where id=_id;
+     end;
+$$;
+
+
+ALTER PROCEDURE public.sp_remove_waiting_admin(_id bigint) OWNER TO postgres;
+
+--
+-- Name: sp_remove_waiting_airline(bigint); Type: PROCEDURE; Schema: public; Owner: postgres
+--
+
+CREATE PROCEDURE public.sp_remove_waiting_airline(_id bigint)
+    LANGUAGE plpgsql
+    AS $$
+     begin 
+	     delete from waiting_airlines where id=_id;
+     end;
+$$;
+
+
+ALTER PROCEDURE public.sp_remove_waiting_airline(_id bigint) OWNER TO postgres;
 
 --
 -- Name: sp_update_admin(bigint, text, text, integer, bigint); Type: PROCEDURE; Schema: public; Owner: postgres
@@ -1239,6 +1339,81 @@ ALTER SEQUENCE public.users_user_role_seq OWNED BY public.users.user_role;
 
 
 --
+-- Name: waiting_admins; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.waiting_admins (
+    id bigint NOT NULL,
+    first_name text NOT NULL,
+    last_name text NOT NULL,
+    level integer NOT NULL,
+    username text NOT NULL,
+    password text NOT NULL,
+    email text NOT NULL
+);
+
+
+ALTER TABLE public.waiting_admins OWNER TO postgres;
+
+--
+-- Name: waiting_admins_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.waiting_admins_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.waiting_admins_id_seq OWNER TO postgres;
+
+--
+-- Name: waiting_admins_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.waiting_admins_id_seq OWNED BY public.waiting_admins.id;
+
+
+--
+-- Name: waiting_airlines; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.waiting_airlines (
+    id bigint NOT NULL,
+    airline_name text NOT NULL,
+    country_id bigint NOT NULL,
+    username text NOT NULL,
+    password text NOT NULL,
+    email text NOT NULL
+);
+
+
+ALTER TABLE public.waiting_airlines OWNER TO postgres;
+
+--
+-- Name: waiting_airlines_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.waiting_airlines_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.waiting_airlines_id_seq OWNER TO postgres;
+
+--
+-- Name: waiting_airlines_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.waiting_airlines_id_seq OWNED BY public.waiting_airlines.id;
+
+
+--
 -- Name: administrators id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -1313,6 +1488,20 @@ ALTER TABLE ONLY public.users ALTER COLUMN id SET DEFAULT nextval('public.users_
 --
 
 ALTER TABLE ONLY public.users ALTER COLUMN user_role SET DEFAULT nextval('public.users_user_role_seq'::regclass);
+
+
+--
+-- Name: waiting_admins id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.waiting_admins ALTER COLUMN id SET DEFAULT nextval('public.waiting_admins_id_seq'::regclass);
+
+
+--
+-- Name: waiting_airlines id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.waiting_airlines ALTER COLUMN id SET DEFAULT nextval('public.waiting_airlines_id_seq'::regclass);
 
 
 --
@@ -1425,6 +1614,24 @@ COPY public.users (id, username, password, email, user_role) FROM stdin;
 
 
 --
+-- Data for Name: waiting_admins; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.waiting_admins (id, first_name, last_name, level, username, password, email) FROM stdin;
+1	Anna	Levin	2	anna576	rtgvvr3	anna@walla.com
+\.
+
+
+--
+-- Data for Name: waiting_airlines; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.waiting_airlines (id, airline_name, country_id, username, password, email) FROM stdin;
+1	Ista	1	Boaz23	kfutr29j	boaz@walla.com
+\.
+
+
+--
 -- Name: administrators_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
@@ -1499,6 +1706,20 @@ SELECT pg_catalog.setval('public.users_id_seq', 10, true);
 --
 
 SELECT pg_catalog.setval('public.users_user_role_seq', 1, false);
+
+
+--
+-- Name: waiting_admins_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.waiting_admins_id_seq', 6, true);
+
+
+--
+-- Name: waiting_airlines_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.waiting_airlines_id_seq', 5, true);
 
 
 --
@@ -1579,6 +1800,22 @@ ALTER TABLE ONLY public.user_roles
 
 ALTER TABLE ONLY public.users
     ADD CONSTRAINT users_pk PRIMARY KEY (id);
+
+
+--
+-- Name: waiting_admins waiting_admins_pk; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.waiting_admins
+    ADD CONSTRAINT waiting_admins_pk PRIMARY KEY (id);
+
+
+--
+-- Name: waiting_airlines waiting_airlines_pk; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.waiting_airlines
+    ADD CONSTRAINT waiting_airlines_pk PRIMARY KEY (id);
 
 
 --
@@ -1673,6 +1910,55 @@ CREATE UNIQUE INDEX users_username_uindex ON public.users USING btree (username)
 
 
 --
+-- Name: waiting_admins_email_uindex; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE UNIQUE INDEX waiting_admins_email_uindex ON public.waiting_admins USING btree (email);
+
+
+--
+-- Name: waiting_admins_id_uindex; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE UNIQUE INDEX waiting_admins_id_uindex ON public.waiting_admins USING btree (id);
+
+
+--
+-- Name: waiting_admins_username_uindex; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE UNIQUE INDEX waiting_admins_username_uindex ON public.waiting_admins USING btree (username);
+
+
+--
+-- Name: waiting_airlines_airline_name_uindex; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE UNIQUE INDEX waiting_airlines_airline_name_uindex ON public.waiting_airlines USING btree (airline_name);
+
+
+--
+-- Name: waiting_airlines_email_uindex; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE UNIQUE INDEX waiting_airlines_email_uindex ON public.waiting_airlines USING btree (email);
+
+
+--
+-- Name: waiting_airlines_id_uindex; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE UNIQUE INDEX waiting_airlines_id_uindex ON public.waiting_airlines USING btree (id);
+
+
+--
+-- Name: waiting_airlines_username_uindex; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE UNIQUE INDEX waiting_airlines_username_uindex ON public.waiting_airlines USING btree (username);
+
+
+--
 -- Name: administrators administrators_users_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1750,6 +2036,14 @@ ALTER TABLE ONLY public.tickets
 
 ALTER TABLE ONLY public.users
     ADD CONSTRAINT users_user_roles_id_fk FOREIGN KEY (user_role) REFERENCES public.user_roles(id);
+
+
+--
+-- Name: waiting_airlines waiting_airlines_countries_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.waiting_airlines
+    ADD CONSTRAINT waiting_airlines_countries_id_fk FOREIGN KEY (country_id) REFERENCES public.countries(id);
 
 
 --
