@@ -33,7 +33,7 @@ const createNewCustomer = () => {
                     'New Customer was created succefully!',
                     'You can login to the system now!',
                     'success'
-                )
+                ).then(() => { location.href = "/FlightPages/loginPage.html" })
             }).fail(() => {
                 let text = (jqXhr.responseText.split("\"")[2]).split("_")[1];
                 Swal.fire({

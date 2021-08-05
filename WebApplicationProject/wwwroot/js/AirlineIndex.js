@@ -47,7 +47,7 @@ const createNewAirline = () => {
                     'New Airline creation request was created succefully!',
                     'You can login to the system only after admin will approve your request',
                     'success'
-                )
+                ).then(() => { location.href = "/FlightPages/loginPage.html" })
             }).fail(() => {
                 Swal.fire({
                     icon: 'error',

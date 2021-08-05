@@ -22,7 +22,7 @@ namespace WebApplicationProject.Controllers
         public ActionResult Index()
         {
             //return View();
-            var res = System.IO.File.ReadAllText("wwwroot\\FlightPages\\RegisterationAdminPage.html");
+            var res = System.IO.File.ReadAllText("wwwroot\\FlightPages\\loginPage.html");
             return Content(res, "text/html");
         }
 
@@ -44,7 +44,7 @@ namespace WebApplicationProject.Controllers
 
         }
 
-        //[HttpPost]
+        [HttpPost]
         public ActionResult AcceptPagePOST()
         {
             if (Request.Form["password"] != Request.Form["username"])
