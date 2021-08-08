@@ -68,6 +68,19 @@ namespace BusinessLogic
             }
         }
 
+        public Dictionary<long, long> GetAllTicketsIdByFlightsId(LoginToken<Customer> token, IList<Flight> flights)
+        {
+            Dictionary<long, long> mapFlightsToTickets = new Dictionary<long, long>();
+            List<Ticket> tickets = (List<Ticket>)_ticketDAO.GetAll();
+            List<Flight> flightsLst = (List<Flight>)flights;
+            flightsLst.ForEach(flight =>
+            {
+                Ticket ticket = tickets.Find(tick => tick.Flight_Id == flight.Id);
+                mapFlightsToTickets.Add(flight.Id, ticket.Id);
+            });
+            return mapFlightsToTickets;
+        }
+
         public Ticket PurchaseTicket(LoginToken<Customer> token, Flight flight)
         {
             if (token != null)

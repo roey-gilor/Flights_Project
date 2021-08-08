@@ -3,6 +3,7 @@ using BusinessLogic;
 using DAO;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System;
@@ -31,10 +32,14 @@ namespace WebApplicationProject.Controllers
         public async Task<ActionResult<IList<CustomerFlightDTO>>> GetAllCustomerFlights()
         {
             LoginToken<Customer> token = GetLoginToken();
+            Dictionary<long, long> mapFlightsToTickets = new Dictionary<long, long>();
             IList<Flight> flights = null;
             try
             {
-                flights = await Task.Run(() => m_facade.GetAllMyFlights(token));
+                Task<IList<Flight>> flightsTask = Task<IList<Flight>>.Factory.StartNew(() => m_facade.GetAllMyFlights(token));
+                flightsTask.Wait();
+                flights = flightsTask.Result;
+                mapFlightsToTickets = await Task.Run(() => m_facade.GetAllTicketsIdByFlightsId(token, flights));
             }
             catch (Exception ex)
             {
@@ -48,6 +53,7 @@ namespace WebApplicationProject.Controllers
             foreach (Flight flight in flights)
             {
                 CustomerFlightDTO flightDTO = m_mapper.Map<CustomerFlightDTO>(flight);
+                flightDTO.Ticket_Id = mapFlightsToTickets[flight.Id];
                 flightDTOs.Add(flightDTO);
             }
             return Ok(JsonConvert.SerializeObject(flightDTOs));

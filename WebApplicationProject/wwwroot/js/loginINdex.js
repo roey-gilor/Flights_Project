@@ -50,7 +50,7 @@ const login = (event) => {
             let role = JSON.parse(jsonPayload)['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'];
             window.localStorage.setItem('role', role);
 
-            location.href = '\wwwroot\reactside\src\page.html'
+            location.href = 'reactpage/index.html'
         } else {
             Swal.fire({
                 icon: 'error',

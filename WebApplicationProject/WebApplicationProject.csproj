@@ -26,4 +26,9 @@
     <ProjectReference Include="..\DAO\DAO.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="NewFolder\" />
+    <Folder Include="wwwroot\reactside\build\" />
+  </ItemGroup>
+
 </Project>

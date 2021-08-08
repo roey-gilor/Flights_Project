@@ -8,6 +8,7 @@ namespace WebApplicationProject.DTO
     public class CustomerFlightDTO
     {
         public long Id { get; set; }
+        public long Ticket_Id { get; set; }
         public string AirlineCompanyName { get; set; }
         public string OrigionCountry { get; set; }
         public string DestinationCountry { get; set; }

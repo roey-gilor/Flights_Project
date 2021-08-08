@@ -1,0 +1,42 @@
+* {
+    box-sizing: border-box;
+  }
+  
+  body {
+    font-family: Ariel, sans-serif;
+  }
+  
+  #bg::after {
+    content: "";
+    display: block;
+    position: absolute;
+    z-index: -1;
+    width: 100%;
+    height: 100%;
+    background-image: url("https://blog.macsales.com/wp-content/uploads/2018/06/Mojave.jpg");
+    background-size: cover;
+    opacity: 0.7;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+  }
+  
+  #title {
+    font-size: 4rem;
+    padding: 10px;
+  }
+  
+  #image {
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-end;
+    color: white;
+    padding: 20px;
+    background-image: url("https://blog.macsales.com/wp-content/uploads/2018/06/Mojave-Day_preview.jpeg");
+    background-size: cover;
+    width: 300px;
+    height: 200px;
+    margin: 20px;
+    box-shadow: 0 8px 17px 2px rgba(0,0,0,0.14), 0 3px 14px 2px rgba(0,0,0,0.12), 0 5px 5px -3px rgba(0,0,0,0.2);
+  }
