@@ -13,7 +13,7 @@ const MainCustomerComp = () => {
         history.push('/customer/tickets')
     }, [])
 
-    return (<div id="bg">
+    return (<div>
         <Navbar />
         <Switch>
             <div className="container">

@@ -9,16 +9,14 @@ const CustomerTicketsComp = () => {
         let jwt = localStorage.getItem('JWT')
         $.ajax({
             type: "GET",
-            url: '/api/Customer/GetAllCustomerFlights',
+            url: 'https://localhost:44309/api/Customer/GetAllCustomerFlights',
             contentType: 'application/json',
             dataType: 'json',
             headers: {
                 'Authorization': 'Bearer ' + jwt
             }
         }).done(function (response) {
-            console.log(response);
-            const ticketsArr = JSON.parse(response);
-            setTickets(ticketsArr);
+            setTickets(response);
         }).fail(function (err) {
             console.log(err);
         });

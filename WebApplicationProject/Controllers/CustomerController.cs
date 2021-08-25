@@ -106,12 +106,12 @@ namespace WebApplicationProject.Controllers
         }
 
         [HttpPut("ChangeCustomerPassword")]
-        public async Task<ActionResult> ChangeMyPassword([FromBody] UserDetailsDTO userDetails)
+        public async Task<ActionResult> ChangeMyPassword(string oldPassword, string newPassword)
         {
             LoginToken<Customer> token = GetLoginToken();
             try
             {
-                await Task.Run(() => m_facade.ChangeMyPassword(token, token.User.Password, userDetails.Password));
+                await Task.Run(() => m_facade.ChangeMyPassword(token, oldPassword, newPassword));
             }
             catch (WrongCredentialsException ex)
             {
@@ -138,6 +138,21 @@ namespace WebApplicationProject.Controllers
                 return StatusCode(403, $"{{ error: \"{ex.Message}\" }}");
             }
             return Ok();
+        }
+        [HttpGet("GetCustomerDetails")]
+        public async Task<ActionResult<Customer>> GetCustomerDetails()
+        {
+            LoginToken<Customer> token = GetLoginToken();
+            Customer customer = null;
+            try
+            {
+                customer = await Task.Run(() => m_facade.GetCustomerDetails(token));
+            }
+            catch (WasntActivatedByCustomerException ex)
+            {
+                return StatusCode(401, $"{{ error: \"{ex.Message}\" }}");
+            }
+            return Ok(JsonConvert.SerializeObject(customer));
         }
     }
 }

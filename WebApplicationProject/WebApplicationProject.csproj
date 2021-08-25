@@ -9,6 +9,13 @@
     <NoWarn>$(NoWarn);1591</NoWarn>
   </PropertyGroup>
 
+<ItemGroup>
+  <Compile Remove="wwwroot\reactside\build\**" />
+  <Content Remove="wwwroot\reactside\build\**" />
+  <EmbeddedResource Remove="wwwroot\reactside\build\**" />
+  <None Remove="wwwroot\reactside\build\**" />
+</ItemGroup>
+
   <ItemGroup>
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.1.1" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="5.0.6" />
@@ -28,7 +35,10 @@
 
   <ItemGroup>
     <Folder Include="NewFolder\" />
-    <Folder Include="wwwroot\reactside\build\" />
+    <Folder Include="wwwroot\reactpage\" />
+    <Folder Include="wwwroot\reactpage\" />
+    <Folder Include="wwwroot\reactpage\" />
+    <Folder Include="wwwroot\reactpage\" />
   </ItemGroup>
 
 </Project>

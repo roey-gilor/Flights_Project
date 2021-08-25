@@ -118,6 +118,12 @@ namespace WebApplicationProject
 
             app.UseRouting();
 
+            app.UseCors(builder => {
+                builder.AllowAnyOrigin();
+                builder.AllowAnyMethod();
+                builder.AllowAnyHeader();                
+            });
+
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
@@ -138,12 +144,6 @@ namespace WebApplicationProject
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-
-            app.UseCors(builder => builder
-                .AllowAnyOrigin()
-                .AllowAnyMethod()
-                .AllowAnyHeader());
-
         }
     }
 }

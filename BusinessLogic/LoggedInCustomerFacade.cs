@@ -31,8 +31,7 @@ namespace BusinessLogic
             if (token != null)
             {
                 Customer customer = _customerDAO.Get(token.User.Id);
-                oldPassword = customer.User.Password;
-                if (token.User.Password != oldPassword)
+                if (customer.User.Password != oldPassword)
                 {
                     log.Error($"Discrepancies between {token.User.Id} {customer.First_Name} {customer.Last_Name} old password to the password that saved in the system");
                     throw new WrongCredentialsException($"Discrepancies between {token.User.Id} {customer.First_Name} {customer.Last_Name} old password to the password that saved in the system");
@@ -79,6 +78,20 @@ namespace BusinessLogic
                 mapFlightsToTickets.Add(flight.Id, ticket.Id);
             });
             return mapFlightsToTickets;
+        }
+
+        public Customer GetCustomerDetails(LoginToken<Customer> token)
+        {
+            if (token != null)
+            {
+                log.Info($"Customer {token.User.Id} got all his details");
+                return _customerDAO.Get(token.User.Id);
+            }
+            else
+            {
+                log.Error("An unknown user tried to Get Customer Details");
+                throw new WasntActivatedByCustomerException("An unknown user tried to Get all Customer Details");
+            }
         }
 
         public Ticket PurchaseTicket(LoginToken<Customer> token, Flight flight)
@@ -149,12 +162,12 @@ namespace BusinessLogic
                 try
                 {
                     _userDAO.Update(user);
-                    log.Info($"User {token.User.User.Id} updated his details");
+                    log.Info($"User {user.Id} updated his details");
                 }
                 catch (Exception ex)
                 {
-                    log.Error($"Could not change user {token.User.User_Id} details: {ex.Message}");
-                    throw new WrongCredentialsException($"Could not change user {token.User.User.Id} details: {ex.Message}");
+                    log.Error($"Could not change user {user.Id} details: {ex.Message}");
+                    throw new WrongCredentialsException($"Could not change user {user.Id} details: {ex.Message}");
                 }
             }
             else

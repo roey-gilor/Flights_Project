@@ -85,7 +85,7 @@ namespace WebApplicationProject.Controllers
             return Ok(JsonConvert.SerializeObject(airlineDTOs));
         }
         [HttpGet("GetAllFlights")]
-        public async Task<ActionResult<List<AirlineReducedDTO>>> GetAllFlights()
+        public async Task<ActionResult<List<AirlineFlightDTO>>> GetAllFlights()
         {
             IList<Flight> flights = await Task.Run(() => m_facade.GetAllFlights());
             List<AirlineFlightDTO> airlineFlightsDTOs = new List<AirlineFlightDTO>();
