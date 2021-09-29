@@ -1,25 +1,18 @@
-import React, { Component, useEffect, useState } from 'react'
-import $ from 'jquery';
+import React, { useEffect, useState } from 'react'
 import CustomerFlightComp from './CustomerFlightComp';
+import customerDAL from '../../DAL/customerDAL.js'
 
 const CustomerTicketsComp = () => {
     const [tickets, setTickets] = useState([])
 
-    useEffect(() => {
-        let jwt = localStorage.getItem('JWT')
-        $.ajax({
-            type: "GET",
-            url: 'https://localhost:44309/api/Customer/GetAllCustomerFlights',
-            contentType: 'application/json',
-            dataType: 'json',
-            headers: {
-                'Authorization': 'Bearer ' + jwt
-            }
-        }).done(function (response) {
-            setTickets(response);
-        }).fail(function (err) {
-            console.log(err);
-        });
+    useEffect(async () => {
+        let ticketsArr = await customerDAL.getAllTickets()
+        if (ticketsArr !== false) {
+            setTickets(ticketsArr)
+        }
+        else {
+            console.log("error");
+        }
     }, [])
 
     let flightsToRender;

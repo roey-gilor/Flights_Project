@@ -1,6 +1,6 @@
 import React, { Component, useEffect, useState } from 'react'
 import { useHistory } from 'react-router-dom';
-import $ from 'jquery';
+import customerDAL from '../../DAL/customerDAL.js'
 import Swal from 'sweetalert2';
 import '../alerts.css'
 
@@ -19,17 +19,10 @@ const CustomerDetailsComp = () => {
     const [currentPassword, setCurrentPassword] = useState('')
     const [prefix, setPrefix] = useState('')
 
-    useEffect(() => {
-        let jwt = localStorage.getItem('JWT')
-        $.ajax({
-            type: "GET",
-            url: 'https://localhost:44309/api/Customer/GetCustomerDetails',
-            contentType: 'application/json',
-            dataType: 'json',
-            headers: {
-                'Authorization': 'Bearer ' + jwt
-            }
-        }).done(function (response) {
+    useEffect(async () => {
+        let response = null
+        response = await customerDAL.getCustomerDetails()
+        if (response !== null) {
             setUser(response)
             setFirstName(response.First_Name)
             setLastName(response.Last_Name)
@@ -44,13 +37,11 @@ const CustomerDetailsComp = () => {
                 setCurrentPassword(response.User.Password)
                 setConfirm(response.User.Password)
             }
-        }).fail(function (err) {
-            console.log(err);
-        });
+        }
     }, [])
 
-    const updateCustomer = () => {
-        let jwt = localStorage.getItem('JWT')
+    const updateCustomer = async () => {
+        let result
         let phone = phoneNum.includes('-') ? phoneNum.split('-')[1] : phoneNum;
         let customer = JSON.stringify({
             Id: user.Id,
@@ -68,15 +59,8 @@ const CustomerDetailsComp = () => {
                 User_Role: 3
             }
         })
-        $.ajax({
-            url: "https://localhost:44309/api/Customer/UpdateCustomerDetails",
-            type: "PUT",
-            contentType: 'application/json',
-            data: customer,
-            headers: {
-                'Authorization': 'Bearer ' + jwt
-            }
-        }).done((response) => {
+        result = await customerDAL.updateCustomer(customer)
+        if (result === true) {
             Swal.fire(
                 'Your details have been updated succefully!',
                 'You can change it again anytime',
@@ -85,27 +69,27 @@ const CustomerDetailsComp = () => {
                 history.push('/customer/tickets')
                 history.push('/customer/details')
             })
-        }).fail((err) => {
-            if (err.status === 403) {
-                let text = err.responseText.split("_")[1];
+        } else {
+            if (result.status === 403) {
+                let text = result.error.split("_")[1];
                 Swal.fire({
                     icon: 'error',
                     title: 'Oops...',
                     text: `${text} is allready taken`
                 })
             }
-            if (err.status === 401) {
+            if (result.status === 401) {
                 Swal.fire({
                     icon: 'error',
                     title: 'Oops...',
                     text: `You are not allowed to update details`
                 })
             }
-        })
+        }
     }
 
-    const updateDetails = () => {
-        let jwt = localStorage.getItem('JWT')
+    const updateDetails = async () => {
+        let result;
         let error = validateDetails();
         if (error !== '') {
             Swal.fire({
@@ -115,17 +99,11 @@ const CustomerDetailsComp = () => {
             })
         } else {
             if (currentPassword !== password) {
-                $.ajax({
-                    type: "PUT",
-                    url: `https://localhost:44309/api/Customer/ChangeCustomerPassword?oldPassword=${currentPassword}&newPassword=${password}`,
-                    contentType: 'application/json',
-                    headers: {
-                        'Authorization': 'Bearer ' + jwt
-                    }
-                }).done(function (response) {
+                result = await customerDAL.updatePassword(currentPassword, password)
+                if (result === true) {
                     updateCustomer();
-                }).fail(function (err) {
-                    if (err.status === 403) {
+                } else {
+                    if (result.status === 403) {
                         Swal.fire({
                             icon: 'error',
                             title: 'Oops...',
@@ -135,7 +113,7 @@ const CustomerDetailsComp = () => {
                             history.push('/customer/details')
                         })
                     }
-                    if (err.status === 401) {
+                    if (result.status === 401) {
                         Swal.fire({
                             icon: 'error',
                             title: 'Oops...',
@@ -145,7 +123,7 @@ const CustomerDetailsComp = () => {
                             history.push('/customer/details')
                         })
                     }
-                });
+                }
             } else {
                 updateCustomer();
             }
@@ -161,7 +139,7 @@ const CustomerDetailsComp = () => {
             }
         }
         if (password !== confirm) {
-            return 'You must confirm your password correctly!'
+            return 'You must confirm your password currectly!'
         }
         if (password.length < 5) {
             return 'Your password is too short'

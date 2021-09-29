@@ -1,4 +1,4 @@
-import React, { Component, useEffect } from 'react'
+import React, { useEffect } from 'react'
 import { Route, useHistory, Switch } from 'react-router-dom';
 import AirlineDetailsComp from './AirlineDetailsComp';
 import AirlineFlightsComp from './AirlineFlightsComp';

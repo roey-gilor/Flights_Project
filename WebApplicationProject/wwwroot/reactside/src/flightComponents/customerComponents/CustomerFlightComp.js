@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { useHistory } from 'react-router-dom';
-import $ from 'jquery';
+import customerDAL from '../../DAL/customerDAL.js'
 import Swal from 'sweetalert2';
 import '../alerts.css'
 
@@ -8,11 +8,10 @@ const CustomerFlightComp = (props) => {
     let flight = props.flight
     let history = useHistory();
 
-    const deleteTicket = () => {
+    const deleteTicket = async () => {
         let currentDate = new Date();
         let detpartureDate = new Date(flight.Departure_Time)
         if (detpartureDate.getTime() > currentDate.getTime()) {
-            let jwt = localStorage.getItem('JWT')
             let ticket = JSON.stringify({
                 Id: flight.Ticket_Id,
                 Flight_Id: flight.Id,
@@ -22,15 +21,8 @@ const CustomerFlightComp = (props) => {
                 Departure_Time: flight.Departure_Time,
                 Landing_Time: flight.Landing_Time
             })
-            $.ajax({
-                type: "DELETE",
-                url: 'https://localhost:44309/api/Customer/CancelTicketPurchase',
-                contentType: 'application/json',
-                data: ticket,
-                headers: {
-                    Authorization: 'Bearer ' + jwt
-                }
-            }).done(function (response) {
+            let result = await customerDAL.deleteTicket(ticket)
+            if (result === true) {
                 Swal.fire(
                     'Ticket purchase was canceled succefully!',
                     'You can purchase tickets to another flights',
@@ -39,13 +31,13 @@ const CustomerFlightComp = (props) => {
                     history.push('/customer/details')
                     history.push('/customer/tickets')
                 })
-            }).fail(function (err) {
+            } else {
                 Swal.fire({
                     icon: 'error',
                     title: 'You can\'t cancel ticket purchase',
                     text: `You are not allowed to cancel purchase`
                 })
-            });
+            };
         } else {
             Swal.fire({
                 icon: 'error',

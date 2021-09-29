@@ -14,5 +14,6 @@ namespace BusinessLogic
         void UpdateFlight(LoginToken<AirlineCompany> token, Flight flight);
         void ChangeMyPassword(LoginToken<AirlineCompany> token, string oldPassword, string newPassword);
         void MofidyAirlineDetails(LoginToken<AirlineCompany> token, AirlineCompany airline);
+        AirlineCompany GetAirlineDetails(LoginToken<AirlineCompany> token);
     }
 }

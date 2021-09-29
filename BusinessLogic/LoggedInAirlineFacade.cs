@@ -34,7 +34,6 @@ namespace BusinessLogic
             if (token != null)
             {
                 AirlineCompany airlineCompany = _airlineDAO.Get(token.User.Id);
-                oldPassword = airlineCompany.User.Password;
                 if (airlineCompany.User.Password != oldPassword)
                 {
                     log.Error($"Discrepancies between {airlineCompany.Name} old password to the password that saved in the system");
@@ -128,6 +127,20 @@ namespace BusinessLogic
             }
         }
 
+        public AirlineCompany GetAirlineDetails(LoginToken<AirlineCompany> token)
+        {
+            if (token != null)
+            {
+                log.Info($"Airline {token.User.Id} got all his details");
+                return _airlineDAO.Get(token.User.Id);
+            }
+            else
+            {
+                log.Error("An unknown user tried to Get Airline Details");
+                throw new WasntActivatedByAirlineException("An unknown user tried to Get all Airline Details");
+            }
+        }
+
         public void MofidyAirlineDetails(LoginToken<AirlineCompany> token, AirlineCompany airline)
         {
             if (token != null)
@@ -157,6 +170,8 @@ namespace BusinessLogic
             if (token != null)
             {
                 AirlineCompany airlineCompany = _airlineDAO.Get(token.User.Id);
+                Flight _flight = _flightDAO.Get(flight.Id);
+                flight.Remaining_Tickets = _flight.Remaining_Tickets;
                 _flightDAO.Update(flight);
                 log.Info($"Airline {airlineCompany.Name} updated flight {flight.Id} details");
             }

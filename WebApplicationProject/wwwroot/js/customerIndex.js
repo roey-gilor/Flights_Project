@@ -61,7 +61,7 @@ const validateDetails = () => {
         }
     }
     if ($("#Password").val() !== $("#conPassword").val()) {
-        return 'You must confirm your password correctly!'
+        return 'You must confirm your password currectly!'
     }
     if ($("#Password").val().length < 5) {
         return 'Your password is too short'

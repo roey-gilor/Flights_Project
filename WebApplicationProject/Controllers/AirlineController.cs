@@ -131,12 +131,12 @@ namespace WebApplicationProject.Controllers
             return Ok();
         }
         [HttpPut("ChangeAirlinePassword")]
-        public async Task<ActionResult> ChangeMyPassword([FromBody] UserDetailsDTO userDetails)
+        public async Task<ActionResult> ChangeMyPassword(string oldPassword, string newPassword)
         {
             LoginToken<AirlineCompany> token = GetLoginToken();
             try
             {
-                await Task.Run(() => m_facade.ChangeMyPassword(token, token.User.Password, userDetails.Password));
+                await Task.Run(() => m_facade.ChangeMyPassword(token, oldPassword, newPassword));
             }
             catch (WrongCredentialsException ex)
             {
@@ -166,6 +166,22 @@ namespace WebApplicationProject.Controllers
                 return StatusCode(401, $"{{ error: \"{ex.Message}\" }}");
             }
             return Ok();
+        }
+        [HttpGet("GetAirlineDetails")]
+        public async Task<ActionResult<AirlineDTO>> GetCustomerDetails()
+        {
+            LoginToken<AirlineCompany> token = GetLoginToken();
+            AirlineCompany airline = null;
+            try
+            {
+                airline = await Task.Run(() => m_facade.GetAirlineDetails(token));
+            }
+            catch (WasntActivatedByCustomerException ex)
+            {
+                return StatusCode(401, $"{{ error: \"{ex.Message}\" }}");
+            }
+            AirlineDTO airlineDTO = m_mapper.Map<AirlineDTO>(airline);
+            return Ok(JsonConvert.SerializeObject(airlineDTO));
         }
     }
 }

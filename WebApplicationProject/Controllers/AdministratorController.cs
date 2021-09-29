@@ -401,6 +401,27 @@ namespace WebApplicationProject.Controllers
             }
             return Ok();
         }
+        [HttpGet("GetAllWaitingAdmins")]
+        public async Task<ActionResult<IList<AirlineDTO>>> GetAllWaitingAdmins()
+        {
+            LoginToken<Administrator> token = GetLoginToken();
+            IList<Administrator> administrators = null;
+            try
+            {
+                administrators = await Task.Run(() => { return m_facade.GetWaitingAdmins(token); });
+            }
+            catch (AdministratorDoesntHaveSanctionException ex)
+            {
+                return StatusCode(403, $"{{ error: \"{ex.Message}\" }}");
+            }
+            catch (WasntActivatedByAdministratorException ex)
+            {
+                return StatusCode(401, $"{{ error: \"{ex.Message}\" }}");
+            }
+            if (administrators.Count == 0)
+                return StatusCode(204, "{ }");
+            return Ok(JsonConvert.SerializeObject(administrators));
+        }
         [HttpPost("ApproveAdmin")]
         public async Task<ActionResult<AirlineCompany>> ApproveAdmin([FromBody] Administrator administrator)
         {

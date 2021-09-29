@@ -8,8 +8,8 @@ const MainComp = () => {
     let history = useHistory();
     const getToken = () => {
         let data = {};
-        data.Name = 'adi213';
-        data.Password = '54321';
+        data.Name = 'danny121121';
+        data.Password = 'fdsaa23';
         let json = JSON.stringify(data);
 
         let xhr = new XMLHttpRequest();
@@ -27,10 +27,10 @@ const MainComp = () => {
 
     useEffect(() => {
         getToken();
-        let role = 'Airline Company';
+        let role = 'Administrator';
         switch (role) {
             case 'Administrator':
-                history.push("/admin")
+                history.push("/admin/details")
                 break;
             case 'Airline Company':
                 history.push('/airline/details')

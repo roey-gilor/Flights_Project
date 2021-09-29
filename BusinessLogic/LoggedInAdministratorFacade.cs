@@ -638,7 +638,7 @@ namespace BusinessLogic
             if (token != null)
             {
                 Administrator administrator = token.User.Id != 0 ? _adminDAO.Get(token.User.Id) : LoginService.mainAdmin;
-                if (administrator.Level != 3)
+                if (administrator.Level == 3)
                 {
                     log.Info($"{token.User.Id} {administrator.First_Name} {administrator.Last_Name} got all waiting admins");
                     return _adminDAO.GetAllWaitingAdmins();
@@ -706,15 +706,29 @@ namespace BusinessLogic
             if (token != null)
             {
                 Administrator administrator = token.User.Id != 0 ? _adminDAO.Get(token.User.Id) : LoginService.mainAdmin;
-                if (administrator.Level == 3)
+                if (administrator.Level > admin.Level && administrator.Level == 3)
                 {
-                    log.Info($"{token.User.Id} {administrator.First_Name} {administrator.Last_Name} rejected waiting admin");
                     _adminDAO.RemoveWaitingAdmin(admin);
                 }
                 else
                 {
-                    log.Error($"{token.User.Id} {administrator.First_Name} {administrator.Last_Name} did not have sanction to reject admin");
-                    throw new AdministratorDoesntHaveSanctionException($"{token.User.Id} {administrator.First_Name} {administrator.Last_Name} did not have sanction to reject admin");
+                    if (administrator.Level == 3)
+                    {
+                        if (administrator.First_Name == "Main" && administrator.Last_Name == "admin")
+                        {
+                            log.Info($"{token.User.Id} {administrator.First_Name} {administrator.Last_Name} rejected waiting admin");
+                            _adminDAO.RemoveWaitingAdmin(admin);
+                        }
+                        else
+                        {
+                            throw new AdministratorDoesntHaveSanctionException($"{token.User.Id} {administrator.First_Name} {administrator.Last_Name} did not have sanction to reject admin");
+                        }
+                    }
+                    else
+                    {
+                        log.Error($"{token.User.Id} {administrator.First_Name} {administrator.Last_Name} did not have sanction to reject admin");
+                        throw new AdministratorDoesntHaveSanctionException($"{token.User.Id} {administrator.First_Name} {administrator.Last_Name} did not have sanction to reject admin");
+                    }
                 }
             }
             else
