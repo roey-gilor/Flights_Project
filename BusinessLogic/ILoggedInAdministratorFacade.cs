@@ -8,6 +8,8 @@ namespace BusinessLogic
     public interface ILoggedInAdministratorFacade
     {
         IList<Customer> GetAllCustomers(LoginToken<Administrator> token);
+        IList<AirlineCompany> GetAllAirlines(LoginToken<Administrator> token);
+        IList<Administrator> GetAllAdmins(LoginToken<Administrator> token);
         long CreateNewAirline(LoginToken<Administrator> token, AirlineCompany airline);
         void UpdateAirlineDetails(LoginToken<Administrator> token, AirlineCompany airline);
         void RemoveAirline(LoginToken<Administrator> token, AirlineCompany airline);

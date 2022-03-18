@@ -177,13 +177,19 @@ class AirlineNavbar extends Component {
           />
           <ul className={`collapsed ${isExpanded ? "is-expanded" : ""}`}>
             <NavLink activeClassName="active" to="/airline/flights">
-              <li>Flights</li>
+              <li>My Flights</li>
             </NavLink>
             <NavLink activeClassName="active" to="/airline/details">
               <li>Details</li>
             </NavLink>
             <NavLink activeClassName="active" to="/airline/newFlight">
               <li>New Flight</li>
+            </NavLink>
+            <NavLink activeClassName="active" to="/flights">
+              <li>All Flights</li>
+            </NavLink>
+            <NavLink activeClassName="active" to="/FlightPages/loginPage.html">
+              <li>Log Out</li>
             </NavLink>
           </ul>
         </nav>

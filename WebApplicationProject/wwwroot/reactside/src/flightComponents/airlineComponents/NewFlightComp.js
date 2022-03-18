@@ -96,10 +96,6 @@ const NewFlightComp = () => {
         }
     }
 
-    // if (!companyName) {
-    //     window.location.reload(history.push('/airline/newFlight'));
-    // }
-
     return (<div>
         <h1>Create New flight</h1> <br />
         <span style={{ fontWeight: 'bold' }}> Airline Company Name: </span> {companyName} <br /> <br />

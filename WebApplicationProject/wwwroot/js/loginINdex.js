@@ -26,6 +26,11 @@ document.getElementById("eye").addEventListener("click", function () {
     }
 }, false);
 
+const goToFlightPage = () => {
+    window.localStorage.setItem('role', '');
+    location.href = '../reactpage/index.html'
+}
+
 const login = (event) => {
     event.preventDefault();
     let data = {};
@@ -50,7 +55,7 @@ const login = (event) => {
             let role = JSON.parse(jsonPayload)['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'];
             window.localStorage.setItem('role', role);
 
-            location.href = 'reactpage/index.html'
+            location.href = '../reactpage/index.html'
         } else {
             Swal.fire({
                 icon: 'error',

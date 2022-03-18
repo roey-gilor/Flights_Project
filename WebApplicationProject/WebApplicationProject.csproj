@@ -10,9 +10,17 @@
   </PropertyGroup>
 
 <ItemGroup>
+  <Compile Remove="wwwroot\reactpages\**" />
+  <Compile Remove="wwwroot\reactpage\**" />
   <Compile Remove="wwwroot\reactside\build\**" />
+  <Content Remove="wwwroot\reactpages\**" />
+  <Content Remove="wwwroot\reactpage\**" />
   <Content Remove="wwwroot\reactside\build\**" />
+  <EmbeddedResource Remove="wwwroot\reactpages\**" />
+  <EmbeddedResource Remove="wwwroot\reactpage\**" />
   <EmbeddedResource Remove="wwwroot\reactside\build\**" />
+  <None Remove="wwwroot\reactpages\**" />
+  <None Remove="wwwroot\reactpage\**" />
   <None Remove="wwwroot\reactside\build\**" />
 </ItemGroup>
 
@@ -31,14 +39,6 @@
   <ItemGroup>
     <ProjectReference Include="..\BusinessLogic\BusinessLogic.csproj" />
     <ProjectReference Include="..\DAO\DAO.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="NewFolder\" />
-    <Folder Include="wwwroot\reactpage\" />
-    <Folder Include="wwwroot\reactpage\" />
-    <Folder Include="wwwroot\reactpage\" />
-    <Folder Include="wwwroot\reactpage\" />
   </ItemGroup>
 
 </Project>

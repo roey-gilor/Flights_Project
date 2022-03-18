@@ -6,7 +6,7 @@ const getAirlineFlights = async () => {
     try {
         result = await $.ajax({
             type: "GET",
-            url: 'https://localhost:44309/api/Airline/GetAllAirlineFlights',
+            url: '/api/Airline/GetAllAirlineFlights',
             contentType: 'application/json',
             dataType: 'json',
             headers: {
@@ -24,7 +24,7 @@ const getFlightsTickets = async () => {
     try {
         result = await $.ajax({
             type: "GET",
-            url: 'https://localhost:44309/api/Airline/GetAllAirlineTickets',
+            url: '/api/Airline/GetAllAirlineTickets',
             contentType: 'application/json',
             dataType: 'json',
             headers: {
@@ -42,7 +42,7 @@ const GetAllCountries = async () => {
     try {
         countries = await $.ajax({
             type: "GET",
-            url: 'https://localhost:44309/api/Anonymous/GetAllCountries',
+            url: '/api/Anonymous/GetAllCountries',
             contentType: 'application/json'
         })
         return countries
@@ -56,7 +56,7 @@ const updateFlight = async (flight) => {
     try {
         await $.ajax({
             type: "PUT",
-            url: 'https://localhost:44309/api/Airline/UpdateFlight',
+            url: '/api/Airline/UpdateFlight',
             contentType: 'application/json',
             data: flight,
             headers: {
@@ -73,7 +73,7 @@ const deleteFlight = async (flight) => {
     try {
         await $.ajax({
             type: "DELETE",
-            url: 'https://localhost:44309/api/Airline/CancelFlight',
+            url: '/api/Airline/CancelFlight',
             contentType: 'application/json',
             data: flight,
             headers: {
@@ -91,7 +91,7 @@ const getAirlineDetails = async () => {
     try {
         result = await $.ajax({
             type: "GET",
-            url: 'https://localhost:44309/api/Airline/GetAirlineDetails',
+            url: '/api/Airline/GetAirlineDetails',
             contentType: 'application/json',
             dataType: 'json',
             headers: {
@@ -108,7 +108,7 @@ const createNewFlight = async (flight) => {
     try {
         await $.ajax({
             type: "POST",
-            url: 'https://localhost:44309/api/Airline/CreateNewFlight',
+            url: '/api/Airline/CreateNewFlight',
             contentType: 'application/json',
             data: flight,
             headers: {
@@ -125,7 +125,7 @@ const updatePassword = async (currentPassword, password) => {
     try {
         await $.ajax({
             type: "PUT",
-            url: `https://localhost:44309/api/Airline/ChangeAirlinePassword?oldPassword=${currentPassword}&newPassword=${password}`,
+            url: `/api/Airline/ChangeAirlinePassword?oldPassword=${currentPassword}&newPassword=${password}`,
             contentType: 'application/json',
             headers: {
                 'Authorization': 'Bearer ' + jwt
@@ -140,7 +140,7 @@ const updatePassword = async (currentPassword, password) => {
 const updateAirline = async (airline) => {
     try {
         await $.ajax({
-            url: "https://localhost:44309/api/Airline/UpdateAirlineDetails",
+            url: "/api/Airline/UpdateAirlineDetails",
             type: "PUT",
             contentType: 'application/json',
             data: airline,

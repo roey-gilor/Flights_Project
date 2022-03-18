@@ -5,6 +5,8 @@ import AirlinesInboxComp from './AirlinesInboxComp'
 import AirlinesComp from './AirlinesComp'
 import CustomersComp from './CustomersComp'
 import DetailsComp from './DetailsComp'
+import AdminsComp from './AdminsComp'
+import CountriesComp from './CountriesComp'
 import Navbar from './AdminNavbar'
 import '../navbar.css'
 import '../background.css'
@@ -24,6 +26,8 @@ const MainAdminComp = () => {
                 <Route path='/admin/airlinesInbox'> <AirlinesInboxComp /> </Route>
                 <Route path='/admin/airlines'> <AirlinesComp /> </Route>
                 <Route path='/admin/customers'> <CustomersComp /> </Route>
+                <Route path='/admin/admins'> <AdminsComp /> </Route>
+                <Route path='/admin/countries'> <CountriesComp /> </Route>
                 <Route path='/admin/details'> <DetailsComp /> </Route>
             </div>
         </Switch>

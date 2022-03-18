@@ -152,49 +152,61 @@ const Navigation = styled.header`
 `;
 
 class AdminNavbar extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            isExpanded: false
-        };
-    }
+  constructor(props) {
+    super(props);
+    this.state = {
+      isExpanded: false
+    };
+  }
 
-    handleToggle(e) {
-        e.preventDefault();
-        this.setState({
-            isExpanded: !this.state.isExpanded
-        });
-    }
-    render() {
-        const { isExpanded } = this.state;
-        return (
-            <Navigation>
-                <nav className="nav">
-                    <i
-                        className="fa fa-bars"
-                        aria-hidden="true"
-                        onClick={e => this.handleToggle(e)}
-                    />
-                    <ul className={`collapsed ${isExpanded ? "is-expanded" : ""}`}>
-                        <NavLink activeClassName="active" to="/admin/adminsInbox">
-                            <li>Admins Inbox</li>
-                        </NavLink>
-                        <NavLink activeClassName="active" to="/admin/airlinesInbox">
-                            <li>Airlines Inbox</li>
-                        </NavLink>
-                        <NavLink activeClassName="active" to="/admin/airlines">
-                            <li>Airlines</li>
-                        </NavLink>
-                        <NavLink activeClassName="active" to="/admin/customers">
-                            <li>Customers</li>
-                        </NavLink>
-                        <NavLink activeClassName="active" to="/admin/details">
-                            <li>Details</li>
-                        </NavLink>
-                    </ul>
-                </nav>
-            </Navigation>
-        )
-    }
+  handleToggle(e) {
+    e.preventDefault();
+    this.setState({
+      isExpanded: !this.state.isExpanded
+    });
+  }
+  render() {
+    const { isExpanded } = this.state;
+    return (
+      <Navigation>
+        <nav className="nav">
+          <i
+            className="fa fa-bars"
+            aria-hidden="true"
+            onClick={e => this.handleToggle(e)}
+          />
+          <ul className={`collapsed ${isExpanded ? "is-expanded" : ""}`}>
+            <NavLink activeClassName="active" to="/admin/adminsInbox">
+              <li>Admins Inbox</li>
+            </NavLink>
+            <NavLink activeClassName="active" to="/admin/airlinesInbox">
+              <li>Airlines Inbox</li>
+            </NavLink>
+            <NavLink activeClassName="active" to="/admin/airlines">
+              <li>Airlines</li>
+            </NavLink>
+            <NavLink activeClassName="active" to="/admin/customers">
+              <li>Customers</li>
+            </NavLink>
+            <NavLink activeClassName="active" to="/admin/admins">
+              <li>Admins</li>
+            </NavLink>
+            <NavLink activeClassName="active" to="/admin/countries">
+              <li>Countries</li>
+            </NavLink>
+            <NavLink activeClassName="active" to="/admin/details">
+              <li>Details</li>
+            </NavLink>
+            <NavLink activeClassName="active" to="/flights">
+              <li>Flights</li>
+            </NavLink>
+            <NavLink activeClassName="active" to="/FlightPages/loginPage.html">
+              <li>Log Out</li>
+            </NavLink>
+          </ul>
+        </nav>
+      </Navigation>
+    )
+  }
 }
 export default withRouter(AdminNavbar)

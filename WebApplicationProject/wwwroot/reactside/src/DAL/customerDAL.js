@@ -6,7 +6,7 @@ const getCustomerDetails = async () => {
     try {
         result = await $.ajax({
             type: "GET",
-            url: 'https://localhost:44309/api/Customer/GetCustomerDetails',
+            url: '/api/Customer/GetCustomerDetails',
             contentType: 'application/json',
             dataType: 'json',
             headers: {
@@ -23,7 +23,7 @@ const updatePassword = async (currentPassword, password) => {
     try {
         await $.ajax({
             type: "PUT",
-            url: `https://localhost:44309/api/Customer/ChangeCustomerPassword?oldPassword=${currentPassword}&newPassword=${password}`,
+            url: `/api/Customer/ChangeCustomerPassword?oldPassword=${currentPassword}&newPassword=${password}`,
             contentType: 'application/json',
             headers: {
                 'Authorization': 'Bearer ' + jwt
@@ -38,7 +38,7 @@ const updatePassword = async (currentPassword, password) => {
 const updateCustomer = async (customer) => {
     try {
         await $.ajax({
-            url: "https://localhost:44309/api/Customer/UpdateCustomerDetails",
+            url: "/api/Customer/UpdateCustomerDetails",
             type: "PUT",
             contentType: 'application/json',
             data: customer,
@@ -56,7 +56,7 @@ const deleteTicket = async (ticket) => {
     try {
         await $.ajax({
             type: "DELETE",
-            url: 'https://localhost:44309/api/Customer/CancelTicketPurchase',
+            url: '/api/Customer/CancelTicketPurchase',
             contentType: 'application/json',
             data: ticket,
             headers: {
@@ -74,7 +74,7 @@ const getAllTickets = async () => {
     try {
         result = await $.ajax({
             type: "GET",
-            url: 'https://localhost:44309/api/Customer/GetAllCustomerFlights',
+            url: '/api/Customer/GetAllCustomerFlights',
             contentType: 'application/json',
             dataType: 'json',
             headers: {
@@ -87,4 +87,21 @@ const getAllTickets = async () => {
     }
 }
 
-export default { getCustomerDetails, updatePassword, updateCustomer, deleteTicket, getAllTickets }
+const purchaseTicket = async (ticket) => {
+    try {
+        await $.ajax({
+            type: "POST",
+            url: '/api/Customer/PurchaseTicket',
+            contentType: 'application/json',
+            data: ticket,
+            headers: {
+                Authorization: 'Bearer ' + jwt
+            }
+        })
+        return true
+    } catch (error) {
+        return error.status
+    }
+}
+
+export default { getCustomerDetails, updatePassword, updateCustomer, deleteTicket, getAllTickets, purchaseTicket }

@@ -14,20 +14,18 @@ namespace BusinessLogic
             if (token != null)
             {
                 Administrator administrator = _adminDAO.Get(token.User.Id);
-                User user = administrator.User;
-                oldPassword = user.Password;
-                if (user.Password != oldPassword)
+                if (administrator.User.Password != oldPassword)
                 {
                     log.Error($"Discrepancies between {token.User.Id} {administrator.First_Name} {administrator.Last_Name} old password to the password that saved in the system");
                     throw new WrongCredentialsException($"Discrepancies between {token.User.Id} {administrator.First_Name} {administrator.Last_Name} old password to the password that saved in the system");
                 }
-                if (user.Password == newPassword)
+                if (administrator.User.Password == newPassword)
                 {
                     log.Error($"User {token.User.Id} tried to make his new password like the old one");
                     throw new WrongCredentialsException("New password can't be like the old one");
                 }
-                user.Password = newPassword;
-                _userDAO.Update(user);
+                administrator.User.Password = newPassword;
+                _userDAO.Update(administrator.User);
                 log.Info($"Admin {token.User.Id} {administrator.First_Name} {administrator.Last_Name} changed password");
             }
             else
@@ -249,8 +247,8 @@ namespace BusinessLogic
                         }
                         else
                         {
-                            log.Error($"{token.User.Id} {administrator.First_Name} {administrator.Last_Name} did not have sanction to add new administrator");
-                            throw new AdministratorDoesntHaveSanctionException($"{token.User.Id} {administrator.First_Name} {administrator.Last_Name} did not have sanction to add new administrator");
+                            log.Error($"{token.User.Id} {administrator.First_Name} {administrator.Last_Name} did not have sanction to remove administrator");
+                            throw new AdministratorDoesntHaveSanctionException($"{token.User.Id} {administrator.First_Name} {administrator.Last_Name} did not have sanction to remove administrator");
                         }
                     }
                     log.Error($"{token.User.Id} {administrator.First_Name} {administrator.Last_Name} did not have sanction to remove admins from the system");
@@ -736,6 +734,36 @@ namespace BusinessLogic
                 log.Error("An unknown user tried to reject admin");
                 throw new WasntActivatedByAdministratorException("An unknown user tried to reject admin");
             }
-        } 
+        }
+
+        public IList<AirlineCompany> GetAllAirlines(LoginToken<Administrator> token)
+        {
+            if (token != null)
+            {
+                Administrator administrator = token.User.Id != 0 ? _adminDAO.Get(token.User.Id) : LoginService.mainAdmin;
+                log.Info($"{token.User.Id} {administrator.First_Name} {administrator.Last_Name} got all airlines from the system");
+                return _airlineDAO.GetAll();
+            }
+            else
+            {
+                log.Error("An unknown user tried to get all airlines from the system");
+                throw new WasntActivatedByAdministratorException("An unknown user tried to get all airlines from the system");
+            }
+        }
+
+        public IList<Administrator> GetAllAdmins(LoginToken<Administrator> token)
+        {
+            if (token != null)
+            {
+                Administrator administrator = token.User.Id != 0 ? _adminDAO.Get(token.User.Id) : LoginService.mainAdmin;
+                log.Info($"{token.User.Id} {administrator.First_Name} {administrator.Last_Name} got all admins from the system");
+                return _adminDAO.GetAll();
+            }
+            else
+            {
+                log.Error("An unknown user tried to get all admins from the system");
+                throw new WasntActivatedByAdministratorException("An unknown user tried to get all admins from the system");
+            }
+        }
     }
 }

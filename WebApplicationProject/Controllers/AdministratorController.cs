@@ -27,12 +27,12 @@ namespace WebApplicationProject.Controllers
             m_mapper = mapper;
         }
         [HttpPut("ChangeAdminPassword")]
-        public async Task<ActionResult> ChangeMyPassword([FromBody] UserDetailsDTO userDetails)
+        public async Task<ActionResult> ChangeMyPassword(string oldPassword, string newPassword)
         {
             LoginToken<Administrator> token = GetLoginToken();
             try
             {
-                await Task.Run(() => m_facade.ChangeMyPassword(token, token.User.Password, userDetails.Password));
+                await Task.Run(() => m_facade.ChangeMyPassword(token, oldPassword, newPassword));
             }
             catch (WrongCredentialsException ex)
             {
@@ -82,7 +82,7 @@ namespace WebApplicationProject.Controllers
             }
             catch (DuplicateDetailsException ex)
             {
-                return StatusCode(401, $"{{ error: \"{ex.Message}\" }}");
+                return StatusCode(400, $"{{ error: \"{ex.Message}\" }}");
             }
             catch (WasntActivatedByAdministratorException ex)
             {
@@ -106,7 +106,7 @@ namespace WebApplicationProject.Controllers
             }
             catch (DuplicateDetailsException ex)
             {
-                return StatusCode(401, $"{{ error: \"{ex.Message}\" }}");
+                return StatusCode(400, $"{{ error: \"{ex.Message}\" }}");
             }
             catch (WasntActivatedByAdministratorException ex)
             {
@@ -131,7 +131,7 @@ namespace WebApplicationProject.Controllers
             }
             catch (DuplicateDetailsException ex)
             {
-                return StatusCode(401, $"{{ error: \"{ex.Message}\" }}");
+                return StatusCode(400, $"{{ error: \"{ex.Message}\" }}");
             }
             catch (WasntActivatedByAdministratorException ex)
             {
@@ -156,6 +156,46 @@ namespace WebApplicationProject.Controllers
             if (customers.Count == 0)
                 return StatusCode(204, "{ }");
             return Ok(JsonConvert.SerializeObject(customers));
+        }
+        [HttpGet("GetAllAirlines")]
+        public async Task<ActionResult<IList<AirlineDTO>>> GetAllAirlines()
+        {
+            LoginToken<Administrator> token = GetLoginToken();
+            IList<AirlineCompany> airlineCompanies = null;
+            try
+            {
+                airlineCompanies = await Task.Run(() => { return m_facade.GetAllAirlines(token); });
+            }
+            catch (WasntActivatedByAdministratorException ex)
+            {
+                return StatusCode(401, $"{{ error: \"{ex.Message}\" }}");
+            }
+            if (airlineCompanies.Count == 0)
+                return StatusCode(204, "{ }");
+            IList<AirlineDTO> airlineDTOs = new List<AirlineDTO>();
+            foreach (AirlineCompany airline in airlineCompanies)
+            {
+                AirlineDTO airlineDTO = m_mapper.Map<AirlineDTO>(airline);
+                airlineDTOs.Add(airlineDTO);
+            }
+            return Ok(JsonConvert.SerializeObject(airlineDTOs));
+        }
+        [HttpGet("GetAllAdmins")]
+        public async Task<ActionResult<IList<Administrator>>> GetAllAdmins()
+        {
+            LoginToken<Administrator> token = GetLoginToken();
+            IList<Administrator> administrators = null;
+            try
+            {
+                administrators = await Task.Run(() => { return m_facade.GetAllAdmins(token); });
+            }
+            catch (WasntActivatedByAdministratorException ex)
+            {
+                return StatusCode(401, $"{{ error: \"{ex.Message}\" }}");
+            }
+            if (administrators.Count == 0)
+                return StatusCode(204, "{ }");
+            return Ok(JsonConvert.SerializeObject(administrators));
         }
         [HttpPut("UpdateMyDetails")]
         public async Task<ActionResult> UpdateMyDetails([FromBody] Administrator admin)
@@ -185,7 +225,7 @@ namespace WebApplicationProject.Controllers
             }
             catch (WrongCredentialsException ex)
             {
-                return StatusCode(403, $"{{ error: \"{ex.Message}\" }}");
+                return StatusCode(400, $"{{ error: \"{ex.Message}\" }}");
             }
             catch (AdministratorDoesntHaveSanctionException ex)
             {
@@ -226,7 +266,7 @@ namespace WebApplicationProject.Controllers
             }
             catch (WrongCredentialsException ex)
             {
-                return StatusCode(403, $"{{ error: \"{ex.Message}\" }}");
+                return StatusCode(400, $"{{ error: \"{ex.Message}\" }}");
             }
             catch (AdministratorDoesntHaveSanctionException ex)
             {
@@ -293,7 +333,7 @@ namespace WebApplicationProject.Controllers
             }
             return Ok();
         }
-        [HttpDelete("RemoveCountry/{countryId}")]
+        [HttpDelete("RemoveCountry")]
         public async Task<ActionResult> RemoveCountry(long countryId)
         {
             LoginToken<Administrator> token = GetLoginToken();

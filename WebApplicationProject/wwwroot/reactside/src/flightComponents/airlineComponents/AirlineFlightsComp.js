@@ -186,7 +186,7 @@ const AirlineFlightsComp = () => {
             }).then(async (result) => {
                 if (result.isConfirmed) {
                     let res = await airlineDAL.updateFlight(flight)
-                    if (res) {
+                    if (res === true) {
                         Swal.fire(
                             'Flight details have been updated succefully!',
                             'Updated Data will be displayed in the website',

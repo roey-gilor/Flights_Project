@@ -14,10 +14,22 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 </head>
 
+<style>
+    #wrapper {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+</style>
+
 <body>
     <br /> <br /> <br /> <br />
     <h1 style="text-align: center; font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif">
-        Welcome!</h1>
+        Welcome!</h1> <br />
+    <div id="wrapper">
+        <input type="button" style="width: 150px; background-color: limegreen" value="All Flights"
+            onclick="goToFlightPage()" />
+    </div>
     <div class="overlay">
         <div id="container">
             <form id="form" onsubmit="login(event)">
